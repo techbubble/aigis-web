@@ -1,0 +1,69 @@
+date,city,country,category,amount_eur,description
+2025-06-21,London,United Kingdom,lodging,210,Bloomsbury flat night 1
+2025-06-21,London,United Kingdom,transport,34,Elizabeth line and Oyster top up
+2025-06-22,London,United Kingdom,attraction,128,London Eye family ticket
+2025-06-22,London,United Kingdom,food,56,Dishoom dinner
+2025-06-23,London,United Kingdom,transport,72,Train to Cambridge return
+2025-06-23,London,United Kingdom,attraction,46,Punting on the Cam
+2025-06-24,Paris,France,transport,312,Eurostar London to Paris
+2025-06-24,Paris,France,lodging,240,Le Marais apartment night 1
+2025-06-24,Paris,France,food,38,L'As du Fallafel
+2025-06-25,Paris,France,attraction,68,Louvre tickets
+2025-06-25,Paris,France,attraction,32,Arc de Triomphe
+2025-06-26,Paris,France,attraction,118,Eiffel Tower summit
+2025-06-26,Paris,France,attraction,36,Musée d'Orsay
+2025-06-26,Paris,France,health,6.4,Pharmacy paracetamol
+2025-06-27,Paris,France,attraction,64,Versailles passport x2
+2025-06-27,Paris,France,food,74,Dinner Le Marais
+2025-06-28,Amsterdam,Netherlands,transport,268,Train Paris to Amsterdam
+2025-06-28,Amsterdam,Netherlands,lodging,295,Houseboat night 1
+2025-06-28,Amsterdam,Netherlands,transport,90,Bike rental 3 days
+2025-06-28,Amsterdam,Netherlands,attraction,72,Canal cruise
+2025-06-29,Amsterdam,Netherlands,attraction,48,Anne Frank House
+2025-06-29,Amsterdam,Netherlands,attraction,60,Rijksmuseum
+2025-06-30,Amsterdam,Netherlands,food,42,Pancakes Zaanse Schans
+2025-07-01,Berlin,Germany,transport,196,Train Amsterdam to Berlin
+2025-07-01,Berlin,Germany,lodging,165,Prenzlauer Berg apartment night 1
+2025-07-02,Berlin,Germany,food,18,Konnopke's currywurst
+2025-07-02,Berlin,Germany,attraction,40,Pergamon exhibition
+2025-07-03,Berlin,Germany,attraction,32,Neues Museum
+2025-07-03,Berlin,Germany,food,61,Prater Garten dinner
+2025-07-04,Prague,Czechia,transport,124,Train Berlin to Prague
+2025-07-04,Prague,Czechia,lodging,180,Old Town hotel night 1
+2025-07-04,Prague,Czechia,food,12,Trdelnik x4
+2025-07-05,Prague,Czechia,attraction,50,Prague Castle circuit
+2025-07-05,Prague,Czechia,attraction,44,Vltava boat
+2025-07-05,Prague,Czechia,other,899,Replacement phone after theft
+2025-07-06,Vienna,Austria,transport,142,Railjet Prague to Vienna
+2025-07-06,Vienna,Austria,lodging,205,Neubau apartment night 1
+2025-07-07,Vienna,Austria,attraction,88,Schönbrunn family pass
+2025-07-07,Vienna,Austria,attraction,42,Kunsthistorisches Museum
+2025-07-07,Vienna,Austria,food,29,Café Sacher
+2025-07-08,Venice,Italy,transport,386,Flights Vienna to Venice x4
+2025-07-08,Venice,Italy,lodging,310,Cannaregio apartment night 1
+2025-07-08,Venice,Italy,transport,65,Vaporetto 3 day passes
+2025-07-08,Venice,Italy,food,15,Gelato x3
+2025-07-09,Venice,Italy,attraction,70,Doge's Palace
+2025-07-09,Venice,Italy,shopping,35,Murano glass pendant
+2025-07-10,Florence,Italy,transport,158,Frecciarossa Venice to Florence
+2025-07-10,Florence,Italy,lodging,230,Oltrarno apartment night 1
+2025-07-10,Florence,Italy,attraction,80,Brunelleschi pass
+2025-07-11,Florence,Italy,attraction,70,Uffizi
+2025-07-11,Florence,Italy,attraction,48,Accademia
+2025-07-11,Florence,Italy,food,52,Mercato Centrale lunch
+2025-07-12,Florence,Italy,transport,36,Bus to Siena return
+2025-07-12,Florence,Italy,food,126,Birthday dinner Trattoria Sostanza
+2025-07-13,Rome,Italy,transport,148,Frecciarossa Florence to Rome
+2025-07-13,Rome,Italy,lodging,260,Monti apartment night 1
+2025-07-13,Rome,Italy,attraction,112,Colosseum underground tour
+2025-07-14,Rome,Italy,attraction,96,Vatican Museums
+2025-07-14,Rome,Italy,food,78,Da Enzo dinner
+2025-07-15,Rome,Italy,attraction,60,Borghese Gallery
+2025-07-15,Rome,Italy,food,20,Gelato x4
+2025-07-16,Barcelona,Spain,transport,298,Vueling Rome to Barcelona x4
+2025-07-16,Barcelona,Spain,lodging,190,Gracia apartment night 1
+2025-07-17,Barcelona,Spain,attraction,104,Sagrada Familia with towers
+2025-07-17,Barcelona,Spain,attraction,40,Park Guell
+2025-07-17,Barcelona,Spain,food,54,Tapas Carrer de Blai
+2025-07-18,Barcelona,Spain,transport,58,Montserrat train and rack railway
+2025-07-18,Barcelona,Spain,food,66,La Boqueria dinner

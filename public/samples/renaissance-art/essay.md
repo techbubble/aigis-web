@@ -1,0 +1,15 @@
+# How the Renaissance Moved: Notes on Geography and Patronage
+
+A short essay prepared alongside the catalogue of works.
+
+The Florentine beginning is conventionally dated to the competition of 1401 for the Baptistery doors, which Lorenzo Ghiberti won over Filippo Brunelleschi. Within a generation Florence had Brunelleschi's dome (begun 1420), Masaccio's perspective frescoes in the Brancacci Chapel (1425) and Donatello's bronze David (about 1440). Alberti's treatise De pictura (1435) turned workshop practice into theory. Money came from the wool and banking families, above all the Medici, who returned from exile in 1434 and dominated the city for sixty years.
+
+In the north, Jan van Eyck completed the Ghent Altarpiece in 1432 and the Arnolfini Portrait in Bruges in 1434, and his handling of oil paint spread south through Naples and Urbino before reaching Venice with Antonello da Messina in 1475.
+
+Political shocks redistributed talent. After the Pazzi conspiracy of April 26, 1478, Lorenzo de' Medici used artists as diplomats, lending Botticelli, Ghirlandaio and Perugino to Pope Sixtus IV for the Sistine Chapel walls in 1481 and 1482. Leonardo left Florence for the Sforza court in Milan in 1482 and stayed until the French invasion of 1499. Lorenzo died on April 8, 1492. The Medici were expelled from Florence in November 1494 as Charles VIII of France marched through Italy; Savonarola's Bonfire of the Vanities followed in the Piazza della Signoria on February 7, 1497, and Savonarola himself was burned there on May 23, 1498.
+
+Rome became the center under Julius II, elected in 1503. Bramante laid the foundation stone of the new St Peter's on April 18, 1506; the Laocoön was dug out of a vineyard on the Esquiline on January 14, 1506; Michelangelo began the Sistine ceiling in 1508 and Raphael the Stanze in 1509. The Sack of Rome on May 6, 1527, by the unpaid troops of Charles V scattered this community: Rosso Fiorentino went to Fontainebleau in 1530, Parmigianino to Bologna, Sansovino to Venice, where he became chief architect in 1529.
+
+Venice had its own trajectory. Giovanni Bellini trained Giorgione and Titian; Giorgione's Tempest dates from about 1506, Titian's Assumption for the Frari from 1516 to 1518. Dürer visited twice, in 1494 and again in 1505 to 1507, and wrote home from Venice that here he was a gentleman while at home in Nuremberg he was a parasite. Printing made Venice the distribution hub: Aldus Manutius published Castiglione's Courtier there in 1528, and Vasari's Lives, printed in Florence in 1550, fixed the Florence-centered story that is still told.
+
+By the second half of the century the energy had moved again: to the Medici dukes' court in Florence (Bronzino, Cellini, Vasari's Uffizi begun 1560), to Palladio's Vicenza (Basilica 1549, Villa Rotonda 1567, Teatro Olimpico 1580), to Philip II's Spain (El Greco settled in Toledo in 1577) and to the Habsburg Netherlands, where Bruegel painted the Months for an Antwerp banker in 1565. Caravaggio's Calling of St Matthew, unveiled in Rome in 1600, is usually taken as the end of the story and the start of another.

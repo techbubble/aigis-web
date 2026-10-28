@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# aigis local data
+.data/
+
+# maplibre worker copies
+/public/maplibre-gl-worker.mjs
+/public/maplibre-gl-shared.mjs
