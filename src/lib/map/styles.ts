@@ -57,6 +57,7 @@ export const ThemeSchema = z.object({
   // Provenance for looks made in Studio.
   custom: z.boolean().optional(),
   prompt: z.string().optional(),
+  texturePrompt: z.string().optional(),
   createdAt: z.string().optional(),
   owner: z.string().optional(),
 });
@@ -83,7 +84,7 @@ export const LookDesignSchema = ThemeSchema.omit({ id: true, texture: true, cust
       prompt: z.string().describe("A prompt for an image model to paint one seamless square texture tile: the paper, canvas, grain or wash this look is printed on. No objects, no text, no map, just surface. Describe material, tone and tooth. Empty string when disabled"),
       opacity: z.number().describe("0 to 1"),
       blend: z.enum(["multiply", "overlay", "soft-light", "screen", "normal"]),
-      scale: z.number().describe("Tile size on screen in pixels, 256 to 1024"),
+      scale: z.number().describe("Tile size on screen in pixels; use 2048"),
     })
     .describe("A generated surface texture laid over the map"),
 });

@@ -56,6 +56,21 @@ export function DesignPanel({
       setDesigning(false);
     }
   };
+  const [repainting, setRepainting] = useState<string | null>(null);
+  const repaint = async (id: string) => {
+    if (repainting) return;
+    setRepainting(id);
+    try {
+      const res = await fetch(`/api/looks/${id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ repaint: true }) });
+      const j = (await res.json()) as Theme & { error?: string };
+      if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
+      onLooks(looks.map((l) => (l.id === id ? j : l)));
+    } catch (err) {
+      setDesignError((err as Error).message);
+    } finally {
+      setRepainting(null);
+    }
+  };
   const remove = async (id: string) => {
     setConfirm(null);
     const res = await fetch(`/api/looks/${id}`, { method: "DELETE" });
@@ -84,6 +99,21 @@ export function DesignPanel({
             {t.mood}
           </span>
         </button>
+        {deletable && confirm !== t.id && (
+          <button
+            onClick={() => repaint(t.id)}
+            disabled={repainting === t.id}
+            className={`absolute bottom-1 right-6 rounded p-1 transition hover:bg-black/40 ${repainting === t.id ? "animate-pulse opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+            style={{ color: fg }}
+            aria-label={`Repaint texture of ${t.name}`}
+            title={repainting === t.id ? "Painting four tiles" : "Repaint the texture"}
+          >
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M10.5 2.5l3 3L6 13H3v-3z" />
+              <path d="M9 4l3 3" />
+            </svg>
+          </button>
+        )}
         {deletable && confirm !== t.id && (
           <button
             onClick={() => setConfirm(t.id)}
@@ -249,7 +279,7 @@ function LookSwatch({ t }: { t: Theme }) {
         )}
         <path d="M0 48 L160 40" stroke={t.boundary} strokeWidth="0.8" strokeDasharray="3 2" opacity="0.7" />
       </svg>
-      {t.texture && <span className="absolute inset-0" style={{ backgroundImage: `url("${t.texture.url}")`, backgroundSize: "80px 80px", mixBlendMode: t.texture.blend, opacity: t.texture.opacity }} />}
+      {t.texture && <span className="absolute inset-0" style={{ backgroundImage: `url("${t.texture.url}")`, backgroundSize: "320px 320px", mixBlendMode: t.texture.blend, opacity: t.texture.opacity }} />}
       {t.halftone && (
         <span
           className="absolute inset-0"
