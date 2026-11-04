@@ -2,27 +2,14 @@
 
 import { useEffect, useState } from "react";
 
-// The architecture, with the six Muse Spark jobs and the Muse Image job
-// stepping through one at a time: each lights its box and the path that
-// carries it, and prints what the call does.
-const JOBS = [
-  { id: "extract", model: "Muse Spark 1.3", title: "Structured extraction", detail: "Prose, PDFs and scans in; typed events out: place, time, value, unit, confidence, a verbatim quote. Zod schema, temperature 0.1." },
-  { id: "vision", model: "Muse Spark 1.3", title: "Photo captions", detail: "EXIF gives the where and when; Muse Spark's vision writes the title, summary and category for each photo." },
-  { id: "table", model: "Muse Spark 1.3", title: "Column mapping", detail: "One call maps a spreadsheet's headers onto the event schema; the rows are then converted deterministically." },
-  { id: "geocode", model: "Muse Spark 1.3", title: "Geocoding fallback", detail: "Photon and Nominatim first. Whatever they miss goes to Muse Spark in batches: venues, landmarks, historical names." },
-  { id: "chat", model: "Muse Spark 1.3", title: "Conversation with tools", detail: "Streams answers over the dataset and calls focusMap and queryEvents, so the map moves as it explains." },
-  { id: "design", model: "Muse Spark 1.3", title: "Look design", detail: "A brief becomes a complete basemap style: thirty fields of color, line and label treatment, as JSON." },
-  { id: "texture", model: "Muse Image 1.0", title: "Surface textures", detail: "Paper, toner, canvas and wash, generated as tiles and blended over the map in screen space." },
-];
-
+// The architecture. The Muse boxes take turns lighting up with their edges;
+// the Muse chapter that follows shows each call in detail.
 export function TechnologyFigure() {
-  const [i, setI] = useState(0);
+  const [imageJob, setImageJob] = useState(false);
   useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % JOBS.length), 2600);
+    const t = setInterval(() => setImageJob((v) => !v), 3200);
     return () => clearInterval(t);
   }, []);
-  const job = JOBS[i];
-  const imageJob = job.id === "texture";
   return (
     <div>
       <svg viewBox="0 0 560 300" className="w-full" role="img" aria-label="Architecture: browser, Next.js on Vercel, AI Gateway, Muse Spark and Muse Image, open geodata services">
@@ -77,25 +64,6 @@ export function TechnologyFigure() {
         </circle>
       </svg>
 
-      {/* The job stepping through */}
-      <div className="mt-4 rounded-xl border border-line bg-ink-2 p-4">
-        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-dim">
-          <span className="text-glow">{job.model}</span>
-          <span>·</span>
-          <span>
-            call {i + 1} of {JOBS.length}
-          </span>
-        </div>
-        <div key={job.id} className="tf-job">
-          <div className="mt-1 text-lg font-semibold text-fog">{job.title}</div>
-          <p className="mt-1 text-sm leading-relaxed text-mist">{job.detail}</p>
-        </div>
-        <div className="mt-3 flex gap-1">
-          {JOBS.map((j, k) => (
-            <button key={j.id} onClick={() => setI(k)} aria-label={j.title} className={`h-1.5 flex-1 rounded-full transition ${k === i ? "bg-glow" : "bg-line hover:bg-mist/60"}`} />
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
