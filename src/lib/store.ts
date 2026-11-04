@@ -36,10 +36,19 @@ async function loadBundledSample(id: string): Promise<Dataset | null> {
   }
 }
 
+// For bundled samples the content shipped in the repo is canonical; a stored
+// copy only carries what the creator changed in Studio (look, markers,
+// title, order). Otherwise a copy ingested before the sample was improved
+// keeps serving stale events and media.
 export async function loadDataset(id: string): Promise<Dataset | null> {
   if (!/^[a-zA-Z0-9_-]+$/.test(id)) return null;
   const stored = await loadStoredDataset(id);
-  return stored ?? (await loadBundledSample(id));
+  const bundled = await loadBundledSample(id);
+  if (bundled && stored) {
+    const { theme, marker, name, subtitle, position, savedAt, owner, editors } = stored;
+    return { ...bundled, theme: theme ?? bundled.theme, marker: marker ?? bundled.marker, name: name ?? bundled.name, subtitle: subtitle ?? bundled.subtitle, position, savedAt: savedAt ?? bundled.savedAt, owner: owner ?? bundled.owner, editors: editors ?? bundled.editors };
+  }
+  return stored ?? bundled;
 }
 
 async function loadStoredDataset(id: string): Promise<Dataset | null> {
@@ -98,7 +107,7 @@ export async function deleteDataset(id: string): Promise<void> {
     } catch {
       /* missing */
     }
-    // Photo derivatives for this Aigis.
+    // Photo derivatives for this story.
     try {
       const { list } = await import("@vercel/blob");
       const media = await list({ prefix: `aigis/media/${id}/` });

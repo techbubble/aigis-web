@@ -13,7 +13,7 @@ export function shapeAnchor(shape: MarkerShape) {
   return SHAPES.find((s) => s.id === shape)?.anchor ?? "center";
 }
 
-// SVG path for a shape in a 64x64 box. Pins hang from (32,60); other shapes centre on (32,32).
+// SVG path for a shape in a 64x64 box. Pins hang from (32,60); other shapes center on (32,32).
 export function shapePath(shape: MarkerShape): string {
   switch (shape) {
     case "pin":
@@ -110,4 +110,62 @@ export function drawArrowIcon(color: string): { width: number; height: number; d
   ctx.lineJoin = "round";
   ctx.stroke();
   return { width: S, height: S, data: ctx.getImageData(0, 0, S, S).data };
+}
+
+// Vehicle that leads the story line: a plane for long hops, a car for short
+// ones. Drawn pointing up; the layer rotates it to the bearing of travel.
+export function drawVehicleIcon(kind: "plane" | "car", color: string): { width: number; height: number; data: Uint8ClampedArray } | null {
+  if (typeof document === "undefined") return null;
+  const S = 128;
+  const c = document.createElement("canvas");
+  c.width = S;
+  c.height = S;
+  const ctx = c.getContext("2d");
+  if (!ctx) return null;
+  ctx.translate(S / 2, S / 2);
+  ctx.scale(2.7, 2.7);
+  ctx.shadowColor = "rgba(0,0,0,0.55)";
+  ctx.shadowBlur = 6;
+  ctx.fillStyle = "#ffffff";
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = "round";
+  const path = new Path2D();
+  if (kind === "plane") {
+    // Fuselage, swept wings, tail.
+    path.moveTo(0, -20);
+    path.lineTo(4, -12);
+    path.lineTo(4, -4);
+    path.lineTo(20, 6);
+    path.lineTo(20, 10);
+    path.lineTo(4, 5);
+    path.lineTo(3, 13);
+    path.lineTo(9, 17);
+    path.lineTo(9, 20);
+    path.lineTo(0, 17);
+    path.lineTo(-9, 20);
+    path.lineTo(-9, 17);
+    path.lineTo(-3, 13);
+    path.lineTo(-4, 5);
+    path.lineTo(-20, 10);
+    path.lineTo(-20, 6);
+    path.lineTo(-4, -4);
+    path.lineTo(-4, -12);
+    path.closePath();
+  } else {
+    // Car from above: body with a cabin band.
+    path.roundRect(-9, -17, 18, 34, 6);
+  }
+  ctx.fill(path);
+  ctx.stroke(path);
+  if (kind === "car") {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect(-6.5, -9, 13, 9, 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.roundRect(-6.5, 5, 13, 6, 2);
+    ctx.fill();
+  }
+  return ctx.getImageData(0, 0, S, S);
 }

@@ -9,12 +9,13 @@ export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
 // POST /api/datasets/:id/sources  (multipart: files, meta?, docDate?)
-// Adds documents to an existing Aigis. Streams progress; "done" when merged.
+// Adds documents to an existing story. Streams progress; "done" when merged.
 export async function POST(req: Request, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
   const ds = await loadDataset(id);
   if (!ds) return Response.json({ error: "Not found" }, { status: 404 });
   const user = await currentUser();
+  if (!user) return Response.json({ error: "Sign in" }, { status: 401 });
   if (!canEdit(ds, user)) return Response.json({ error: "Not allowed" }, { status: 403 });
   const form = await req.formData();
   const { files, docDate } = readMultipart(form);
@@ -29,6 +30,7 @@ export async function DELETE(req: Request, ctx: { params: Promise<{ id: string }
   const ds = await loadDataset(id);
   if (!ds) return Response.json({ error: "Not found" }, { status: 404 });
   const user = await currentUser();
+  if (!user) return Response.json({ error: "Sign in" }, { status: 401 });
   if (!canEdit(ds, user)) return Response.json({ error: "Not allowed" }, { status: 403 });
   const name = new URL(req.url).searchParams.get("name") ?? "";
   if (!ds.sources.some((s) => s.name === name)) return Response.json({ error: "No such source" }, { status: 404 });

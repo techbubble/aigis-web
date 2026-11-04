@@ -6,7 +6,7 @@ All calls go through the Vercel AI SDK (`ai` v7) against the Vercel AI Gateway, 
 
 | Role    | Default               | Env var              | Used for                                                     |
 | ------- | --------------------- | -------------------- | ------------------------------------------------------------ |
-| extract | `meta/muse-spark-1.3` | `AIGIS_EXTRACT_MODEL`| Event extraction, table mapping, photo captions, look design |
+| extract | `meta/muse-spark-1.3` | `AIGIS_EXTRACT_MODEL`| Event extraction, table mapping, photo captions, geocoding fallback, look design |
 | chat    | `meta/muse-spark-1.3` | `AIGIS_CHAT_MODEL`   | The Explore agent (streaming, tool calling)                  |
 | image   | `meta/muse-image-1.0` | `AIGIS_IMAGE_MODEL`  | Surface textures for custom map looks                        |
 | deep    | `meta/muse-wonder-1.0`| `AIGIS_DEEP_MODEL`   | Reserved; not called yet                                     |
@@ -15,14 +15,14 @@ Authentication is the Gateway's: `AI_GATEWAY_API_KEY` locally, Vercel OIDC in de
 
 ## 1. Ingest: source material to located, dated events
 
-Entry points: `POST /api/ingest` (new Aigis) and `POST /api/datasets/[id]/sources` (add to an existing one). Both stream progress as NDJSON and run `runIngest` in `src/lib/ingest/pipeline.ts`.
+Entry points: `POST /api/ingest` (new story) and `POST /api/datasets/[id]/sources` (add to an existing one). Both stream progress as NDJSON and run `runIngest` in `src/lib/ingest/pipeline.ts`.
 
 ### 1a. Text extraction (`src/lib/ingest/extract.ts`, `extractFromText`)
 
 - Input: PDF, DOCX, Markdown, TXT, HTML, email and similar, parsed to plain text and split into chunks of about 7,000 characters with 400 characters of overlap (`chunkText` in `parse.ts`). Chunks run four at a time.
 - Model: Muse Spark via `generateText` with `Output.object(ExtractionResultSchema)`, temperature 0.1.
 - System prompt casts the model as a geospatial analyst. It must return one event per distinct (what, where, when), the most specific place with disambiguating parents, ISO dates (first of month or year when only that is known), a reusable lowercase category, an optional value and unit, a verbatim source quote under 200 characters, a confidence score, and no invented events. Coordinates are returned only when the model is sure (well known cities, landmarks); otherwise null and the geocoder fills them in.
-- The file name and any document date are passed so relative dates ("last Tuesday") can be resolved.
+- The file name and any document date are passed so relative dates ("last Tuesday") can be resolved. Clock times are treated as local to the event's place and converted to UTC, never read in the author's home zone.
 
 ### 1b. Image extraction (`extractFromImage`)
 
@@ -39,7 +39,7 @@ A photo becomes one event. EXIF supplies GPS and capture time when present (came
 ### 1e. After the model
 
 - Events whose confidence is below 0.35 (`MIN_CONFIDENCE`) or that lack a time or location are counted as dropped and reported in the dataset summary.
-- Places without coordinates are geocoded with Photon, then Nominatim (`src/lib/geo/geocode.ts`), three at a time. Each event records whether its position came from `exif`, `source`, `photon`, `nominatim` or `model`.
+- Places without coordinates are geocoded with Photon, then Nominatim (`src/lib/geo/geocode.ts`), three at a time. Whatever those two cannot resolve, or everything when they are down or rate limiting, goes to Muse Spark as a gazetteer: batches of 40 place names, structured output of latitude, longitude and confidence, temperature 0, results below 0.4 confidence discarded. Each event records whether its position came from `exif`, `source`, `photon`, `nominatim` or `model`.
 - `summarize` and `detectInsights` (`src/lib/analysis/insights.ts`) run without a model: temporal bursts by z-score, spatial hotspots on a grid, value outliers, lead/lag correlations between categories, and silences. These are stored on the dataset as findings and are the evidence the Explore agent reasons over, so the model is never asked to eyeball thousands of rows.
 
 ## 2. Explore: the chat agent over a dataset
@@ -82,4 +82,4 @@ A failed texture does not fail the look. Repaint reuses the stored `texturePromp
 - `maxDuration` is 120s on the chat, ingest and looks routes.
 - Muse Spark ignores `temperature` and logs a warning; the values are left in place for providers that honour it.
 - Every structured call uses zod schemas from `src/lib/types.ts` or `src/lib/map/styles.ts`, so the model's output is validated before it touches storage.
-- No model call is made at render time. Viewing an Aigis reads stored events, findings and looks only.
+- No model call is made at render time. Viewing a story reads stored events, findings and looks only.

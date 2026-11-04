@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import Map, { Layer, NavigationControl, Source, type MapLayerMouseEvent, type MapRef } from "react-map-gl/maplibre";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Map, { Layer, NavigationControl, Source, useControl, type MapLayerMouseEvent, type MapRef } from "react-map-gl/maplibre";
 import maplibregl from "@/lib/map/maplibre";
 import type { StyleSpecification } from "maplibre-gl";
-import type { FilterSpecification } from "maplibre-gl";
+import type { ExpressionSpecification, FilterSpecification } from "maplibre-gl";
 import type { FeatureCollection, LineString, Point } from "geojson";
 import type { GeoEvent, MarkerStyle } from "@/lib/types";
-import { drawArrowIcon, drawMarkerIcon, SHAPE_IDS, shapeAnchor } from "@/lib/markers";
+import { drawArrowIcon, drawMarkerIcon, drawVehicleIcon, SHAPE_IDS, shapeAnchor } from "@/lib/markers";
+import { STORY, storyTime } from "@/lib/story";
 import type { MarkerShape } from "@/lib/types";
 
 const CLUSTER_MAX_ZOOM = 15;
@@ -81,12 +82,17 @@ export function MapView({
   events,
   color,
   cursor,
+  story,
+  storyPath,
+  revealAfter,
+  speed,
+  insetLeft = 0,
+  insetRight = 0,
+  insetBottom = 0,
   from,
   to,
-  cumulative,
   highlight,
   selectedId,
-  trail,
   bounds,
   boundsKey,
   followBounds,
@@ -97,12 +103,21 @@ export function MapView({
   events: GeoEvent[];
   color: string;
   cursor: number;
+  // True while a story is being played (or paused mid-way): only then are hops drawn.
+  story: boolean;
+  // One marker per stop the story has reached, in order; the last two form the hop being drawn.
+  storyPath: GeoEvent[];
+  // Markers newer than this stay hidden until the hop arrives.
+  revealAfter: number;
+  speed: number;
+  // Pixels covered by overlays on each side, so fits land in the visible part of the map.
+  insetLeft?: number;
+  insetRight?: number;
+  insetBottom?: number;
   from: number;
   to: number;
-  cumulative: boolean;
   highlight: Set<string> | null;
   selectedId: string | null;
-  trail: boolean;
   bounds: [number, number, number, number] | null;
   boundsKey: number;
   followBounds: [number, number, number, number] | null;
@@ -112,7 +127,7 @@ export function MapView({
 }) {
   const mapRef = useRef<MapRef>(null);
   // A cluster whose points cannot be separated by zooming (same geocoded
-  // coordinate) is fanned out around its centre instead. Tied to the visible
+  // coordinate) is fanned out around its center instead. Tied to the visible
   // set so it closes when the time window moves on.
   const [spider, setSpider] = useState<Spider | null>(null);
   const [zoom, setZoom] = useState(2);
@@ -120,7 +135,17 @@ export function MapView({
   // Only the events inside the time window go to the map, so clustering
   // reflects what is on screen. The set is keyed by id list to avoid
   // re-indexing the cluster tree while the window slides without changes.
-  const visible = useMemo(() => (cumulative ? events.filter((e) => e.t <= cursor) : events.filter((e) => e.t < to && (e.tEnd ?? e.t) >= from)), [events, cumulative, cursor, from, to]);
+  // While a hop is drawing, everything the step reveals stays hidden until
+  // the line arrives.
+  const n = storyPath.length;
+  const hop = useMemo(() => (story && n >= 2 ? { key: `${storyPath[n - 2].id}>${storyPath[n - 1].id}`, from: storyPath[n - 2], to: storyPath[n - 1] } : null), [story, storyPath, n]);
+  const [hopProgress, setHopProgress] = useState(1);
+  const hideAfter = hop && hopProgress < 1 ? revealAfter : Infinity;
+  const visible = useMemo(() => {
+    const at = story ? storyTime : (e: GeoEvent) => e.t;
+    const shown = events.filter((e) => at(e) <= cursor && e.t <= to && (e.tEnd ?? e.t) >= from);
+    return hideAfter === Infinity ? shown : shown.filter((e) => storyTime(e) <= hideAfter);
+  }, [events, cursor, from, to, hideAfter, story]);
   const visibleKey = useMemo(() => visible.map((e) => e.id).join(","), [visible]);
   const visibleStable = useMemo(() => visible, [visibleKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -186,7 +211,8 @@ export function MapView({
     map.on("styleimagemissing", (ev: { id: string }) => {
       const [shape, color] = ev.id.split("|");
       if (!color) return;
-      const img = shape === "arrow" ? drawArrowIcon(color) : SHAPE_IDS.includes(shape as MarkerShape) ? drawMarkerIcon(shape as MarkerShape, color) : null;
+      const img =
+        shape === "arrow" ? drawArrowIcon(color) : shape === "plane" || shape === "car" ? drawVehicleIcon(shape, color) : SHAPE_IDS.includes(shape as MarkerShape) ? drawMarkerIcon(shape as MarkerShape, color) : null;
       if (img && !map.hasImage(ev.id)) map.addImage(ev.id, img, { pixelRatio: 2 });
     });
   };
@@ -194,66 +220,74 @@ export function MapView({
   const iconSize = ["interpolate", ["linear"], ["get", "r"], 3, 0.42, 6, 0.62, 12, 0.95, 19, 1.35];
   const selBoost = ["case", ["==", ["get", "sel"], 1], 1.35, 1];
 
-  // Trail: one hop from each event to the next in time order, numbered at
-  // its midpoint, with an arrow showing the direction of travel.
-  const trailGeo = useMemo<{ lines: FeatureCollection<LineString>; marks: FeatureCollection<Point> } | null>(() => {
-    if (!trail) return null;
-    // Only what the window shows, and only when that is 20 hops or fewer:
-    // a trail is a route, not a hairball.
-    const lower = cumulative ? -Infinity : from;
-    const pts = events.filter((e) => e.t <= cursor && e.t >= lower).sort((a, b) => a.t - b.t);
-    if (pts.length < 2 || pts.length > 21) return null;
-    const lines: FeatureCollection<LineString> = { type: "FeatureCollection", features: [] };
-    const marks: FeatureCollection<Point> = { type: "FeatureCollection", features: [] };
-    for (let i = 0; i < pts.length - 1; i++) {
-      const a = pts[i],
-        b = pts[i + 1];
-      if (a.lat === b.lat && a.lng === b.lng) continue;
-      const n = i + 1;
-      lines.features.push({ type: "Feature", properties: { n }, geometry: { type: "LineString", coordinates: [[a.lng, a.lat], [b.lng, b.lat]] } });
-      // Midpoint and bearing in Web Mercator so the arrow matches the screen.
-      const [ax, ay] = project(a.lng, a.lat, 0);
-      const [bx, by] = project(b.lng, b.lat, 0);
-      const bearing = (Math.atan2(bx - ax, -(by - ay)) * 180) / Math.PI;
-      const mid = unproject((ax + bx) / 2, (ay + by) / 2, 0);
-      const tip = unproject(ax + (bx - ax) * 0.78, ay + (by - ay) * 0.78, 0);
-      marks.features.push({ type: "Feature", properties: { kind: "num", n }, geometry: { type: "Point", coordinates: mid } });
-      marks.features.push({ type: "Feature", properties: { kind: "arrow", n, bearing }, geometry: { type: "Point", coordinates: tip } });
-    }
-    return { lines, marks };
-  }, [trail, events, cursor, from, cumulative]);
+  // Trail: one hop at a time, like a film showing a journey. The line runs
+  // from the previous stop to the newest one, draws itself over a few
+  // seconds, and is replaced by the next hop. Earlier hops stay as a
+  // large-dashed route behind the solid one.
+  const historyGeo = useMemo<FeatureCollection<LineString> | null>(() => {
+    if (!story || storyPath.length < 3) return null;
+    return { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: storyPath.slice(0, -1).map((e) => [e.lng, e.lat]) } }] };
+  }, [story, storyPath]);
+  const hopKey = hop?.key ?? null;
+  useEffect(() => {
+    if (!hopKey) return;
+    // Wait for the camera to frame the pair, then grow the line.
+    let raf = 0;
+    const t0 = performance.now() + STORY.frame / speed;
+    const dur = STORY.draw / speed;
+    const tick = (now: number) => {
+      const lin = Math.min(1, Math.max(0, (now - t0) / dur));
+      const k = Math.max(0.001, 1 - Math.pow(1 - lin, 3)); // ease out: quick start, gentle arrival
+      setHopProgress(k);
+      if (lin < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [hopKey, speed]);
+  const trailGeo: FeatureCollection<LineString> | null = hop
+    ? { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: [[hop.from.lng, hop.from.lat], [hop.to.lng, hop.to.lat]] } }] }
+    : null;
+  const p = Math.max(0.001, Math.min(0.999, hopProgress));
+  const trailGradient = ["step", ["line-progress"], color, p, "rgba(0,0,0,0)"] as unknown as ExpressionSpecification;
+  // The plane at the head of the line.
+  const headGeo = useMemo<FeatureCollection<Point> | null>(() => {
+    if (!hop) return null;
+    const [ax, ay] = project(hop.from.lng, hop.from.lat, 0);
+    const [bx, by] = project(hop.to.lng, hop.to.lat, 0);
+    const bearing = (Math.atan2(bx - ax, -(by - ay)) * 180) / Math.PI;
+    const head = unproject(ax + (bx - ax) * p, ay + (by - ay) * p, 0);
+    return { type: "FeatureCollection", features: [{ type: "Feature", properties: { bearing, vehicle: "plane" }, geometry: { type: "Point", coordinates: head } }] };
+  }, [hop, p]);
 
   const single = ["!", ["has", "point_count"]] as unknown as FilterSpecification;
   const clustered = ["has", "point_count"] as unknown as FilterSpecification;
   const clusterText = luminance(color) > 0.55 ? "#0b0d12" : "#ffffff";
 
-  // Cumulative mode fades older events; period mode shows everything at full strength.
-  const age = ["-", cursor, ["get", "t"]];
-  const span = Math.max(1, to - from);
-  const fade = cumulative ? ["interpolate", ["linear"], age, 0, 1, span * 2, 0.55, span * 30, 0.35] : 1;
   const hlFactor = ["case", ["==", ["get", "hl"], 1], 1, 0.12];
 
   // Padding scaled to the container so fitBounds never fails on a small window.
-  const fit = (bb: [number, number, number, number], duration: number, maxZoom: number) => {
+  const fit = useCallback((bb: [number, number, number, number], duration: number, maxZoom: number) => {
     const m = mapRef.current;
     if (!m) return;
     const c = m.getContainer();
     const w = c.clientWidth || 1000,
       h = c.clientHeight || 700;
-    const padding = { top: Math.min(110, h * 0.12), bottom: Math.min(200, h * 0.24), left: Math.min(120, w * 0.12), right: Math.min(120, w * 0.12) };
+    const free = Math.max(200, w - insetLeft - insetRight);
+    const side = Math.min(120, free * 0.12);
+    const padding = { top: Math.min(110, h * 0.12), bottom: Math.min(h * 0.45, insetBottom + 48), left: insetLeft + side, right: insetRight + side };
     m.fitBounds(bb, { padding, duration, maxZoom, essential: true });
-  };
+  }, [insetLeft, insetRight, insetBottom]);
 
   useEffect(() => {
     if (!bounds) return;
     fit(bounds, 1600, 13);
-  }, [bounds, boundsKey]);
+  }, [bounds, boundsKey, fit]);
 
   // Follow mode: ease the camera onto whatever the time window is showing.
   useEffect(() => {
     if (!followBounds) return;
-    fit(followBounds, 900, 11);
-  }, [followBounds]);
+    fit(followBounds, STORY.frame, 11);
+  }, [followBounds, fit]);
 
   const onClick = async (e: MapLayerMouseEvent) => {
     const f = e.features?.[0];
@@ -307,7 +341,7 @@ export function MapView({
       ref={setMapRef}
       mapLib={maplibregl}
       mapStyle={mapStyle}
-      initialViewState={bounds ? { bounds, fitBoundsOptions: { padding: { top: 90, bottom: 160, left: 80, right: 80 }, maxZoom: 12 } } : { longitude: 0, latitude: 20, zoom: 1.5 }}
+      initialViewState={bounds ? { bounds, fitBoundsOptions: { padding: { top: 90, bottom: insetBottom + 48, left: insetLeft + 80, right: insetRight + 80 }, maxZoom: 12 } } : { longitude: 0, latitude: 20, zoom: 1.5 }}
       style={{ width: "100%", height: "100%" }}
       interactiveLayerIds={["spider-points", "events", "clusters"]}
       onClick={onClick}
@@ -322,40 +356,39 @@ export function MapView({
       attributionControl={false}
     >
       <NavigationControl position="top-right" showCompass={false} />
+      {events.length > 0 && (
+        <FitAllControl
+          onFit={() => {
+            setSpider(null);
+            fit(bboxOf(events.map((e) => [e.lng, e.lat])), 900, 12);
+          }}
+        />
+      )}
+      {historyGeo && (
+        <Source id="trail-history" type="geojson" data={historyGeo}>
+          <Layer id="trail-history" type="line" paint={{ "line-color": color, "line-width": 2, "line-opacity": 0.6, "line-dasharray": [4, 3] }} layout={{ "line-join": "round" }} />
+        </Source>
+      )}
       {trailGeo && (
-        <>
-          <Source id="trail" type="geojson" data={trailGeo.lines}>
-            <Layer id="trail-line" type="line" paint={{ "line-color": color, "line-width": 2, "line-opacity": 0.75 }} layout={{ "line-join": "round", "line-cap": "round" }} />
-          </Source>
-          <Source id="trail-marks" type="geojson" data={trailGeo.marks}>
-            <Layer
-              id="trail-arrow"
-              type="symbol"
-              filter={["==", ["get", "kind"], "arrow"] as unknown as FilterSpecification}
-              layout={{
-                "icon-image": `arrow|${color}`,
-                "icon-size": 0.55,
-                "icon-rotate": ["get", "bearing"] as unknown as number,
-                "icon-rotation-alignment": "map",
-                "icon-allow-overlap": true,
-                "icon-ignore-placement": true,
-              }}
-            />
-            <Layer
-              id="trail-num"
-              type="circle"
-              filter={["==", ["get", "kind"], "num"] as unknown as FilterSpecification}
-              paint={{ "circle-radius": 9, "circle-color": "#0b0d12", "circle-stroke-color": color, "circle-stroke-width": 1.5 }}
-            />
-            <Layer
-              id="trail-num-text"
-              type="symbol"
-              filter={["==", ["get", "kind"], "num"] as unknown as FilterSpecification}
-              layout={{ "text-field": ["to-string", ["get", "n"]] as unknown as string, "text-font": ["Noto Sans Bold"], "text-size": 10, "text-allow-overlap": true, "text-ignore-placement": true }}
-              paint={{ "text-color": "#ffffff" }}
-            />
-          </Source>
-        </>
+        <Source id="trail" type="geojson" data={trailGeo} lineMetrics>
+          <Layer id="trail-line" type="line" paint={{ "line-width": 3, "line-opacity": 0.95, "line-gradient": trailGradient }} layout={{ "line-join": "round", "line-cap": "round" }} />
+        </Source>
+      )}
+      {headGeo && hopProgress < 1 && (
+        <Source id="trail-head" type="geojson" data={headGeo}>
+          <Layer
+            id="trail-head"
+            type="symbol"
+            layout={{
+              "icon-image": ["concat", ["get", "vehicle"], `|${color}`] as unknown as string,
+              "icon-size": 0.56,
+              "icon-rotate": ["get", "bearing"] as unknown as number,
+              "icon-rotation-alignment": "map",
+              "icon-allow-overlap": true,
+              "icon-ignore-placement": true,
+            }}
+          />
+        </Source>
       )}
       <Source id="events" type="geojson" data={geojson} cluster clusterRadius={CLUSTER_RADIUS} clusterMaxZoom={CLUSTER_MAX_ZOOM}>
         <Layer
@@ -387,7 +420,7 @@ export function MapView({
               "circle-radius": ["*", ["get", "r"], 2.4],
               "circle-color": ["get", "color"],
               "circle-blur": 1,
-              "circle-opacity": ["*", 0.35, fade, hlFactor] as unknown as number,
+              "circle-opacity": ["*", 0.35, hlFactor] as unknown as number,
             }}
           />
         )}
@@ -416,7 +449,7 @@ export function MapView({
             "symbol-sort-key": ["-", 0, ["get", "sel"]] as unknown as number,
           }}
           paint={{
-            "icon-opacity": ["*", 1, fade, hlFactor] as unknown as number,
+            "icon-opacity": ["*", 1, hlFactor] as unknown as number,
           }}
         />
       </Source>
@@ -434,7 +467,7 @@ export function MapView({
                   "circle-radius": ["*", ["get", "r"], 2.4],
                   "circle-color": ["get", "color"],
                   "circle-blur": 1,
-                  "circle-opacity": ["*", 0.35, fade, hlFactor] as unknown as number,
+                  "circle-opacity": ["*", 0.35, hlFactor] as unknown as number,
                 }}
               />
             )}
@@ -461,7 +494,7 @@ export function MapView({
                 "icon-ignore-placement": true,
                 "symbol-sort-key": ["-", 0, ["get", "sel"]] as unknown as number,
               }}
-              paint={{ "icon-opacity": ["*", 1, fade, hlFactor] as unknown as number }}
+              paint={{ "icon-opacity": ["*", 1, hlFactor] as unknown as number }}
             />
           </Source>
         </>
@@ -479,4 +512,31 @@ function luminance(hex: string) {
     g = (n >> 8) & 255,
     b = n & 255;
   return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+}
+
+
+// Zoom back out to everything. Clicking a cluster or marker zooms in and
+// there was no way home. Lives in MapLibre's control stack under the zoom
+// buttons so it looks and behaves like one of them.
+function FitAllControl({ onFit }: { onFit: () => void }) {
+  const ref = useRef(onFit);
+  useEffect(() => {
+    ref.current = onFit;
+  }, [onFit]);
+  useControl(
+    () => {
+      const el = document.createElement("div");
+      el.className = "maplibregl-ctrl maplibregl-ctrl-group";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.title = "Fit all events";
+      btn.setAttribute("aria-label", "Fit all events");
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto"><path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"/></svg>';
+      btn.onclick = () => ref.current();
+      el.appendChild(btn);
+      return { onAdd: () => el, onRemove: () => el.remove() };
+    },
+    { position: "top-right" },
+  );
+  return null;
 }

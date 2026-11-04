@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { listDatasets, loadDataset } from "@/lib/store";
 import { Explorer } from "@/components/Explorer";
-import { SAMPLES, sampleById } from "@/lib/samples";
+import { sampleById } from "@/lib/samples";
 import { canEdit, currentUser } from "@/lib/auth";
 import { listLooks } from "@/lib/looks";
 
@@ -11,6 +11,7 @@ export async function ExplorerPage({ id, mode }: { id: string; mode: "studio" | 
   const ds = await loadDataset(id);
   if (!ds) notFound();
   const user = await currentUser();
+  if (mode === "studio" && !user) redirect(`/signin?next=${encodeURIComponent(`/studio/${id}`)}`);
   const editable = canEdit(ds, user);
   if (mode === "studio" && !editable) {
     return (
@@ -40,6 +41,18 @@ export async function ExplorerPage({ id, mode }: { id: string; mode: "studio" | 
       </main>
     );
   }
-  const [library, looks] = await Promise.all([listDatasets(), listLooks()]);
-  return <Explorer dataset={ds} suggestions={sample?.questions ?? []} defaultTheme={ds.theme || sample?.theme || "arctic"} mode={mode} editable={editable} samples={SAMPLES} library={library} looks={looks} />;
+  const [all, looks] = await Promise.all([listDatasets(), listLooks()]);
+  const library = all.filter((d) => canEdit(d, user) && !d.id.startsWith("sample-"));
+  return (
+    <Explorer
+      dataset={ds}
+      suggestions={sample?.questions ?? []}
+      defaultTheme={ds.theme || sample?.theme || "arctic"}
+      mode={mode}
+      editable={editable}
+      user={user && { email: user.email, name: user.name }}
+      library={library}
+      looks={looks}
+    />
+  );
 }

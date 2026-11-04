@@ -20,6 +20,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   const ds = await loadDataset(id);
   if (!ds) return Response.json({ error: "Not found" }, { status: 404 });
   const user = await currentUser();
+  if (!user) return Response.json({ error: "Sign in" }, { status: 401 });
   if (!canEdit(ds, user)) return Response.json({ error: "Not allowed" }, { status: 403 });
   const body = (await req.json().catch(() => ({}))) as { theme?: unknown; marker?: unknown; name?: unknown; subtitle?: unknown };
   if (typeof body.theme === "string" && (themeById(body.theme).id === body.theme || (await loadLook(body.theme)))) ds.theme = body.theme;
@@ -46,7 +47,9 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
   const ds = await loadDataset(id);
-  if (ds && !canEdit(ds, await currentUser())) return Response.json({ error: "Not allowed" }, { status: 403 });
+  const user = await currentUser();
+  if (!user) return Response.json({ error: "Sign in" }, { status: 401 });
+  if (ds && !canEdit(ds, user)) return Response.json({ error: "Not allowed" }, { status: 403 });
   await deleteDataset(id);
   return Response.json({ ok: true });
 }

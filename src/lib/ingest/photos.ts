@@ -15,7 +15,7 @@ export type PhotoMeta = { lat?: number | null; lng?: number | null; time?: strin
 const CaptionSchema = z.object({
   title: z.string().describe("Short, specific caption, 3 to 8 words, like a photo album label"),
   summary: z.string().describe("One or two sentences describing what is happening and where, for someone who cannot see the photo"),
-  place: z.string().nullable().describe("Best guess at the specific place (landmark, venue, neighbourhood, city, country), or null if there are no clues"),
+  place: z.string().nullable().describe("Best guess at the specific place (landmark, venue, neighborhood, city, country), or null if there are no clues"),
   placeType: PlaceType.nullable(),
   category: z.string().describe("One lowercase word: sightseeing, food, transport, nature, beach, museum, family, nightlife, shopping, sport, other"),
   entities: z.array(z.string()).describe("Named landmarks, places, artworks, foods or objects visible"),
@@ -80,7 +80,7 @@ export async function processPhoto(opts: { datasetId: string; eventId: string; n
               `Photo file: ${opts.name}.`,
               meta.time ? `Taken ${meta.time}.` : "",
               meta.lat != null && meta.lng != null ? `GPS: ${meta.lat.toFixed(5)}, ${meta.lng.toFixed(5)} (use this to name the place precisely).` : "No GPS in the file; infer the place from visual clues if you can.",
-              "Write an album-style caption and description. Be concrete about landmarks you recognise.",
+              "Write an album-style caption and description. Be concrete about landmarks you recognize.",
             ]
               .filter(Boolean)
               .join(" "),

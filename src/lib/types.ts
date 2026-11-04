@@ -104,6 +104,8 @@ export type SourceFile = {
   bytes: number;
   rows?: number;
   chunks?: number;
+  // Rows or extracted events from this file that did not make it onto the map.
+  dropped?: { noTime: number; noLocation: number; lowConfidence: number };
 };
 
 export type DatasetSummary = {
@@ -132,15 +134,16 @@ export type Dataset = {
   owner?: string;
   editors?: string[];
   savedAt?: string;
-  // Position in the owner's list of Aigises (lower first).
+  // Position in the owner's list of stories (lower first).
   position?: number;
 };
 
 export type MarkerShape = "pin" | "dot" | "ring" | "diamond" | "square" | "star";
-// One shape and one colour for every marker on a map. Category is metadata, not a legend.
-export type MarkerStyle = { shape: MarkerShape; color: string; sizeByValue: boolean; glow: boolean; trail: boolean };
-export const DEFAULT_MARKER: MarkerStyle = { shape: "pin", color: "#f43f5e", sizeByValue: true, glow: true, trail: false };
-export const MARKER_COLORS = ["#38bdf8", "#f59e0b", "#f43f5e", "#a78bfa", "#34d399", "#fb923c", "#e879f9", "#facc15", "#22d3ee", "#f87171", "#e6e9f0", "#0f172a"];
+// One shape and one color for every marker on a map. Category is metadata, not a legend.
+// trail is a legacy field: the route is always drawn now.
+export type MarkerStyle = { shape: MarkerShape; color: string; sizeByValue: boolean; glow: boolean; trail?: boolean };
+export const DEFAULT_MARKER: MarkerStyle = { shape: "pin", color: "#f43f5e", sizeByValue: true, glow: true };
+export const MARKER_COLORS = ["#38bdf8", "#f59e0b", "#f43f5e", "#a78bfa", "#34d399", "#e879f9", "#facc15", "#e6e9f0", "#0f172a"];
 
 export type Insight = {
   id: string;

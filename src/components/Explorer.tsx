@@ -2,24 +2,103 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { DEFAULT_MARKER, type Dataset, type Insight, type MarkerStyle } from "@/lib/types";
+import { DEFAULT_MARKER, type Dataset, type GeoEvent, type Insight, type MarkerStyle } from "@/lib/types";
+import { DAY, STORY, storyTime } from "@/lib/story";
 import type { FocusMapInputT } from "@/lib/ai/tools";
 import { applyFilter, bboxOf, EMPTY_FILTER, rangeOf, type Filter } from "./explorer-state";
 import { defaultPeriod, periodBounds, type Period } from "@/lib/period";
+import { fmtDate } from "@/lib/format";
 import { MapView } from "./MapView";
 import { Timeline } from "./Timeline";
 import { DetailPanel } from "./DetailPanel";
 import { ChatPanel, type ChatHandle } from "./ChatPanel";
 import { DesignPanel } from "./DesignPanel";
 import { SourcesPanel, type LibraryItem } from "./SourcesPanel";
-import type { Sample } from "@/lib/samples";
 import { Logo } from "@/components/Logo";
 import { buildStyle, isDarkTheme, themeById, type Theme } from "@/lib/map/styles";
 import { LookOverlay } from "./LookOverlay";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { useClickOutside } from "@/lib/use-click-outside";
+import { AccountMenu, type SessionUser } from "./AccountMenu";
 
-const PLAY_SECONDS = 45;
+
+// Camera frames for playback. The story plays inside one frame that holds
+// every stop in the window; the camera only dives when the last few stops
+// sit close together (a city's worth of photos), and climbs back out when
+// the story leaves that region.
+function spanBounds(stops: GeoEvent[]): [number, number, number, number] {
+  const minSpan = 0.25; // degrees, about 25 km
+  const lats = stops.map((e) => e.lat);
+  const lngs = stops.map((e) => e.lng);
+  const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+  const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+  const cLat = (minLat + maxLat) / 2;
+  const cLng = (minLng + maxLng) / 2;
+  const hLat = Math.max((maxLat - minLat) * 0.75, minSpan * 0.6) / 2 + (maxLat - minLat) * 0.125;
+  const hLng = Math.max((maxLng - minLng) * 0.75, minSpan) / 2 + (maxLng - minLng) * 0.125;
+  return [cLng - hLng, Math.max(-85, cLat - hLat), cLng + hLng, Math.min(85, cLat + hLat)];
+}
+
+// What to call a stop: the city, read as the segment before the country in
+// each member's place string; a cluster takes its commonest city and is
+// marked as a region.
+function cityOf(place: string): string {
+  const segs = place.split(",").map((x) => x.trim()).filter(Boolean);
+  return segs.length >= 2 ? segs[segs.length - 2] : segs[0] ?? "";
+}
+function stopLabel(stop: StoryStop): string {
+  const tally = new Map<string, number>();
+  for (const e of stop.members) {
+    const c = cityOf(e.place);
+    tally.set(c, (tally.get(c) ?? 0) + 1);
+  }
+  const city = [...tally.entries()].sort((x, y) => y[1] - x[1])[0]?.[0] ?? stop.rep.place;
+  return stop.members.length > 1 ? `${city} Region` : city;
+}
+
+// How many countries the story touches, read from the last segment of each
+// place string. A story that never leaves one country has nothing to play.
+const COUNTRY_ALIAS: Record<string, string> = {
+  "usa": "united states", "us": "united states", "u.s.": "united states", "u.s.a.": "united states", "united states of america": "united states",
+  "uk": "united kingdom", "u.k.": "united kingdom", "england": "united kingdom", "scotland": "united kingdom", "wales": "united kingdom", "northern ireland": "united kingdom", "great britain": "united kingdom",
+  "czech republic": "czechia", "holland": "netherlands", "the netherlands": "netherlands",
+};
+function countryCount(list: GeoEvent[]): number {
+  const seen = new Set<string>();
+  for (const e of list) {
+    const parts = e.place.split(",").map((x) => x.trim().toLowerCase()).filter(Boolean);
+    if (!parts.length) continue;
+    const last = parts[parts.length - 1];
+    seen.add(COUNTRY_ALIAS[last] ?? last);
+  }
+  return seen.size;
+}
+
+// The play list: one stop per cluster. Events that follow each other within
+// a city's reach (half a degree, about 50 km) collapse into one stop,
+// represented by the first event that has a picture. The stop's time is the
+// cluster's last event, so every marker in the cluster appears on arrival.
+export type StoryStop = { rep: GeoEvent; at: number; members: GeoEvent[] };
+function storyStops(list: GeoEvent[]): StoryStop[] {
+  const sorted = [...list].sort((x, y) => storyTime(x) - storyTime(y));
+  // A date-only row (a ledger line on a city centroid) adds nothing when a
+  // timed event of the same day already took the story to that city.
+  const timed = sorted.filter((e) => e.t % DAY !== 0);
+  const redundant = (e: GeoEvent) => e.t % DAY === 0 && timed.some((o) => Math.floor(o.t / DAY) === Math.floor(e.t / DAY) && Math.abs(o.lat - e.lat) < 0.3 && Math.abs(o.lng - e.lng) < 0.3);
+  const reach = 0.5;
+  const out: StoryStop[] = [];
+  for (const e of sorted) {
+    if (redundant(e)) continue;
+    const last = out[out.length - 1];
+    if (last && Math.abs(last.members[0].lat - e.lat) < reach && Math.abs(last.members[0].lng - e.lng) < reach) {
+      last.members.push(e);
+      last.at = Math.max(last.at, storyTime(e));
+      if (!last.rep.media && e.media) last.rep = e;
+      continue;
+    }
+    out.push({ rep: e, at: storyTime(e), members: [e] });
+  }
+  return out;
+}
 
 export function Explorer({
   dataset: initial,
@@ -27,7 +106,7 @@ export function Explorer({
   defaultTheme,
   mode,
   editable,
-  samples = [],
+  user = null,
   library = [],
   looks: initialLooks = [],
 }: {
@@ -36,7 +115,7 @@ export function Explorer({
   defaultTheme: string;
   mode: "studio" | "view";
   editable: boolean;
-  samples?: Sample[];
+  user?: SessionUser;
   library?: LibraryItem[];
   // Looks designed in Studio, alongside the built-ins.
   looks?: Theme[];
@@ -45,7 +124,7 @@ export function Explorer({
   // The dataset is held in state so the sources panel can swap in a fresh
   // copy after documents are added or removed.
   const [dataset, setDataset] = useState(initial);
-  // An Aigis that has not been built yet: Studio opens on the sources panel
+  // A story that has not been built yet: Studio opens on the sources panel
   // and the first upload creates it.
   const isNew = !dataset.id;
   const hasEvents = dataset.events.length > 0;
@@ -57,22 +136,40 @@ export function Explorer({
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [period, setPeriod] = useState<Period>(() => defaultPeriod(span, events.length));
-  const [cumulative, setCumulative] = useState(false);
-  // The time window is the region the map shows. It slides across the range
-  // when playing; in cumulative mode its start is pinned to the range start.
+  // Playback is only offered for stories that cross a border.
+  const travels = useMemo(() => countryCount(events) > 1, [events]);
+  // The time window is the region the map shows.
   // Start in the middle of the story rather than at its first event.
-  const [rawWin, setWin] = useState<[number, number]>(() => periodBounds(range[0] + span / 2, defaultPeriod(span, events.length)));
+  const [rawWin, setWinRaw] = useState<[number, number]>(() => periodBounds(range[0] + span / 2, defaultPeriod(span, events.length)));
+  // Story playback: play walks through the events inside the window one at
+  // a time. storyCursor is the time of the event the story has reached;
+  // null when the window is being used as a plain time filter.
+  const [storyCursor, setStoryCursor] = useState<number | null>(null);
+  // The stops the story has reached so far (one marker per cluster) and the
+  // cursor before the latest step; markers newer than that stay hidden
+  // until the hop arrives.
+  const [storyPath, setStoryPath] = useState<GeoEvent[]>([]);
+  const [revealAfter, setRevealAfter] = useState(-Infinity);
+  const [storyLabel, setStoryLabel] = useState<string | null>(null);
+  const storyPos = useRef(-1);
+  const setWin = useCallback((w: [number, number]) => {
+    setWinRaw(w);
+    setStoryCursor(null);
+    setStoryPath([]);
+    setRevealAfter(-Infinity);
+    setStoryLabel(null);
+    storyPos.current = -1;
+  }, []);
   const win = useMemo<[number, number]>(() => {
     const MINW = 60000;
-    if (cumulative) return [range[0], Math.min(range[1], Math.max(range[0] + MINW, rawWin[1]))];
     const w = Math.min(Math.max(rawWin[1] - rawWin[0], MINW), span * 1.2 + MINW);
     let from = rawWin[0];
     if (from + w < range[0] + MINW) from = range[0] + MINW - w;
     if (from > range[1] - MINW) from = range[1] - MINW;
     return [from, from + w];
-  }, [rawWin, range, span, cumulative]);
+  }, [rawWin, range, span]);
   const [pFrom, pTo] = win;
-  const cursor = pTo;
+  const cursor = storyCursor ?? pTo;
   // The camera always follows: it re-frames on whatever the time window shows.
   const [followBounds, setFollowBounds] = useState<[number, number, number, number] | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -80,7 +177,7 @@ export function Explorer({
   const [caption, setCaption] = useState<string | null>(null);
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(() => dataset.summary.bbox);
   const [boundsKey, setBoundsKey] = useState(0);
-  const [panel, setPanel] = useState<"chat" | "design" | "look" | "sources">(studio ? "sources" : "chat");
+  const [panel, setPanel] = useState<"chat" | "look" | "stories" | "sources">(studio ? "sources" : "chat");
   // The panel is always open on wide screens. On phones it covers the map,
   // so there it opens from the menu and can be put away again.
   const wide = useSyncExternalStore(subscribeWide, () => window.matchMedia("(min-width: 768px)").matches, () => true);
@@ -119,55 +216,64 @@ export function Explorer({
   const theme = useMemo(() => themeById(themeId, looks), [themeId, looks]);
   const mapStyle = useMemo(() => buildStyle(theme), [theme]);
 
-  // Animation loop: the window travels across the range (or its end does, in cumulative mode).
   const winRef = useRef(win);
   useEffect(() => {
     winRef.current = win;
   }, [win]);
+  // Story playback: every stop inside the highlighted window, first to last.
+  // The camera is set once to hold all of them and never moves during play.
+  // Each step: let the line grow to the stop, hold. Nothing opens.
   useEffect(() => {
     if (!playing) return;
-    let raf = 0;
-    let last = performance.now();
-    const perMs = (span / (PLAY_SECONDS * 1000)) * speed;
-    const tick = (now: number) => {
-      const dt = now - last;
-      last = now;
-      const [a, b] = winRef.current;
-      const d = dt * perMs;
-      if (cumulative) {
-        if (b + d >= range[1]) {
-          setWin([range[0], range[1]]);
-          setPlaying(false);
-          return;
-        }
-        setWin([range[0], b + d]);
-      } else {
-        if (a + d >= range[1]) {
-          setPlaying(false);
-          return;
-        }
-        setWin([a + d, b + d]);
+    const [a, b] = winRef.current;
+    const inWin = events.filter((e) => e.t >= a && e.t <= b);
+    const seq = storyStops(inWin);
+    if (!seq.length) return;
+    const whole = spanBounds(inWin);
+    const frame = (bb: [number, number, number, number]) => setFollowBounds((old) => (old && old.every((v, k) => v === bb[k]) ? old : bb));
+    let i = storyPos.current + 1 < seq.length ? storyPos.current + 1 : 0;
+    let timer = 0;
+    let canceled = false;
+    const step = () => {
+      if (canceled) return;
+      if (i >= seq.length) {
+        storyPos.current = -1;
+        setPlaying(false);
+        return;
       }
-      raf = requestAnimationFrame(tick);
+      const stop = seq[i];
+      const first = i === 0;
+      storyPos.current = i;
+      i++;
+      frame(whole);
+      setRevealAfter(first ? -Infinity : seq[i - 2].at);
+      setStoryPath(seq.slice(0, i).map((x) => x.rep));
+      setStoryCursor(stop.at);
+      setStoryLabel(stopLabel(stop));
+      timer = window.setTimeout(step, ((first ? 0 : STORY.frame + STORY.draw) + STORY.hold) / speed);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [playing, speed, span, range, cumulative]);
+    step();
+    return () => {
+      canceled = true;
+      window.clearTimeout(timer);
+    };
+  }, [playing, speed, events]);
 
   // Events the map is showing right now; the camera re-frames only when this set changes.
-  const visible = useMemo(() => (cumulative ? events.filter((e) => e.t <= pTo) : events.filter((e) => e.t < pTo && (e.tEnd ?? e.t) >= pFrom)), [events, cumulative, pFrom, pTo]);
+  const visible = useMemo(() => events.filter((e) => e.t <= cursor && (e.tEnd ?? e.t) >= pFrom), [events, pFrom, cursor]);
   const visibleKey = useMemo(() => visible.map((e) => e.id).join(","), [visible]);
+  // Not while a story is playing or has finished: that frame holds until the
+  // window is moved by hand.
+  const storyActive = playing || storyCursor !== null;
   useEffect(() => {
-    const h = setTimeout(
-      () => {
-        const bb = bboxOf(visible);
-        if (bb) setFollowBounds((prev) => (prev && prev.every((v, i) => v === bb[i]) ? prev : bb));
-      },
-      playing ? 0 : 160,
-    );
+    if (storyActive) return;
+    const h = setTimeout(() => {
+      const bb = bboxOf(visible);
+      if (bb) setFollowBounds((prev) => (prev && prev.every((v, i) => v === bb[i]) ? prev : bb));
+    }, 160);
     return () => clearTimeout(h);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleKey, playing]);
+  }, [visibleKey, storyActive]);
 
   const selected = useMemo(() => (selectedId ? dataset.events.find((e) => e.id === selectedId) ?? null : null), [dataset, selectedId]);
 
@@ -197,19 +303,17 @@ export function Explorer({
       const newSpan = r[1] - r[0];
       if (f.play) {
         const np = defaultPeriod(newSpan, subset.length);
-        setCumulative(false);
         setPeriod(np);
         setWin(periodBounds(r[0], np));
         setPlaying(true);
       } else {
-        // Show everything in the focused range at once.
+        // Show everything in the focused range at once: one window over it.
         setPlaying(false);
-        setCumulative(true);
         setWin([r[0], r[1]]);
       }
       if (focusList.length === 1) setSelectedId(focusList[0].id);
     },
-    [dataset],
+    [dataset, setWin],
   );
 
   const pickInsight = (i: Insight) => {
@@ -229,7 +333,6 @@ export function Explorer({
     setHighlight(null);
     setCaption(null);
     setSelectedId(null);
-    setCumulative(false);
     const tMin = dataset.summary.tMin ?? 0;
     const np = defaultPeriod((dataset.summary.tMax ?? tMin) - tMin, dataset.events.length);
     setPeriod(np);
@@ -254,10 +357,10 @@ export function Explorer({
   const menuRef = useRef<HTMLDivElement>(null);
   useClickOutside(menuRef, menuOpen, () => setMenuOpen(false));
   // Tabs inside the right panel. The bar only opens and closes the panel.
-  const tabs: { id: "sources" | "design" | "look" | "chat"; label: string }[] = [
+  const tabs: { id: "sources" | "look" | "stories" | "chat"; label: string }[] = [
     ...(studio ? [{ id: "sources" as const, label: "General" }] : []),
-    ...(studio ? [{ id: "design" as const, label: `Design${dirty && saved.marker !== marker ? " •" : ""}` }] : []),
-    ...(studio ? [{ id: "look" as const, label: `Look${dirty && saved.theme !== themeId ? " •" : ""}` }] : []),
+    ...(studio ? [{ id: "look" as const, label: `Appearance${dirty ? " •" : ""}` }] : []),
+    ...(studio ? [{ id: "stories" as const, label: "Stories" }] : []),
     ...(!isNew ? [{ id: "chat" as const, label: "Explore" }] : []),
   ];
   // Edit | View: one control, only for people who can edit.
@@ -275,17 +378,23 @@ export function Explorer({
 
   return (
     <div className="relative h-dvh w-full overflow-hidden" style={{ background: theme.background, colorScheme: isDarkTheme(theme) ? "dark" : "light" }}>
-      <div className="absolute inset-0">
+      {/* The side panel overlays the map, so MapLibre's controls shift left of it. */}
+      <div className="absolute inset-0" style={{ "--ctrl-right": panelOpen && wide ? "412px" : "0px" } as React.CSSProperties}>
         <MapView
           events={events}
           color={markerColor}
           cursor={cursor}
+          story={storyCursor !== null}
+          storyPath={storyPath}
+          revealAfter={revealAfter}
+          speed={speed}
+          insetLeft={wide && selected ? 380 : 0}
+          insetRight={wide && panelOpen ? 412 : 0}
+          insetBottom={hasEvents ? timelineH + 12 : 0}
           from={pFrom}
           to={pTo}
-          cumulative={cumulative}
           highlight={highlight}
           selectedId={selectedId}
-          trail={marker.trail}
           bounds={bounds}
           boundsKey={boundsKey}
           followBounds={followBounds}
@@ -296,11 +405,11 @@ export function Explorer({
         <LookOverlay theme={theme} />
       </div>
 
-      {/* Top bar: one fixed bar. Name in the centre switches between Aigises;
+      {/* Top bar: one fixed bar. Name in the center switches between stories;
           actions on the right collapse into a menu on small screens. */}
       <header className="absolute inset-x-0 top-0 z-30 grid h-14 grid-cols-[auto_1fr_auto] items-center gap-2 border-b border-line bg-ink/85 px-3 backdrop-blur md:grid-cols-[1fr_auto_1fr]">
-        <Link href="/" className="flex items-center gap-2.5 justify-self-start text-base font-semibold tracking-[0.12em] hover:text-glow">
-          <Logo size={32} /> <span className="hidden sm:inline">AIGIS</span>
+        <Link href="/" className="flex items-center gap-2.5 justify-self-start text-lg font-semibold tracking-[0.14em] hover:text-glow">
+          <Logo size={40} /> <span className="hidden sm:inline">AIGIS</span>
         </Link>
 
         <div ref={switcherRef} className="relative min-w-0 justify-self-center">
@@ -321,7 +430,8 @@ export function Explorer({
           {switcherOpen && (
             <>
               <div role="menu" className="absolute left-1/2 top-full z-40 mt-2 w-[320px] max-w-[92vw] -translate-x-1/2 rounded-xl border border-line bg-ink/95 p-1.5 shadow-2xl backdrop-blur">
-                <div className="px-2.5 pb-1 pt-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-dim">Your Aigises</div>
+                <div className="px-2.5 pb-1 pt-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-dim">Your stories</div>
+                {library.length === 0 && <div className="px-2.5 py-2 text-xs text-dim">No stories yet. Upload sources to create one.</div>}
                 <ul className="scroll-thin max-h-[60vh] overflow-auto">
                   {library.map((d) => {
                     const current = d.id === dataset.id;
@@ -342,7 +452,7 @@ export function Explorer({
                 </ul>
                 {studio && (
                   <Link href="/studio" onClick={() => setSwitcherOpen(false)} className="mt-1 flex items-center gap-2 rounded-lg border-t border-line px-2.5 py-2 text-sm text-glow hover:bg-ink-3" role="menuitem">
-                    <span className="text-base leading-none">+</span> New Aigis
+                    <span className="text-base leading-none">+</span> New story
                   </Link>
                 )}
               </div>
@@ -362,8 +472,8 @@ export function Explorer({
             </button>
           )}
           {modeToggle}
-          <span className="ml-1 border-l border-line pl-2">
-            <ThemeToggle />
+          <span className="ml-2">
+            <AccountMenu user={user} compact />
           </span>
         </nav>
 
@@ -383,7 +493,7 @@ export function Explorer({
         <div ref={menuRef} className="absolute inset-x-3 top-16 z-40 rounded-xl border border-line bg-ink/95 p-2 shadow-2xl backdrop-blur md:hidden">
           <div className="flex items-center justify-between px-2 py-1.5">
             {modeToggle ?? <span />}
-            <ThemeToggle />
+            <AccountMenu user={user} compact />
           </div>
           {filtered && (
             <button onClick={() => (reset(), setMenuOpen(false))} className="w-full rounded-lg px-3 py-2 text-left text-sm text-mist hover:bg-ink-3 hover:text-fog">
@@ -437,7 +547,7 @@ export function Explorer({
                 role="tab"
                 aria-selected={panel === t.id}
                 onClick={() => setPanel(t.id)}
-                className={`-mb-px flex-1 border-b-2 px-3 py-2.5 text-center text-sm transition ${panel === t.id ? "border-glow text-fog" : "border-transparent text-mist hover:text-fog"}`}
+                className={`-mb-px flex-1 border-b-2 px-3 py-2.5 text-center text-sm outline-none transition focus:outline-none focus-visible:outline-none ${panel === t.id ? "border-glow text-fog" : "border-transparent text-mist hover:text-fog"}`}
               >
                 {t.label}
               </button>
@@ -455,26 +565,39 @@ export function Explorer({
               <ChatPanel datasetId={dataset.id} suggestions={suggestions} insights={dataset.insights ?? []} onPickInsight={pickInsight} onFocus={focus} handleRef={chatRef} inputHeight={wide ? timelineH : 0} />
             </div>
           )}
-          {panel === "sources" && studio && (
-            <SourcesPanel dataset={dataset} isNew={isNew} editable={editable} themeId={themeId} defaultTheme={defaultTheme} samples={samples} library={library} onChanged={setDataset} />
+          {(panel === "sources" || panel === "stories") && studio && (
+            <SourcesPanel view={panel === "stories" ? "stories" : "general"} dataset={dataset} isNew={isNew} editable={editable} themeId={themeId} library={library} onChanged={setDataset} />
           )}
-          {(panel === "design" || panel === "look") && studio && (
+          {panel === "look" && studio && (
             <DesignPanel
-              view={panel}
               looks={looks}
               onLooks={setLooks}
-              themeId={themeId}
               marker={marker}
+              onMarker={setMarker}
+              themeId={themeId}
               dirty={dirty}
               saving={saving}
               savedAt={savedAt}
               onTheme={setThemeId}
-              onMarker={setMarker}
               onSave={save}
             />
           )}
         </div>
       </aside>
+
+      {/* Story caption: where the story is right now. */}
+      {storyLabel && storyCursor !== null && (
+        <div
+          key={storyLabel + storyCursor}
+          className={`story-caption pointer-events-none absolute left-3 right-3 z-30 flex justify-center ${panelOpen ? "hidden md:flex md:right-[412px]" : ""}`}
+          style={{ bottom: timelineH + 28 }}
+        >
+          <div className="rounded-full border border-line bg-ink/85 px-6 py-2.5 text-center shadow-2xl backdrop-blur">
+            <div className="text-lg font-semibold text-fog md:text-xl">{storyLabel}</div>
+            <div className="font-mono text-xs text-mist">{fmtDate(storyCursor, span)}</div>
+          </div>
+        </div>
+      )}
 
       {/* Timeline */}
       {hasEvents && (
@@ -485,27 +608,20 @@ export function Explorer({
           range={range}
           window={win}
           playing={playing}
+          playable={travels}
           speed={speed}
           period={period}
-          cumulative={cumulative}
           selectedId={selectedId}
           onSelect={(id) => setSelectedId(id)}
           onWindow={setWin}
-          onPlay={(p) => {
-            if (p) {
-              const [a, b] = winRef.current;
-              if (cumulative ? b >= range[1] - 1 : a >= range[1] - 60000) setWin(cumulative ? [range[0], range[0] + 60000] : periodBounds(range[0], period));
-            }
-            setPlaying(p);
-          }}
+          onPlay={setPlaying}
           onSpeed={setSpeed}
           onPeriod={setPeriod}
-          onCumulative={setCumulative}
         />
       </div>
       )}
       {isNew && !panelOpen && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-10 z-10 text-center text-sm text-mist">Open Sources from the menu to drop the files for this Aigis.</div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-10 z-10 text-center text-sm text-mist">Open Sources from the menu to drop the files for this story.</div>
       )}
     </div>
   );

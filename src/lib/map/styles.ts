@@ -14,7 +14,7 @@ export const TextureSchema = z.object({
 export const HalftoneSchema = z.object({
   size: z.number().describe("Dot pitch in pixels, 3 to 8"),
   opacity: z.number().describe("0 to 1"),
-  color: z.string().describe("Dot colour"),
+  color: z.string().describe("Dot color"),
 });
 
 export const ThemeSchema = z.object({
@@ -41,13 +41,13 @@ export const ThemeSchema = z.object({
   roadOpacity: z.number().describe("0 to 1"),
   labelDensity: z.enum(["sparse", "normal", "dense"]),
   mood: z.string().describe("A few words describing the intended feel"),
-  // Treatments beyond flat colour. Optional on stored themes; the designer
+  // Treatments beyond flat color. Optional on stored themes; the designer
   // schema below requires every field so a model fills them all in.
   texture: TextureSchema.nullable().optional(),
   grain: z.number().optional().describe("0 to 1, film grain / paper noise over the whole map"),
   halftone: HalftoneSchema.nullable().optional(),
-  edgeBleed: z.number().optional().describe("0 to 1, soft darker bleed along water, forest and park edges (watercolour pooling)"),
-  edgeBleedColor: z.string().nullable().optional().describe("Bleed colour; null derives it from the fill"),
+  edgeBleed: z.number().optional().describe("0 to 1, soft darker bleed along water, forest and park edges (watercolor pooling)"),
+  edgeBleedColor: z.string().nullable().optional().describe("Bleed color; null derives it from the fill"),
   roadStyle: z.enum(["cased", "single", "hidden"]).optional().describe("cased: roads with an outline; single: one thin stroke; hidden: no roads"),
   lineStyle: z.enum(["solid", "sketch"]).optional().describe("sketch: broken, slightly blurred strokes like pen on paper"),
   buildings: z.boolean().optional().describe("Draw building footprints at high zoom"),
@@ -70,7 +70,7 @@ export const LookDesignSchema = ThemeSchema.omit({ id: true, texture: true, cust
   // Muse Spark's structured output rejects nullable objects, so optional
   // treatments carry an `enabled` flag instead.
   halftone: HalftoneSchema.extend({ enabled: z.boolean().describe("false for no dot screen") }),
-  edgeBleed: z.number().describe("0 to 1, soft darker bleed along water, forest and park edges. 0 for crisp looks, 0.5 to 0.9 for watercolour, gouache, ink wash"),
+  edgeBleed: z.number().describe("0 to 1, soft darker bleed along water, forest and park edges. 0 for crisp looks, 0.5 to 0.9 for watercolor, gouache, ink wash"),
   edgeBleedColor: z.string().nullable(),
   roadStyle: z.enum(["cased", "single", "hidden"]),
   lineStyle: z.enum(["solid", "sketch"]),
@@ -108,28 +108,28 @@ export function withDefaults(t: Theme): Required<Pick<Theme, "grain" | "edgeBlee
 export const THEMES: Theme[] = [
   {
     id: "midnight",
-    name: "Midnight",
-    background: "#0b0f17",
-    water: "#060a12",
-    waterLine: "#101a2a",
-    wood: "#0e1620",
-    park: "#0f1a1c",
-    residential: "#0f141d",
-    building: "#141b27",
-    roadMajor: "#2a3447",
-    roadMinor: "#1a2231",
-    roadCasing: "#0b0f17",
-    rail: "#1f2736",
-    boundary: "#3a4458",
-    label: "#9aa6bd",
-    labelHalo: "#0b0f17",
+    name: "Slate",
+    background: "#315054",
+    water: "#274549",
+    waterLine: "#3b686d",
+    wood: "#35565a",
+    park: "#35565a",
+    residential: "#35565a",
+    building: "#3c6267",
+    roadMajor: "#629ba3",
+    roadMinor: "#48747a",
+    roadCasing: "#315054",
+    rail: "#4b7a81",
+    boundary: "#75a7ae",
+    label: "#deebed",
+    labelHalo: "#315054",
     labelFont: "Noto Sans Regular",
     hillshade: false,
     hillshadeOpacity: 0,
     landcoverOpacity: 0.8,
     roadOpacity: 0.9,
     labelDensity: "normal",
-    mood: "quiet control room",
+    mood: "dusk control room",
   },
   {
     id: "parchment",
@@ -409,7 +409,7 @@ export function buildStyle(theme: Theme): StyleSpecification {
       type: "fill",
       source: "openmaptiles",
       "source-layer": "landuse",
-      filter: ["in", ["get", "class"], ["literal", ["residential", "suburb", "neighbourhood", "commercial", "industrial", "retail"]]],
+      filter: ["in", ["get", "class"], ["literal", ["residential", "suburb", "neighborhood", "commercial", "industrial", "retail"]]],
       paint: { "fill-color": t.residential, "fill-opacity": ["interpolate", ["linear"], ["zoom"], 8, 0.3, 12, 0.8] },
     },
     {
@@ -612,7 +612,7 @@ export function buildStyle(theme: Theme): StyleSpecification {
       source: "openmaptiles",
       "source-layer": "place",
       minzoom: density === 0 ? 12 : density === 2 ? 8 : 10,
-      filter: ["in", ["get", "class"], ["literal", ["village", "hamlet", "suburb", "neighbourhood", "quarter"]]],
+      filter: ["in", ["get", "class"], ["literal", ["village", "hamlet", "suburb", "neighborhood", "quarter"]]],
       layout: { "text-field": ["coalesce", ["get", "name:en"], ["get", "name"]], "text-font": font, "text-size": 10, "text-max-width": 8 },
       paint: { "text-color": t.label, "text-halo-color": t.labelHalo, "text-halo-width": 1, "text-opacity": 0.75 },
     },

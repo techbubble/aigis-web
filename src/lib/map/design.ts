@@ -11,19 +11,19 @@ import { LookDesignSchema, THEMES, type Theme } from "./styles";
 const SYSTEM = `You are a cartographic designer producing a basemap look for AIGIS, an animated map product. You answer with one JSON object matching the schema. The map is drawn from OpenStreetMap vector data (land, water, forests, parks, built-up areas, buildings, roads, rail, boundaries, labels) and markers for events will be drawn on top of it, so the basemap must stay quiet and legible: the markers are the subject.
 
 How the fields render:
-- Colours are CSS hex. background is land. water is the fill of seas and lakes; waterLine is rivers and shorelines. wood, park, residential, building are fills. roadMajor/roadMinor/roadCasing/rail/boundary are strokes. label and labelHalo are text and its halo; the halo must contrast with the label and sit close to the land colour.
+- Colors are CSS hex. background is land. water is the fill of seas and lakes; waterLine is rivers and shorelines. wood, park, residential, building are fills. roadMajor/roadMinor/roadCasing/rail/boundary are strokes. label and labelHalo are text and its halo; the halo must contrast with the label and sit close to the land color.
 - hillshade blends Natural Earth relief at low zoom (true for printed, terrain or antique looks); hillshadeOpacity 0.2 to 0.5 when on.
 - landcoverOpacity and roadOpacity are 0 to 1.
 - labelDensity: sparse for painterly or poster looks, dense for reference maps.
-- edgeBleed 0.5 to 0.9 gives soft darker pooling along water and forest edges, the signature of watercolour, gouache and ink wash. 0 for crisp or digital looks.
+- edgeBleed 0.5 to 0.9 gives soft darker pooling along water and forest edges, the signature of watercolor, gouache and ink wash. 0 for crisp or digital looks.
 - lineStyle sketch gives broken, slightly blurred strokes (pen, pencil, etching). solid otherwise.
-- roadStyle: cased is the normal outlined road; single is one thin stroke (poster, minimal, painterly); hidden removes roads entirely (watercolour, very abstract).
+- roadStyle: cased is the normal outlined road; single is one thin stroke (poster, minimal, painterly); hidden removes roads entirely (watercolor, very abstract).
 - buildings false for painterly or poster looks.
 - halftone draws a dot screen over the map: enabled for photocopy, newsprint, risograph, comic looks; size 3 to 6, opacity 0.15 to 0.5. enabled false otherwise.
 - grain 0.1 to 0.35 adds film grain or paper noise; 0 for clean looks.
 - saturation applies to relief imagery, -1 is monochrome.
 - labelTransform and labelSpacing shape city labels (uppercase with 0.1 to 0.2 spacing for posters and antique maps).
-- textureOverlay: a generated surface laid over the map in screen space. Use it for paper, canvas, watercolour wash, photocopy toner, blueprint fibre, fabric. The prompt must describe only a flat, uniform, fine-grained surface: no objects, no scenery, no text, no map, no large strokes or swirls, no distinct features that the eye could recognise when repeated. Think "tooth of the paper", not "a painting". opacity 0.2 to 0.6; blend multiply on light looks, screen or soft-light on dark looks; scale 2048. enabled false for flat digital looks.
+- textureOverlay: a generated surface laid over the map in screen space. Use it for paper, canvas, watercolor wash, photocopy toner, blueprint fiber, fabric. The prompt must describe only a flat, uniform, fine-grained surface: no objects, no scenery, no text, no map, no large strokes or swirls, no distinct features that the eye could recognize when repeated. Think "tooth of the paper", not "a painting". opacity 0.2 to 0.6; blend multiply on light looks, screen or soft-light on dark looks; scale 2048. enabled false for flat digital looks.
 
 Design rules: the look must read at zoom 2 (continents) and zoom 13 (streets). Keep contrast between land and water. Keep roads subtler than water. Never use pure #000000 land unless the brief asks for it. name is two or three words; mood is a short phrase.`;
 
@@ -145,7 +145,7 @@ async function blendTiles(pngs: Uint8Array[]): Promise<Uint8Array> {
   return new Uint8Array(jpg);
 }
 
-// The model's four renderings drift in brightness and colour. Bring every
+// The model's four renderings drift in brightness and color. Bring every
 // tile's per-channel mean and spread to the group average so the quadrants
 // read as one surface rather than four patches.
 function matchTone(tiles: Buffer[]) {

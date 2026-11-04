@@ -1,0 +1,59 @@
+date,event,place,category,value,unit
+2004-02-04,TheFacebook launches from a Harvard dorm,"Cambridge, Massachusetts, USA",company,,
+2004-06-01,Company moves to Palo Alto,"Palo Alto, California, USA",company,,
+2011-12-01,Headquarters moves to the former Sun Microsystems campus,"Menlo Park, California, USA",company,,
+2012-04-09,Instagram acquisition announced,"San Francisco, California, USA",acquisition,1000,USD millions
+2012-05-18,Initial public offering on Nasdaq,"New York, New York, USA",finance,16000,USD millions raised
+2013-10-14,Onavo acquired,"Tel Aviv, Israel",acquisition,,
+2014-02-19,WhatsApp acquisition announced,"Mountain View, California, USA",acquisition,19000,USD millions
+2014-03-25,Oculus VR acquisition announced,"Irvine, California, USA",acquisition,2000,USD millions
+2014-09-19,First Oculus Connect developer conference,"Hollywood, Los Angeles, California, USA",event,,
+2016-10-06,Oculus Connect 3; Touch controllers dated and priced,"San Jose, California, USA",event,,
+2018-03-17,Cambridge Analytica revelations published,"London, UK",regulatory,,
+2018-04-10,Mark Zuckerberg testifies before the US Senate,"Washington, DC, USA",regulatory,,
+2019-07-24,FTC privacy settlement,"Washington, DC, USA",regulatory,5000,USD millions
+2019-09-23,CTRL-labs neural interface startup acquired,"New York, New York, USA",acquisition,,
+2020-05-15,Giphy acquisition announced,"New York, New York, USA",acquisition,400,USD millions
+2020-12-09,FTC and 46 states file antitrust suit,"Washington, DC, USA",regulatory,,
+2021-10-04,"Facebook, Instagram and WhatsApp offline for about six hours worldwide","Menlo Park, California, USA",outage,6,hours
+2021-10-28,Facebook renamed Meta Platforms at Connect,"Menlo Park, California, USA",company,,
+2022-11-09,"About 11,000 employees laid off, 13 percent of staff","Menlo Park, California, USA",workforce,11000,employees
+2023-01-04,Irish Data Protection Commission fines Meta over ad personalization,"Dublin, Ireland",regulatory,423,USD millions (EUR 390M)
+2023-03-14,"Further 10,000 roles cut","Menlo Park, California, USA",workforce,10000,employees
+2023-05-22,Record GDPR fine for EU to US data transfers,"Dublin, Ireland",regulatory,1300,USD millions (EUR 1.2B)
+2023-05-23,Giphy sold to Shutterstock after UK CMA order,"London, UK",divestiture,53,USD millions
+2023-07-06,Threads launches,"Menlo Park, California, USA",product,,
+2023-07-18,Llama 2 released with Microsoft as preferred partner,"Menlo Park, California, USA",ai,,
+2023-09-27,Connect 2023: Quest 3 and Ray-Ban Meta smart glasses,"Menlo Park, California, USA",event,,
+2024-04-18,Llama 3 released,"Menlo Park, California, USA",ai,,
+2024-07-19,Nigeria FCCPC fines Meta over data practices,"Abuja, Nigeria",regulatory,220,USD millions
+2024-07-30,Texas biometric privacy settlement,"Austin, Texas, USA",regulatory,1400,USD millions
+2024-09-25,Connect 2024: Quest 3S and the Orion AR glasses prototype,"Menlo Park, California, USA",event,,
+2024-11-18,Competition Commission of India fines Meta over WhatsApp privacy policy,"New Delhi, India",regulatory,25,USD millions (INR 213 crore)
+2024-12-04,Hyperion data center announced in Richland Parish,"Holly Ridge, Louisiana, USA",infrastructure,10000,USD millions
+2024-12-11,"Global outage across Facebook, Instagram, WhatsApp and Threads","Menlo Park, California, USA",outage,,
+2025-02-14,"Project Waterworth subsea cable announced, 50,000 km across five continents","Menlo Park, California, USA",infrastructure,50000,km
+2025-04-05,Llama 4 Scout and Maverick released,"Menlo Park, California, USA",ai,,
+2025-04-23,European Commission fines Meta under the Digital Markets Act,"Brussels, Belgium",regulatory,230,USD millions (EUR 200M)
+2025-04-29,First LlamaCon developer conference; standalone Meta AI app launched,"Menlo Park, California, USA",event,,
+2025-06-03,20 year nuclear power agreement for the Clinton Clean Energy Center,"Clinton, Illinois, USA",infrastructure,1121,MW
+2025-06-12,Investment for a 49 percent stake in Scale AI; Alexandr Wang joins,"San Francisco, California, USA",acquisition,14300,USD millions
+2025-06-30,Meta Superintelligence Labs established,"Menlo Park, California, USA",ai,,
+2025-07-14,Zuckerberg says Hyperion will scale to 5 GW and Prometheus to 1 GW in 2026,"Menlo Park, California, USA",infrastructure,5,GW
+2025-09-17,Connect 2025: Meta Ray-Ban Display glasses with Neural Band,"Menlo Park, California, USA",event,799,USD price
+2025-10-21,Hyperion financing with Blue Owl Capital raises committed investment to 27 billion dollars,"Holly Ridge, Louisiana, USA",infrastructure,27000,USD millions
+2025-10-22,About 600 roles cut at Superintelligence Labs,"Menlo Park, California, USA",workforce,600,employees
+2025-11-12,Beaver Dam data center announced,"Beaver Dam, Wisconsin, USA",infrastructure,1000,USD millions
+2025-11-18,Federal judge rules for Meta in the FTC antitrust case over Instagram and WhatsApp,"Washington, DC, USA",regulatory,,
+2025-11-20,Yann LeCun leaves to found an AI startup,"New York, New York, USA",workforce,,
+2026-03-10,"Moltbook, a social network for AI agents, acquired","San Francisco, California, USA",acquisition,,
+2026-03-15,New Mexico jury verdict over child safety claims,"Santa Fe, New Mexico, USA",regulatory,375,USD millions
+2026-04-08,"Muse Spark released, powering the Meta AI assistant","Menlo Park, California, USA",ai,,
+2026-04-15,Tulsa data center announced,"Tulsa, Oklahoma, USA",infrastructure,1000,USD millions
+2026-05-13,"About 8,000 roles cut, roughly 10 percent of staff","Menlo Park, California, USA",workforce,8000,employees
+2026-07-13,Hyperion expanded to 5 GW; total investment above 50 billion dollars,"Holly Ridge, Louisiana, USA",infrastructure,50000,USD millions
+2026-08-10,Muse Glimmer 30B open weights model released,"Menlo Park, California, USA",ai,30,B parameters
+2026-08-20,Muse Code terminal coding agent released,"Menlo Park, California, USA",ai,,
+2026-09-23,"Connect 2026: Ray-Ban Meta Gen 3, Ray-Ban Meta Audio and VR glasses","Menlo Park, California, USA",event,449,USD price
+2026-10-12,Muse Wonder released,"Menlo Park, California, USA",ai,,
+2026-10-19,Prometheus gigawatt supercluster detailed by Meta engineering,"New Albany, Ohio, USA",infrastructure,1,GW

@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import type { Dataset, ExtractedEvent, GeoEvent, IngestProgress, SourceFile, TableMapping } from "../types";
 import { chunkText, parseFile, type ParsedSource, type Row } from "./parse";
 import { extractFromImage, extractFromText, inferTableMapping } from "./extract";
-import { geocode, mapLimit } from "../geo/geocode";
+import { geocode, geocodeMany, mapLimit } from "../geo/geocode";
 import { detectInsights, summarize } from "../analysis/insights";
 import { saveDataset } from "../store";
 import { deleteMedia } from "../media";
@@ -15,7 +15,7 @@ const MIN_CONFIDENCE = 0.35;
 const LLM_CONCURRENCY = 4;
 const GEO_CONCURRENCY = 3;
 
-// With `into`, the new files are added to that Aigis: a file with the same
+// With `into`, the new files are added to that story: a file with the same
 // name as an existing source replaces it, everything else is appended, and
 // the summary and findings are recomputed over the whole set.
 export async function runIngest(
@@ -27,6 +27,12 @@ export async function runIngest(
   const drafts: { e: ExtractedEvent; sourceFile: string; fromRow?: { lat: number | null; lng: number | null }; media?: EventMedia; eventId?: string }[] = [];
   const metaByName = new Map(opts.files.filter((f) => f.meta).map((f) => [f.name, f.meta!]));
   const dropped = { noTime: 0, noLocation: 0, lowConfidence: 0 };
+  // Per file too, so replacing a source later can subtract its share.
+  const droppedBy: Record<string, typeof dropped> = {};
+  const drop = (file: string, k: keyof typeof dropped) => {
+    dropped[k]++;
+    (droppedBy[file] ??= { noTime: 0, noLocation: 0, lowConfidence: 0 })[k]++;
+  };
 
   emit({ type: "status", message: `Parsing ${opts.files.length} file(s)`, pct: 2 });
   const parsed: ParsedSource[] = [];
@@ -122,10 +128,7 @@ export async function runIngest(
   const needGeo = drafts.filter((d) => !(d.fromRow && d.fromRow.lat != null && d.fromRow.lng != null) && (d.e.lat == null || d.e.lng == null || d.e.placeType === "address" || d.e.placeType === "landmark"));
   emit({ type: "status", message: `Geocoding ${needGeo.length} place(s)`, pct: 70 });
   const uniquePlaces = [...new Set(needGeo.map((d) => d.e.place))];
-  let done = 0;
-  await mapLimit(uniquePlaces, GEO_CONCURRENCY, async (p) => {
-    await geocode(p);
-    done++;
+  await geocodeMany(uniquePlaces, GEO_CONCURRENCY, (done) => {
     if (done % 10 === 0) emit({ type: "status", message: `Geocoded ${done}/${uniquePlaces.length}`, pct: 70 + Math.round((done / uniquePlaces.length) * 20) });
   });
 
@@ -133,12 +136,12 @@ export async function runIngest(
   for (const d of drafts) {
     const e = d.e;
     if (e.confidence < MIN_CONFIDENCE) {
-      dropped.lowConfidence++;
+      drop(d.sourceFile, "lowConfidence");
       continue;
     }
     const t = parseTime(e.start);
     if (t == null) {
-      dropped.noTime++;
+      drop(d.sourceFile, "noTime");
       continue;
     }
     let lat: number | null = null,
@@ -161,7 +164,7 @@ export async function runIngest(
       }
     }
     if (lat == null || lng == null || !Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
-      dropped.noLocation++;
+      drop(d.sourceFile, "noLocation");
       continue;
     }
     const tEnd = parseTime(e.end);
@@ -188,6 +191,7 @@ export async function runIngest(
       ...(d.media ? { media: d.media } : {}),
     });
   }
+  for (const s of sources) s.dropped = droppedBy[s.name] ?? { noTime: 0, noLocation: 0, lowConfidence: 0 };
   let allEvents = events,
     allSources = sources,
     allDropped = dropped;
@@ -198,7 +202,9 @@ export async function runIngest(
     if (gone.length) await deleteMedia(into.id, gone.flatMap((e) => [e.media!.thumb, e.media!.full]));
     allEvents = [...into.events.filter((e) => !replaced.has(e.sourceFile)), ...events];
     allSources = [...into.sources.filter((s) => !replaced.has(s.name)), ...sources];
-    const d0 = into.summary.dropped;
+    // Kept sources carry their own counts; replaced ones are recounted.
+    const kept = into.sources.filter((s) => !replaced.has(s.name));
+    const d0 = kept.reduce((a, s) => ({ noTime: a.noTime + (s.dropped?.noTime ?? 0), noLocation: a.noLocation + (s.dropped?.noLocation ?? 0), lowConfidence: a.lowConfidence + (s.dropped?.lowConfidence ?? 0) }), { noTime: 0, noLocation: 0, lowConfidence: 0 });
     allDropped = { noTime: d0.noTime + dropped.noTime, noLocation: d0.noLocation + dropped.noLocation, lowConfidence: d0.lowConfidence + dropped.lowConfidence };
   }
   allEvents.sort((a, b) => a.t - b.t);

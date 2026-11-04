@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Dataset, IngestProgress, SourceFile } from "@/lib/types";
-import type { Sample } from "@/lib/samples";
 import { preparePhotos } from "@/lib/client-photos";
 
 type Job = { title: string; log: string[]; pct: number; error?: string };
@@ -12,32 +11,30 @@ export type LibraryItem = { id: string; name: string; count: number; savedAt?: s
 
 const ACCEPT = ".pdf,.csv,.tsv,.xlsx,.xls,.txt,.md,.json,.geojson,.html,.png,.jpg,.jpeg,.webp";
 
-// Studio: the documents behind an Aigis. Drop files to build a new one or to
+// Studio: the documents behind a story. Drop files to build a new one or to
 // add to this one; remove a document and its events go with it.
 export function SourcesPanel({
+  view,
   dataset,
   isNew,
   editable,
   themeId,
-  defaultTheme,
-  samples,
   library,
   onChanged,
 }: {
+  // "general": title and sources. "stories": the user's story list.
+  view: "general" | "stories";
   dataset: Dataset;
   isNew: boolean;
   editable: boolean;
   themeId: string;
-  defaultTheme: string;
-  samples: Sample[];
   library: LibraryItem[];
   onChanged: (ds: Dataset) => void;
 }) {
   const router = useRouter();
   const [job, setJob] = useState<Job | null>(null);
-  const [name, setName] = useState(dataset.name === "Untitled Aigis" && isNew ? "" : dataset.name);
+  const [name, setName] = useState(dataset.name === "Untitled story" && isNew ? "" : dataset.name);
   const [subtitle, setSubtitle] = useState(dataset.subtitle ?? "");
-  const [demo, setDemo] = useState(samples[0]?.id ?? "");
   const [savedMeta, setSavedMeta] = useState<"idle" | "saving" | "saved">("idle");
   // Title and subtitle save themselves when you leave the field.
   const saveMeta = async () => {
@@ -124,12 +121,6 @@ export function SourcesPanel({
     }
   };
 
-  const runSample = async (s: Sample) => {
-    if (busy) return;
-    setJob({ title: s.title, log: ["Starting"], pct: 1 });
-    const theme = themeId !== defaultTheme ? themeId : s.theme;
-    await consume(await fetch(`/api/samples/${s.id}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ theme }) }), s.title);
-  };
 
   const remove = async (src: SourceFile) => {
     setRemoving(src.name);
@@ -148,7 +139,7 @@ export function SourcesPanel({
     void fetch("/api/datasets", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ order: list.map((d) => d.id) }) });
   };
   const move = (id: string, dir: -1 | 1) => {
-    const list = [...lib];
+    const list = [...others];
     const i = list.findIndex((d) => d.id === id);
     const j = i + dir;
     if (i < 0 || j < 0 || j >= list.length) return;
@@ -157,7 +148,7 @@ export function SourcesPanel({
   };
   const dropOn = (targetId: string) => {
     if (!dragId || dragId === targetId) return;
-    const list = [...lib];
+    const list = [...others];
     const from = list.findIndex((d) => d.id === dragId);
     const to = list.findIndex((d) => d.id === targetId);
     if (from < 0 || to < 0) return;
@@ -183,9 +174,11 @@ export function SourcesPanel({
 
   return (
     <div className="scroll-thin flex h-full flex-col gap-5 overflow-auto px-4 pb-4 pt-2 text-sm">
+      {view === "general" && (
+        <>
       <div>
         <div className="flex items-baseline justify-between">
-          <div className="text-xs font-medium uppercase tracking-[0.2em] text-dim">{isNew ? "New Aigis" : "General"}</div>
+          <div className="text-xs font-medium uppercase tracking-[0.2em] text-dim">{isNew ? "New story" : "General"}</div>
           {savedMeta !== "idle" && <span className="text-[10px] text-dim">{savedMeta === "saving" ? "Saving" : "Saved"}</span>}
         </div>
         <div className="mt-2 space-y-2">
@@ -217,7 +210,7 @@ export function SourcesPanel({
       <div>
         <div className="text-xs font-medium uppercase tracking-[0.2em] text-dim">Sources</div>
         <p className="mt-1 text-xs leading-relaxed text-mist">
-          {isNew ? "Drop the documents, spreadsheets or photos the map should be made from. Where and when come from the files; the story from Muse Spark." : "The documents this Aigis is built from. Add more to grow it, remove one and its events leave the map."}
+          {isNew ? "Drop the documents, spreadsheets or photos the map should be made from. Where and when come from the files; the story from Muse Spark." : "The documents this story is built from. Add more to grow it, remove one and its events leave the map."}
         </p>
       </div>
 
@@ -235,16 +228,16 @@ export function SourcesPanel({
             addFiles(e.dataTransfer.files);
           }}
           onClick={() => inputRef.current?.click()}
-          className={`cursor-pointer rounded-xl border border-dashed px-4 py-6 text-center transition ${drag ? "border-glow bg-glow/10" : "border-line bg-ink-2/60 hover:border-mist/60"}`}
+          className={`cursor-pointer rounded-xl border border-dashed bg-white px-4 py-6 text-center transition ${drag ? "border-glow" : "border-line hover:border-ink-3"}`}
         >
           <input ref={inputRef} type="file" multiple hidden accept={ACCEPT} onChange={(e) => e.target.files && addFiles(e.target.files)} />
-          <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full border border-line text-glow">
+          <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full border border-ink-3/40 text-ink">
             <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M10 14V4M5 9l5-5 5 5M3 16h14" />
             </svg>
           </div>
-          <div className="mt-2 text-sm text-fog">{isNew ? "Drop files or click to choose" : "Drop files to add, or click"}</div>
-          <div className="mt-0.5 text-[11px] text-dim">Photos, PDF, CSV, XLSX, text, Markdown, JSON</div>
+          <div className="mt-2 text-sm font-medium text-ink">{isNew ? "Drop files or click to choose" : "Drop files to add, or click"}</div>
+          <div className="mt-0.5 text-[11px] text-ink-3">Photos, PDF, CSV, XLSX, text, Markdown, JSON</div>
         </div>
       )}
 
@@ -265,7 +258,7 @@ export function SourcesPanel({
           </ul>
           <div className="mt-3 flex gap-2">
             <button onClick={upload} disabled={busy} className="flex-1 rounded-lg bg-glow px-3 py-2 text-sm font-semibold text-ink hover:opacity-90 disabled:opacity-60">
-              {isNew ? "Build the Aigis" : `Add to this Aigis`}
+              {isNew ? "Build the story" : `Add to this story`}
             </button>
             <button onClick={() => setFiles([])} disabled={busy} className="rounded-lg border border-line px-3 py-2 text-sm text-mist hover:text-fog">
               Clear
@@ -345,40 +338,19 @@ export function SourcesPanel({
         </ul>
       )}
 
-      {isNew && (
-        <div>
-          <div className="text-xs font-medium uppercase tracking-[0.2em] text-dim">Or start from a demo</div>
-          <div className="mt-2 flex gap-2">
-            <select
-              value={demo}
-              onChange={(e) => setDemo(e.target.value)}
-              aria-label="Demo"
-              className="min-w-0 flex-1 rounded-lg border border-line bg-ink-2/60 px-3 py-2 text-sm outline-none focus:border-glow"
-            >
-              {samples.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.title}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={() => {
-                const s = samples.find((x) => x.id === demo);
-                if (s) runSample(s);
-              }}
-              disabled={busy}
-              className="shrink-0 rounded-lg border border-line px-3 py-2 text-sm text-fog hover:border-mist/60 disabled:opacity-60"
-            >
-              Start
-            </button>
-          </div>
-        </div>
+        </>
       )}
 
-      {others.length > 0 && (
+      {view === "stories" && !isNew && (
+        <Link href="/studio" className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-line py-2.5 text-sm text-glow hover:border-glow">
+          <span className="text-base leading-none">+</span> New story
+        </Link>
+      )}
+      {view === "stories" && others.length === 0 && <div className="text-xs text-dim">No stories yet. Upload sources in General to create one.</div>}
+      {view === "stories" && others.length > 0 && (
         <div>
           <div className="flex items-baseline justify-between">
-            <div className="text-xs font-medium uppercase tracking-[0.2em] text-dim">Your Aigises</div>
+            <div className="text-xs font-medium uppercase tracking-[0.2em] text-dim">Your stories</div>
             <div className="text-[10px] text-dim">drag to reorder</div>
           </div>
           <ul className="mt-2 space-y-1">
@@ -481,6 +453,7 @@ export function SourcesPanel({
           </ul>
         </div>
       )}
+
     </div>
   );
 }

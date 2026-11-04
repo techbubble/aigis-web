@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import Script from "next/script";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
 
@@ -18,7 +17,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${serif.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-ink text-fog">
-        <Script id="aigis-ui-mode" strategy="beforeInteractive">{`try{var m=localStorage.getItem("aigis-ui");if(m==="light"||m==="dark")document.documentElement.dataset.theme=m}catch(e){}`}</Script>
         {children}
         <Analytics />
       </body>

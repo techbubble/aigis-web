@@ -1,0 +1,205 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Logo } from "../Logo";
+import { LandingNav } from "../LandingNav";
+import type { SessionUser } from "../AccountMenu";
+import { ProblemFigure } from "./ProblemFigure";
+import { SolutionFigure } from "./SolutionFigure";
+import { MarketFigure } from "./MarketFigure";
+import { TechnologyFigure } from "./TechnologyFigure";
+
+// The pitch as a page: four full-height chapters, each with one animated
+// figure that makes the chapter's point. Arrow keys and the rail on the
+// left move between chapters, so it can be narrated over without scrolling
+// by hand.
+const CHAPTERS = [
+  { id: "problem", n: "01", label: "Problem" },
+  { id: "solution", n: "02", label: "Solution" },
+  { id: "market", n: "03", label: "Market" },
+  { id: "technology", n: "04", label: "Technology" },
+] as const;
+
+export function About({ user }: { user: SessionUser }) {
+  const [active, setActive] = useState(0);
+  const refs = useRef<(HTMLElement | null)[]>([]);
+
+  useEffect(() => {
+    const els = refs.current.filter(Boolean) as HTMLElement[];
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const en of entries) {
+          const i = els.indexOf(en.target as HTMLElement);
+          if (en.isIntersecting) {
+            en.target.classList.add("in");
+            if (en.intersectionRatio > 0.5) setActive(i);
+          }
+        }
+      },
+      { threshold: [0.2, 0.55] },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const go = (i: number) => refs.current[Math.max(0, Math.min(CHAPTERS.length - 1, i))]?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (["ArrowDown", "ArrowRight", "PageDown", " "].includes(e.key)) {
+        e.preventDefault();
+        go(active + 1);
+      } else if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) {
+        e.preventDefault();
+        go(active - 1);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [active]);
+
+  return (
+    <main className="about relative">
+      <header className="fixed inset-x-0 top-0 z-30 bg-gradient-to-b from-ink to-transparent">
+        <div className="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+          <Link href="/" className="flex items-center gap-3">
+            <Logo size={56} />
+            <span className="text-2xl font-semibold tracking-[0.2em] md:text-3xl">AIGIS</span>
+          </Link>
+          <LandingNav user={user} />
+        </div>
+      </header>
+
+      <ol className="fixed left-4 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-5 md:left-8 md:flex">
+        {CHAPTERS.map((c, i) => (
+          <li key={c.id}>
+            <button
+              onClick={() => refs.current[i]?.scrollIntoView({ behavior: "smooth", block: "start" })}
+              className="group flex items-center gap-3 outline-none"
+              aria-label={`Go to ${c.label}`}
+              aria-current={i === active ? "step" : undefined}
+            >
+              <span className={`h-2 w-2 rounded-full transition ${i === active ? "scale-125 bg-glow" : "bg-dim/60 group-hover:bg-mist"}`} />
+              <span className={`font-mono text-[11px] uppercase tracking-[0.2em] transition ${i === active ? "text-fog" : "text-dim group-hover:text-mist"}`}>{c.label}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+
+      <Chapter
+        ref={(el) => {
+          refs.current[0] = el;
+        }}
+        c={CHAPTERS[0]}
+        eyebrow="The world is described in documents"
+        title={
+          <>
+            Everything happens <em>somewhere</em>, at some <em>time</em>. Almost none of it arrives as a map.
+          </>
+        }
+        figure={<ProblemFigure />}
+      >
+        <p>Reports, spreadsheets, journals, camera rolls, news. The where and the when are in there, buried in prose and columns. Turning them into a map is a specialist&apos;s job: geocoders, GIS tools, a week of cleaning.</p>
+        <ul>
+          <li>80 to 90 percent of enterprise data is unstructured, by the estimates analysts usually cite.</li>
+          <li>A map that moves through time, the view that makes patterns obvious, is almost never built, because it is too much work.</li>
+        </ul>
+      </Chapter>
+
+      <Chapter
+        ref={(el) => {
+          refs.current[1] = el;
+        }}
+        c={CHAPTERS[1]}
+        eyebrow="Drop in files, get a story"
+        title={
+          <>
+            AIGIS reads the files, finds every <em>located, dated</em> event, and plays it back on a map you can question.
+          </>
+        }
+        figure={<SolutionFigure />}
+      >
+        <p>Agents built on Muse Spark extract events with place, time, value and a confidence score. A pattern engine scores bursts, hotspots, outliers and silences. The result is an animated story: scrub it, ask it questions in plain language, design its look, share a link.</p>
+        <ul>
+          <li>Any input: PDF, CSV, XLSX, Markdown, photos with EXIF, scans and charts.</li>
+          <li>Ask in plain language; the model answers with evidence and moves the map itself.</li>
+        </ul>
+      </Chapter>
+
+      <Chapter
+        ref={(el) => {
+          refs.current[2] = el;
+        }}
+        c={CHAPTERS[2]}
+        eyebrow="Who needs this"
+        title={
+          <>
+            Geospatial analytics is a <em>specialist</em> market today. The people with the documents are not specialists.
+          </>
+        }
+        figure={<MarketFigure />}
+      >
+        <p>Analysts put geospatial analytics around 100 billion dollars a year, growing 11 to 13 percent, served by tools built for trained GIS users. AIGIS moves the starting line: anyone with a folder of files gets the animated map, the findings and the conversation.</p>
+        <ul>
+          <li>Newsrooms, supply chain and insurance analysts, public health, researchers and historians, tour and event operators, brands tracking sponsorships, families with a camera roll.</li>
+        </ul>
+      </Chapter>
+
+      <Chapter
+        ref={(el) => {
+          refs.current[3] = el;
+        }}
+        c={CHAPTERS[3]}
+        eyebrow="How it is built"
+        title={
+          <>
+            Muse does the reading, the captioning, the geocoding fallback, the conversation and the <em>map design</em>.
+          </>
+        }
+        figure={<TechnologyFigure />}
+      >
+        <p>Next.js on Vercel calls Meta&apos;s Muse models through the Vercel AI Gateway with the AI SDK. Muse Spark 1.3 handles six jobs; Muse Image 1.0 paints surface textures for custom map looks. Everything else is deterministic and open: MapLibre, OpenFreeMap tiles, Photon and Nominatim geocoding, Vercel Blob for storage.</p>
+        <div className="flex flex-wrap gap-3 pt-2">
+          <Link href="/#demos" className="rounded-full bg-glow px-6 py-2.5 text-sm font-semibold text-ink hover:opacity-90">
+            Watch a demo
+          </Link>
+          <Link href="/studio" className="rounded-full border border-fog/60 px-6 py-2.5 text-sm font-semibold text-fog hover:bg-fog/10">
+            Make a story
+          </Link>
+        </div>
+      </Chapter>
+    </main>
+  );
+}
+
+function Chapter({
+  ref,
+  c,
+  eyebrow,
+  title,
+  figure,
+  children,
+}: {
+  ref: (el: HTMLElement | null) => void;
+  c: (typeof CHAPTERS)[number];
+  eyebrow: string;
+  title: ReactNode;
+  figure: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section ref={ref} id={c.id} className="chapter relative mx-auto flex min-h-dvh max-w-[1500px] flex-col justify-center px-6 pb-16 pt-24 md:px-10 md:pl-36 lg:pl-40">
+      <div className="chapter-in flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-glow">
+        <span>{c.n}</span>
+        <span className="h-px w-8 bg-glow/60" />
+        <span>{eyebrow}</span>
+      </div>
+      <h2 className="chapter-in text-balance mt-5 max-w-5xl text-4xl font-semibold leading-[1.05] tracking-tight md:text-[3.4rem] [&_em]:font-serif-display [&_em]:font-normal [&_em]:italic [&_em]:text-glow">{title}</h2>
+      <div className="chapter-in mt-8 grid gap-10 text-lg leading-relaxed text-mist md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:items-center lg:gap-14">
+        <div className="space-y-5 [&_li]:relative [&_li]:pl-5 [&_li]:before:absolute [&_li]:before:left-0 [&_li]:before:top-[0.8em] [&_li]:before:h-1.5 [&_li]:before:w-1.5 [&_li]:before:rounded-full [&_li]:before:bg-glow [&_ul]:space-y-3 [&_ul]:text-base">{children}</div>
+        <div className="figure">{figure}</div>
+      </div>
+    </section>
+  );
+}

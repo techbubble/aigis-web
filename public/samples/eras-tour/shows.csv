@@ -1,0 +1,150 @@
+date,show,category,city,country,venue,lat,lng,attendance,opening_acts
+2023-03-17,Glendale night 1 of 2,show,Glendale,United States,State Farm Stadium,33.528,-112.263,70000,"Paramore, Gayle"
+2023-03-18,Glendale night 2 of 2,show,Glendale,United States,State Farm Stadium,33.528,-112.263,70000,"Paramore, Gayle"
+2023-03-24,Paradise night 1 of 2,show,Paradise,United States,Allegiant Stadium,36.09055556,-115.18388889,,"Beabadoobee, Gayle"
+2023-03-25,Paradise night 2 of 2,show,Paradise,United States,Allegiant Stadium,36.09055556,-115.18388889,,"Beabadoobee, Gayle"
+2023-03-31,Arlington night 1 of 3,show,Arlington,United States,AT&T Stadium,32.74777778,-97.09277778,70202,"Muna, Gayle"
+2023-04-01,Arlington night 2 of 3,show,Arlington,United States,AT&T Stadium,32.74777778,-97.09277778,70202,"Beabadoobee, Gracie Abrams"
+2023-04-02,Arlington night 3 of 3,show,Arlington,United States,AT&T Stadium,32.74777778,-97.09277778,70202,"Beabadoobee, Gracie Abrams"
+2023-04-13,Tampa night 1 of 3,show,Tampa,United States,Raymond James Stadium,27.97583333,-82.50333333,68820,"Beabadoobee, Gayle"
+2023-04-14,Tampa night 2 of 3,show,Tampa,United States,Raymond James Stadium,27.97583333,-82.50333333,68820,"Beabadoobee, Gracie Abrams"
+2023-04-15,Tampa night 3 of 3,show,Tampa,United States,Raymond James Stadium,27.97583333,-82.50333333,68820,"Beabadoobee, Gracie Abrams"
+2023-04-21,Houston night 1 of 3,show,Houston,United States,NRG Stadium,29.68472222,-95.41083333,72220,"Beabadoobee, Gracie Abrams"
+2023-04-22,Houston night 2 of 3,show,Houston,United States,NRG Stadium,29.68472222,-95.41083333,72220,"Beabadoobee, Gracie Abrams"
+2023-04-23,Houston night 3 of 3,show,Houston,United States,NRG Stadium,29.68472222,-95.41083333,72220,"Beabadoobee, Gracie Abrams"
+2023-04-28,Atlanta night 1 of 3,show,Atlanta,United States,Mercedes-Benz Stadium,33.75555556,-84.4,70000,"Beabadoobee, Gracie Abrams"
+2023-04-29,Atlanta night 2 of 3,show,Atlanta,United States,Mercedes-Benz Stadium,33.75555556,-84.4,70000,"Beabadoobee, Gracie Abrams"
+2023-04-30,Atlanta night 3 of 3,show,Atlanta,United States,Mercedes-Benz Stadium,33.75555556,-84.4,70000,"Muna, Gayle"
+2023-05-05,Nashville night 1 of 3,show,Nashville,United States,Nissan Stadium,36.1665,-86.7713,71000,"Phoebe Bridgers, Gracie Abrams"
+2023-05-06,Nashville night 2 of 3,show,Nashville,United States,Nissan Stadium,36.1665,-86.7713,71000,"Phoebe Bridgers, Gayle"
+2023-05-07,Nashville night 3 of 3,show,Nashville,United States,Nissan Stadium,36.1665,-86.7713,71000,
+2023-05-12,Philadelphia night 1 of 3,show,Philadelphia,United States,Lincoln Financial Field,39.90083333,-75.1675,67567,"Phoebe Bridgers, Gayle"
+2023-05-13,Philadelphia night 2 of 3,show,Philadelphia,United States,Lincoln Financial Field,39.90083333,-75.1675,67567,"Phoebe Bridgers, Gayle"
+2023-05-14,Philadelphia night 3 of 3,show,Philadelphia,United States,Lincoln Financial Field,39.90083333,-75.1675,67567,"Phoebe Bridgers, Gracie Abrams"
+2023-05-19,Foxborough night 1 of 3,show,Foxborough,United States,Gillette Stadium,42.091,-71.264,66667,"Phoebe Bridgers, Gayle"
+2023-05-20,Foxborough night 2 of 3,show,Foxborough,United States,Gillette Stadium,42.091,-71.264,66667,"Phoebe Bridgers, Gayle"
+2023-05-21,Foxborough night 3 of 3,show,Foxborough,United States,Gillette Stadium,42.091,-71.264,66667,"Phoebe Bridgers, Gracie Abrams"
+2023-05-26,East Rutherford night 1 of 3,show,East Rutherford,United States,MetLife Stadium,40.81361111,-74.07444444,72545,"Phoebe Bridgers, Gayle"
+2023-05-27,East Rutherford night 2 of 3,show,East Rutherford,United States,MetLife Stadium,40.81361111,-74.07444444,72545,"Phoebe Bridgers, Gracie Abrams"
+2023-05-28,East Rutherford night 3 of 3,show,East Rutherford,United States,MetLife Stadium,40.81361111,-74.07444444,72545,"Phoebe Bridgers, Owenn"
+2023-06-02,Chicago night 1 of 3,show,Chicago,United States,Soldier Field,41.8623,-87.6167,50000,"Girl in Red, Owenn"
+2023-06-03,Chicago night 2 of 3,show,Chicago,United States,Soldier Field,41.8623,-87.6167,50000,"Girl in Red, Owenn"
+2023-06-04,Chicago night 3 of 3,show,Chicago,United States,Soldier Field,41.8623,-87.6167,50000,"Muna, Gracie Abrams"
+2023-06-09,Detroit night 1 of 2,show,Detroit,United States,Ford Field,42.34,-83.04555556,59330,"Girl in Red, Gracie Abrams"
+2023-06-10,Detroit night 2 of 2,show,Detroit,United States,Ford Field,42.34,-83.04555556,59330,"Girl in Red, Owenn"
+2023-06-16,Pittsburgh night 1 of 2,show,Pittsburgh,United States,Acrisure Stadium,40.44666667,-80.01583333,73117,"Girl in Red, Gracie Abrams"
+2023-06-17,Pittsburgh night 2 of 2,show,Pittsburgh,United States,Acrisure Stadium,40.44666667,-80.01583333,73117,"Girl in Red, Owenn"
+2023-06-23,Minneapolis night 1 of 2,show,Minneapolis,United States,U.S. Bank Stadium,44.974,-93.258,64453,"Girl in Red, Gracie Abrams"
+2023-06-24,Minneapolis night 2 of 2,show,Minneapolis,United States,U.S. Bank Stadium,44.974,-93.258,64453,"Girl in Red, Owenn"
+2023-06-30,Cincinnati night 1 of 2,show,Cincinnati,United States,Paycor Stadium,39.095,-84.516,65000,"Muna, Gracie Abrams"
+2023-07-01,Cincinnati night 2 of 2,show,Cincinnati,United States,Paycor Stadium,39.095,-84.516,65000,Muna
+2023-07-07,Kansas City night 1 of 2,show,Kansas City,United States,GEHA Field at Arrowhead Stadium,39.04888889,-94.48388889,55000,"Muna, Gracie Abrams"
+2023-07-08,Kansas City night 2 of 2,show,Kansas City,United States,GEHA Field at Arrowhead Stadium,39.04888889,-94.48388889,55000,"Muna, Gracie Abrams"
+2023-07-14,Denver night 1 of 2,show,Denver,United States,Empower Field at Mile High,39.74388889,-105.02,75000,"Muna, Gracie Abrams"
+2023-07-15,Denver night 2 of 2,show,Denver,United States,Empower Field at Mile High,39.74388889,-105.02,75000,"Muna, Gracie Abrams"
+2023-07-22,Seattle night 1 of 2,show,Seattle,United States,Lumen Field,47.5952,-122.3316,72171,"Haim, Gracie Abrams"
+2023-07-23,Seattle night 2 of 2,show,Seattle,United States,Lumen Field,47.5952,-122.3316,72171,"Haim, Gracie Abrams"
+2023-07-28,Santa Clara night 1 of 2,show,Santa Clara,United States,Levi's Stadium,37.403,-121.97,70000,"Haim, Gracie Abrams"
+2023-07-29,Santa Clara night 2 of 2,show,Santa Clara,United States,Levi's Stadium,37.403,-121.97,70000,"Haim, Gracie Abrams"
+2023-08-03,Inglewood night 1 of 6,show,Inglewood,United States,SoFi Stadium,33.953,-118.339,70000,"Haim, Gracie Abrams"
+2023-08-04,Inglewood night 2 of 6,show,Inglewood,United States,SoFi Stadium,33.953,-118.339,70000,"Haim, Owenn"
+2023-08-05,Inglewood night 3 of 6,show,Inglewood,United States,SoFi Stadium,33.953,-118.339,70000,"Haim, Gayle"
+2023-08-07,Inglewood night 4 of 6,show,Inglewood,United States,SoFi Stadium,33.953,-118.339,70000,"Haim, Gracie Abrams"
+2023-08-08,Inglewood night 5 of 6,show,Inglewood,United States,SoFi Stadium,33.953,-118.339,70000,"Haim, Gracie Abrams"
+2023-08-09,Inglewood night 6 of 6,show,Inglewood,United States,SoFi Stadium,33.953,-118.339,70000,"Haim, Gayle"
+2023-08-24,Mexico City night 1 of 4,show,Mexico City,Mexico,Foro Sol,19.40488889,-99.09594444,45000,Sabrina Carpenter
+2023-08-25,Mexico City night 2 of 4,show,Mexico City,Mexico,Foro Sol,19.40488889,-99.09594444,45000,Sabrina Carpenter
+2023-08-26,Mexico City night 3 of 4,show,Mexico City,Mexico,Foro Sol,19.40488889,-99.09594444,45000,Sabrina Carpenter
+2023-08-27,Mexico City night 4 of 4,show,Mexico City,Mexico,Foro Sol,19.40488889,-99.09594444,45000,Sabrina Carpenter
+2023-11-09,Buenos Aires night 1 of 3,show,Buenos Aires,Argentina,Estadio River Plate,-34.54527778,-58.44972222,73333,"Sabrina Carpenter, Louta"
+2023-11-11,Buenos Aires night 2 of 3,show,Buenos Aires,Argentina,Estadio River Plate,-34.54527778,-58.44972222,73333,"Sabrina Carpenter, Louta"
+2023-11-12,Buenos Aires night 3 of 3,show,Buenos Aires,Argentina,Estadio River Plate,-34.54527778,-58.44972222,73333,"Sabrina Carpenter, Louta"
+2023-11-17,Rio de Janeiro night 1 of 3,show,Rio de Janeiro,Brazil,Estádio Olímpico Nilton Santos,-22.89305556,-43.29222222,60000,Sabrina Carpenter
+2023-11-19,Rio de Janeiro night 2 of 3,show,Rio de Janeiro,Brazil,Estádio Olímpico Nilton Santos,-22.89305556,-43.29222222,60000,Sabrina Carpenter
+2023-11-20,Rio de Janeiro night 3 of 3,show,Rio de Janeiro,Brazil,Estádio Olímpico Nilton Santos,-22.89305556,-43.29222222,60000,Sabrina Carpenter
+2023-11-24,São Paulo night 1 of 3,show,São Paulo,Brazil,Allianz Parque,-23.5275,-46.6785,50000,Sabrina Carpenter
+2023-11-25,São Paulo night 2 of 3,show,São Paulo,Brazil,Allianz Parque,-23.5275,-46.6785,50000,Sabrina Carpenter
+2023-11-26,São Paulo night 3 of 3,show,São Paulo,Brazil,Allianz Parque,-23.5275,-46.6785,50000,Sabrina Carpenter
+2024-02-07,Tokyo night 1 of 4,show,Tokyo,Japan,Tokyo Dome,35.7056,139.7519,55000,"rowspan=""4"""
+2024-02-08,Tokyo night 2 of 4,show,Tokyo,Japan,Tokyo Dome,35.7056,139.7519,55000,
+2024-02-09,Tokyo night 3 of 4,show,Tokyo,Japan,Tokyo Dome,35.7056,139.7519,55000,
+2024-02-10,Tokyo night 4 of 4,show,Tokyo,Japan,Tokyo Dome,35.7056,139.7519,55000,
+2024-02-16,Melbourne night 1 of 3,show,Melbourne,Australia,Melbourne Cricket Ground,-37.82,144.98333333,96000,Sabrina Carpenter
+2024-02-17,Melbourne night 2 of 3,show,Melbourne,Australia,Melbourne Cricket Ground,-37.82,144.98333333,96000,Sabrina Carpenter
+2024-02-18,Melbourne night 3 of 3,show,Melbourne,Australia,Melbourne Cricket Ground,-37.82,144.98333333,96000,Sabrina Carpenter
+2024-02-23,Sydney night 1 of 4,show,Sydney,Australia,Accor Stadium,-33.84722222,151.06305556,80000,
+2024-02-24,Sydney night 2 of 4,show,Sydney,Australia,Accor Stadium,-33.84722222,151.06305556,80000,Sabrina Carpenter
+2024-02-25,Sydney night 3 of 4,show,Sydney,Australia,Accor Stadium,-33.84722222,151.06305556,80000,Sabrina Carpenter
+2024-02-26,Sydney night 4 of 4,show,Sydney,Australia,Accor Stadium,-33.84722222,151.06305556,80000,Sabrina Carpenter
+2024-03-02,Singapore night 1 of 6,show,Singapore,Singapore,National Stadium,1.3044,103.8745,63000,Sabrina Carpenter
+2024-03-03,Singapore night 2 of 6,show,Singapore,Singapore,National Stadium,1.3044,103.8745,63000,Sabrina Carpenter
+2024-03-04,Singapore night 3 of 6,show,Singapore,Singapore,National Stadium,1.3044,103.8745,63000,Sabrina Carpenter
+2024-03-07,Singapore night 4 of 6,show,Singapore,Singapore,National Stadium,1.3044,103.8745,63000,Sabrina Carpenter
+2024-03-08,Singapore night 5 of 6,show,Singapore,Singapore,National Stadium,1.3044,103.8745,63000,Sabrina Carpenter
+2024-03-09,Singapore night 6 of 6,show,Singapore,Singapore,National Stadium,1.3044,103.8745,63000,Sabrina Carpenter
+2024-05-09,Nanterre night 1 of 4,show,Nanterre,France,Paris La Défense Arena,48.8958,2.2302,45000,Paramore
+2024-05-10,Nanterre night 2 of 4,show,Nanterre,France,Paris La Défense Arena,48.8958,2.2302,45000,Paramore
+2024-05-11,Nanterre night 3 of 4,show,Nanterre,France,Paris La Défense Arena,48.8958,2.2302,45000,Paramore
+2024-05-12,Nanterre night 4 of 4,show,Nanterre,France,Paris La Défense Arena,48.8958,2.2302,45000,Paramore
+2024-05-17,Stockholm night 1 of 3,show,Stockholm,Sweden,Friends Arena,59.3725,18,59560,Paramore
+2024-05-18,Stockholm night 2 of 3,show,Stockholm,Sweden,Friends Arena,59.3725,18,59560,Paramore
+2024-05-19,Stockholm night 3 of 3,show,Stockholm,Sweden,Friends Arena,59.3725,18,59560,Paramore
+2024-05-24,Lisbon night 1 of 2,show,Lisbon,Portugal,Estádio da Luz,38.7527,-9.1847,60000,Paramore
+2024-05-25,Lisbon night 2 of 2,show,Lisbon,Portugal,Estádio da Luz,38.7527,-9.1847,60000,Paramore
+2024-05-29,Madrid night 1 of 2,show,Madrid,Spain,Estadio Santiago Bernabéu,40.45306,-3.68835,65000,Paramore
+2024-05-30,Madrid night 2 of 2,show,Madrid,Spain,Estadio Santiago Bernabéu,40.45306,-3.68835,65000,Paramore
+2024-06-02,Décines-Charpieu night 1 of 2,show,Décines-Charpieu,France,Groupama Stadium,45.76522389,4.98213111,61000,Paramore
+2024-06-03,Décines-Charpieu night 2 of 2,show,Décines-Charpieu,France,Groupama Stadium,45.76522389,4.98213111,61000,Paramore
+2024-06-07,Edinburgh night 1 of 3,show,Edinburgh,Scotland,Murrayfield Stadium,55.9422,-3.2409,73000,Paramore
+2024-06-08,Edinburgh night 2 of 3,show,Edinburgh,Scotland,Murrayfield Stadium,55.9422,-3.2409,73000,Paramore
+2024-06-09,Edinburgh night 3 of 3,show,Edinburgh,Scotland,Murrayfield Stadium,55.9422,-3.2409,73000,Paramore
+2024-06-13,Liverpool night 1 of 3,show,Liverpool,England,Anfield,53.43083333,-2.96083333,62000,Paramore
+2024-06-14,Liverpool night 2 of 3,show,Liverpool,England,Anfield,53.43083333,-2.96083333,62000,Paramore
+2024-06-15,Liverpool night 3 of 3,show,Liverpool,England,Anfield,53.43083333,-2.96083333,62000,Paramore
+2024-06-18,"Cardiff, one night",show,Cardiff,Wales,Principality Stadium,51.47805556,-3.1825,70000,Paramore
+2024-06-21,London night 1 of 3,show,London,England,Wembley Stadium,51.5556,-0.2794,94139,"Paramore , Mette"
+2024-06-22,London night 2 of 3,show,London,England,Wembley Stadium,51.5556,-0.2794,94139,"Paramore , Griff"
+2024-06-23,London night 3 of 3,show,London,England,Wembley Stadium,51.5556,-0.2794,94139,"Paramore , Benson Boone"
+2024-06-28,Dublin night 1 of 3,show,Dublin,Ireland,Aviva Stadium,53.33527778,-6.22833333,50000,Paramore
+2024-06-29,Dublin night 2 of 3,show,Dublin,Ireland,Aviva Stadium,53.33527778,-6.22833333,50000,Paramore
+2024-06-30,Dublin night 3 of 3,show,Dublin,Ireland,Aviva Stadium,53.33527778,-6.22833333,50000,Paramore
+2024-07-04,Amsterdam night 1 of 3,show,Amsterdam,Netherlands,Johan Cruyff Arena,52.31416667,4.94194444,55000,Paramore
+2024-07-05,Amsterdam night 2 of 3,show,Amsterdam,Netherlands,Johan Cruyff Arena,52.31416667,4.94194444,55000,Paramore
+2024-07-06,Amsterdam night 3 of 3,show,Amsterdam,Netherlands,Johan Cruyff Arena,52.31416667,4.94194444,55000,Paramore
+2024-07-09,Zürich night 1 of 2,show,Zürich,Switzerland,Letzigrund,47.3828,8.5036,47500,Paramore
+2024-07-10,Zürich night 2 of 2,show,Zürich,Switzerland,Letzigrund,47.3828,8.5036,47500,Paramore
+2024-07-13,Milan night 1 of 2,show,Milan,Italy,San Siro,45.47805556,9.12388889,80000,Paramore
+2024-07-14,Milan night 2 of 2,show,Milan,Italy,San Siro,45.47805556,9.12388889,80000,Paramore
+2024-07-17,Gelsenkirchen night 1 of 3,show,Gelsenkirchen,Germany,Veltins-Arena,51.55444444,7.0675,60000,Paramore
+2024-07-18,Gelsenkirchen night 2 of 3,show,Gelsenkirchen,Germany,Veltins-Arena,51.55444444,7.0675,60000,Paramore
+2024-07-19,Gelsenkirchen night 3 of 3,show,Gelsenkirchen,Germany,Veltins-Arena,51.55444444,7.0675,60000,Paramore
+2024-07-23,Hamburg night 1 of 2,show,Hamburg,Germany,Volksparkstadion,53.5872,9.8986,50000,Paramore
+2024-07-24,Hamburg night 2 of 2,show,Hamburg,Germany,Volksparkstadion,53.5872,9.8986,50000,Paramore
+2024-07-27,Munich night 1 of 2,show,Munich,Germany,Olympiastadion,48.1731,11.5467,74000,Paramore
+2024-07-28,Munich night 2 of 2,show,Munich,Germany,Olympiastadion,48.1731,11.5467,74000,Paramore
+2024-08-01,Warsaw night 1 of 3,show,Warsaw,Poland,PGE Narodowy,52.23944444,21.04555556,65000,Paramore
+2024-08-02,Warsaw night 2 of 3,show,Warsaw,Poland,PGE Narodowy,52.23944444,21.04555556,65000,Paramore
+2024-08-03,Warsaw night 3 of 3,show,Warsaw,Poland,PGE Narodowy,52.23944444,21.04555556,65000,Paramore
+2024-08-15,London night 1 of 5,show,London,England,Wembley Stadium,51.5556,-0.2794,94139,"Paramore, Sofia Isella"
+2024-08-16,London night 2 of 5,show,London,England,Wembley Stadium,51.5556,-0.2794,94139,"Paramore, Holly Humberstone"
+2024-08-17,London night 3 of 5,show,London,England,Wembley Stadium,51.5556,-0.2794,94139,"Paramore, Suki Waterhouse"
+2024-08-19,London night 4 of 5,show,London,England,Wembley Stadium,51.5556,-0.2794,94139,"Paramore, Maisie Peters"
+2024-08-20,London night 5 of 5,show,London,England,Wembley Stadium,51.5556,-0.2794,94139,"Paramore, Raye"
+2024-10-18,Miami Gardens night 1 of 3,show,Miami Gardens,United States,Hard Rock Stadium,25.95805556,-80.23888889,61000,Gracie Abrams
+2024-10-19,Miami Gardens night 2 of 3,show,Miami Gardens,United States,Hard Rock Stadium,25.95805556,-80.23888889,61000,Gracie Abrams
+2024-10-20,Miami Gardens night 3 of 3,show,Miami Gardens,United States,Hard Rock Stadium,25.95805556,-80.23888889,61000,Gracie Abrams
+2024-10-25,New Orleans night 1 of 3,show,New Orleans,United States,Caesars Superdome,29.95083333,-90.08111111,65000,Gracie Abrams
+2024-10-26,New Orleans night 2 of 3,show,New Orleans,United States,Caesars Superdome,29.95083333,-90.08111111,65000,Gracie Abrams
+2024-10-27,New Orleans night 3 of 3,show,New Orleans,United States,Caesars Superdome,29.95083333,-90.08111111,65000,Gracie Abrams
+2024-11-01,Indianapolis night 1 of 3,show,Indianapolis,United States,Lucas Oil Stadium,39.76005556,-86.16380556,69000,Gracie Abrams
+2024-11-02,Indianapolis night 2 of 3,show,Indianapolis,United States,Lucas Oil Stadium,39.76005556,-86.16380556,69000,Gracie Abrams
+2024-11-03,Indianapolis night 3 of 3,show,Indianapolis,United States,Lucas Oil Stadium,39.76005556,-86.16380556,69000,Gracie Abrams
+2024-11-14,Toronto night 1 of 3,show,Toronto,Canada,Rogers Centre,43.64138889,-79.38916667,,Gracie Abrams
+2024-11-15,Toronto night 2 of 3,show,Toronto,Canada,Rogers Centre,43.64138889,-79.38916667,,Gracie Abrams
+2024-11-16,Toronto night 3 of 3,show,Toronto,Canada,Rogers Centre,43.64138889,-79.38916667,,Gracie Abrams
+2024-11-21,Toronto night 1 of 3,show,Toronto,Canada,Rogers Centre,43.64138889,-79.38916667,,Gracie Abrams
+2024-11-22,Toronto night 2 of 3,show,Toronto,Canada,Rogers Centre,43.64138889,-79.38916667,,Gracie Abrams
+2024-11-23,Toronto night 3 of 3,show,Toronto,Canada,Rogers Centre,43.64138889,-79.38916667,,Gracie Abrams
+2024-12-06,Vancouver night 1 of 3,show,Vancouver,Canada,BC Place,49.27666667,-123.11194444,53333,Gracie Abrams
+2024-12-07,Vancouver night 2 of 3,show,Vancouver,Canada,BC Place,49.27666667,-123.11194444,53333,Gracie Abrams
+2024-12-08,Vancouver night 3 of 3,show,Vancouver,Canada,BC Place,49.27666667,-123.11194444,53333,Gracie Abrams

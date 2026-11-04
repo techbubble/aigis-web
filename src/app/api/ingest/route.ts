@@ -11,5 +11,6 @@ export async function POST(req: Request) {
   if (!files.length) return Response.json({ error: "No files" }, { status: 400 });
   const inputs = await Promise.all(files);
   const user = await currentUser();
+  if (!user) return Response.json({ error: "Sign in to build a story" }, { status: 401 });
   return ndjsonStream((emit) => runIngest({ name, subtitle, files: inputs, docDate, theme, owner: user.id }, emit));
 }

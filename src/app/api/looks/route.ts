@@ -15,6 +15,7 @@ export async function POST(req: Request) {
   const prompt = typeof body.prompt === "string" ? body.prompt.trim().slice(0, 600) : "";
   if (!prompt) return Response.json({ error: "Describe the look" }, { status: 400 });
   const user = await currentUser();
+  if (!user) return Response.json({ error: "Sign in" }, { status: 401 });
   try {
     const look = await designLook(prompt, user.id);
     await saveLook(look);
