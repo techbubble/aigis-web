@@ -142,9 +142,9 @@ export function About({ user }: { user: SessionUser }) {
         figure={<ProblemFigure />}
       >
         <ul>
-          <li>Reports, spreadsheets, journals, camera rolls, news. The where and the when are in there, buried in prose and columns.</li>
-          <li>Turning them into a map is a specialist&apos;s job: geocoders, GIS tools, a week of cleaning.</li>
-          <li>80 to 90 percent of enterprise data is unstructured.</li>
+          <li>Reports, spreadsheets, journals, camera rolls, news. The where and the when are in there, buried in prose and columns, and turning them into a map is a specialist&apos;s job.</li>
+          <li>ArcGIS is priced for enterprises: hundreds to thousands of dollars a seat, every year, before training.</li>
+          <li>QGIS, the open-source alternative, is free and clunky: a course to learn, a day of plugins and projections to make one map.</li>
           <li>The map that moves through time, the view that makes patterns obvious, is almost never built.</li>
         </ul>
       </Chapter>
