@@ -1,0 +1,468 @@
+date,event,place,lat,lng,category,value,unit
+2020-01-22,"First confirmed case reported in Anhui, China","Anhui, China",31.8257,117.2264,first case,991,cases
+2020-01-22,"First confirmed case reported in Beijing, China","Beijing, China",40.1824,116.4142,first case,593,cases
+2020-01-22,"First confirmed case reported in Chongqing, China","Chongqing, China",30.0572,107.874,first case,579,cases
+2020-01-22,"First confirmed case reported in Fujian, China","Fujian, China",26.0789,117.9874,first case,355,cases
+2020-01-22,"First confirmed case reported in Guangdong, China","Guangdong, China",23.3417,113.4244,first case,1582,cases
+2020-01-22,"First confirmed case reported in Guangxi, China","Guangxi, China",23.8298,108.7881,first case,254,cases
+2020-01-22,"First confirmed case reported in Guizhou, China","Guizhou, China",26.8154,106.8748,first case,147,cases
+2020-01-22,"First confirmed case reported in Hainan, China","Hainan, China",19.1959,109.7453,first case,168,cases
+2020-01-22,"First confirmed case reported in Hebei, China","Hebei, China",39.549,116.1306,first case,328,cases
+2020-01-22,"First confirmed case reported in Henan, China","Henan, China",37.8957,114.9042,first case,1276,cases
+2020-01-22,"First confirmed case reported in Hubei, China","Hubei, China",30.9756,112.2707,first case,68128,cases
+2020-01-22,"First confirmed case reported in Hunan, China","Hunan, China",27.6104,111.7088,first case,1019,cases
+2020-01-22,First confirmed case reported in Japan,Japan,36.204824,138.252924,first case,11641,cases
+2020-01-22,"First confirmed case reported in Jiangsu, China","Jiangsu, China",32.9711,119.455,first case,653,cases
+2020-01-22,"First confirmed case reported in Jiangxi, China","Jiangxi, China",27.614,115.7221,first case,937,cases
+2020-01-22,"First confirmed case reported in Liaoning, China","Liaoning, China",41.2956,122.6085,first case,146,cases
+2020-01-22,"First confirmed case reported in Macau, China","Macau, China",22.1667,113.55,first case,45,cases
+2020-01-22,"First confirmed case reported in Ningxia, China","Ningxia, China",37.2692,106.1655,first case,75,cases
+2020-01-22,"First confirmed case reported in Shandong, China","Shandong, China",36.3427,118.1498,first case,787,cases
+2020-01-22,"First confirmed case reported in Shanghai, China","Shanghai, China",31.202,121.4491,first case,638,cases
+2020-01-22,"First confirmed case reported in Shanxi, China","Shanxi, China",37.5777,112.2922,first case,197,cases
+2020-01-22,"First confirmed case reported in Sichuan, China","Sichuan, China",30.6171,102.7103,first case,561,cases
+2020-01-22,First confirmed case reported in South Korea,South Korea,35.907757,127.766922,first case,10683,cases
+2020-01-22,First confirmed case reported in Taiwan,Taiwan,23.7,121.0,first case,425,cases
+2020-01-22,First confirmed case reported in Thailand,Thailand,15.870032,100.992541,first case,2811,cases
+2020-01-22,"First confirmed case reported in Tianjin, China","Tianjin, China",39.3054,117.323,first case,189,cases
+2020-01-22,First confirmed case reported in United States,United States,40.0,-100.0,first case,825478,cases
+2020-01-22,"First confirmed case reported in Yunnan, China","Yunnan, China",24.974,101.487,first case,184,cases
+2020-01-22,"First confirmed case reported in Zhejiang, China","Zhejiang, China",29.1832,120.0934,first case,1268,cases
+2020-01-22,"First death reported in Hubei, China","Hubei, China",30.9756,112.2707,first death,4512,deaths
+2020-01-23,"First confirmed case reported in Gansu, China","Gansu, China",35.7518,104.2861,first case,139,cases
+2020-01-23,"First confirmed case reported in Heilongjiang, China","Heilongjiang, China",47.862,127.7615,first case,913,cases
+2020-01-23,"First confirmed case reported in Hong Kong, China","Hong Kong, China",22.3,114.2,first case,1029,cases
+2020-01-23,"First confirmed case reported in Jilin, China","Jilin, China",43.6661,126.1923,first case,106,cases
+2020-01-23,"First confirmed case reported in Ontario, Canada","Ontario, Canada",51.2538,-85.3232,first case,14001,cases
+2020-01-23,"First confirmed case reported in Shaanxi, China","Shaanxi, China",35.1917,108.8701,first case,277,cases
+2020-01-23,First confirmed case reported in Singapore,Singapore,1.2833,103.8333,first case,9125,cases
+2020-01-23,First confirmed case reported in Vietnam,Vietnam,14.058324,108.277199,first case,268,cases
+2020-01-23,"First confirmed case reported in Xinjiang, China","Xinjiang, China",41.1129,85.2401,first case,76,cases
+2020-01-23,"First death reported in Hebei, China","Hebei, China",39.549,116.1306,first death,6,deaths
+2020-01-24,First confirmed case reported in France,France,46.2276,2.2137,first case,155821,cases
+2020-01-24,"First confirmed case reported in Inner Mongolia, China","Inner Mongolia, China",44.0935,113.9448,first case,194,cases
+2020-01-24,"First death reported in Heilongjiang, China","Heilongjiang, China",47.862,127.7615,first death,13,deaths
+2020-01-25,First confirmed case reported in Malaysia,Malaysia,4.210484,101.975766,first case,5482,cases
+2020-01-25,First confirmed case reported in Nepal,Nepal,28.1667,84.25,first case,43,cases
+2020-01-25,"First confirmed case reported in Qinghai, China","Qinghai, China",35.7452,95.9956,first case,18,cases
+2020-01-26,"First confirmed case reported in New South Wales, Australia","New South Wales, Australia",-33.8688,151.2093,first case,2969,cases
+2020-01-26,"First confirmed case reported in Victoria, Australia","Victoria, Australia",-37.8136,144.9631,first case,1336,cases
+2020-01-26,"First death reported in Henan, China","Henan, China",37.8957,114.9042,first death,22,deaths
+2020-01-26,"First death reported in Shanghai, China","Shanghai, China",31.202,121.4491,first death,7,deaths
+2020-01-27,First confirmed case reported in Cambodia,Cambodia,11.55,104.9167,first case,122,cases
+2020-01-27,First confirmed case reported in Germany,Germany,51.165691,10.451526,first case,143457,cases
+2020-01-27,First confirmed case reported in Sri Lanka,Sri Lanka,7.873054,80.771797,first case,310,cases
+2020-01-27,"First death reported in Beijing, China","Beijing, China",40.1824,116.4142,first death,8,deaths
+2020-01-27,"First death reported in Hainan, China","Hainan, China",19.1959,109.7453,first death,6,deaths
+2020-01-28,"First confirmed case reported in British Columbia, Canada","British Columbia, Canada",53.7267,-127.6476,first case,1724,cases
+2020-01-29,First confirmed case reported in Finland,Finland,61.92411,25.748151,first case,4373,cases
+2020-01-29,"First confirmed case reported in Queensland, Australia","Queensland, Australia",-27.4698,153.0251,first case,1024,cases
+2020-01-29,First confirmed case reported in United Arab Emirates,United Arab Emirates,23.424076,53.847818,first case,7755,cases
+2020-01-29,"First death reported in Sichuan, China","Sichuan, China",30.6171,102.7103,first death,3,deaths
+2020-01-30,First confirmed case reported in India,India,20.593684,78.96288,first case,20080,cases
+2020-01-30,First confirmed case reported in Philippines,Philippines,12.879721,121.774017,first case,6599,cases
+2020-01-30,"First confirmed case reported in Tibet, China","Tibet, China",31.6927,88.0924,first case,1,cases
+2020-01-30,First death reported in United Kingdom,United Kingdom,55.3781,-3.436,first death,30773,deaths
+2020-01-31,First confirmed case reported in Italy,Italy,41.87194,12.56738,first case,183957,cases
+2020-01-31,First confirmed case reported in Russia,Russia,61.52401,105.318756,first case,52763,cases
+2020-01-31,First confirmed case reported in United Kingdom,United Kingdom,55.3781,-3.436,first case,134907,cases
+2020-02-01,"First confirmed case reported in South Australia, Australia","South Australia, Australia",-34.9285,138.6007,first case,437,cases
+2020-02-01,First confirmed case reported in Spain,Spain,40.463667,-3.74922,first case,204178,cases
+2020-02-01,First confirmed case reported in Sweden,Sweden,60.128161,18.643501,first case,15831,cases
+2020-02-01,"First death reported in Chongqing, China","Chongqing, China",30.0572,107.874,first death,6,deaths
+2020-02-02,First death reported in Philippines,Philippines,12.879721,121.774017,first death,437,deaths
+2020-02-04,First confirmed case reported in Belgium,Belgium,50.8333,4.469936,first case,40956,cases
+2020-02-04,"First death reported in Hong Kong, China","Hong Kong, China",22.3,114.2,first death,4,deaths
+2020-02-05,"First death reported in Guizhou, China","Guizhou, China",26.8154,106.8748,first death,2,deaths
+2020-02-05,"First death reported in Tianjin, China","Tianjin, China",39.3054,117.323,first death,3,deaths
+2020-02-07,"First death reported in Guangdong, China","Guangdong, China",23.3417,113.4244,first death,8,deaths
+2020-02-07,"First death reported in Jilin, China","Jilin, China",43.6661,126.1923,first death,1,deaths
+2020-02-08,"First death reported in Gansu, China","Gansu, China",35.7518,104.2861,first death,2,deaths
+2020-02-08,"First death reported in Hunan, China","Hunan, China",27.6104,111.7088,first death,4,deaths
+2020-02-09,"First death reported in Anhui, China","Anhui, China",31.8257,117.2264,first death,6,deaths
+2020-02-09,"First death reported in Guangxi, China","Guangxi, China",23.8298,108.7881,first death,2,deaths
+2020-02-09,"First death reported in Shandong, China","Shandong, China",36.3427,118.1498,first death,7,deaths
+2020-02-10,"First death reported in Jiangxi, China","Jiangxi, China",27.614,115.7221,first death,1,deaths
+2020-02-12,"First death reported in Liaoning, China","Liaoning, China",41.2956,122.6085,first death,2,deaths
+2020-02-13,First death reported in Japan,Japan,36.204824,138.252924,first death,303,deaths
+2020-02-13,"First death reported in Xinjiang, China","Xinjiang, China",41.1129,85.2401,first death,3,deaths
+2020-02-14,First confirmed case reported in Egypt,Egypt,26.820553,30.802498,first case,3490,cases
+2020-02-15,First death reported in France,France,46.2276,2.2137,first death,20736,deaths
+2020-02-16,First death reported in Taiwan,Taiwan,23.7,121.0,first death,6,deaths
+2020-02-19,First confirmed case reported in Iran,Iran,32.427908,53.688046,first case,84802,cases
+2020-02-19,First death reported in Iran,Iran,32.427908,53.688046,first death,5297,deaths
+2020-02-19,"First death reported in Yunnan, China","Yunnan, China",24.974,101.487,first death,2,deaths
+2020-02-20,"First death reported in Fujian, China","Fujian, China",26.0789,117.9874,first death,1,deaths
+2020-02-20,"First death reported in Shaanxi, China","Shaanxi, China",35.1917,108.8701,first death,3,deaths
+2020-02-20,First death reported in South Korea,South Korea,35.907757,127.766922,first death,237,deaths
+2020-02-20,"First death reported in Zhejiang, China","Zhejiang, China",29.1832,120.0934,first death,1,deaths
+2020-02-21,First confirmed case reported in Israel,Israel,31.046051,34.851612,first case,14394,cases
+2020-02-21,First confirmed case reported in Lebanon,Lebanon,33.8547,35.8623,first case,677,cases
+2020-02-21,First death reported in Italy,Italy,41.87194,12.56738,first death,24648,deaths
+2020-02-23,First confirmed case reported in Chile,Chile,-35.6751,-71.543,first case,11700,cases
+2020-02-24,First confirmed case reported in Afghanistan,Afghanistan,33.93911,67.709953,first case,1026,cases
+2020-02-24,First confirmed case reported in Bahrain,Bahrain,26.0275,50.55,first case,1973,cases
+2020-02-24,First confirmed case reported in Iraq,Iraq,33.223191,43.679291,first case,1602,cases
+2020-02-24,First confirmed case reported in Kuwait,Kuwait,29.31166,47.481766,first case,2080,cases
+2020-02-24,First confirmed case reported in Oman,Oman,21.512583,55.923255,first case,1508,cases
+2020-02-25,First confirmed case reported in Algeria,Algeria,28.0339,1.6596,first case,2811,cases
+2020-02-25,First confirmed case reported in Austria,Austria,47.5162,14.5501,first case,14836,cases
+2020-02-25,First confirmed case reported in Croatia,Croatia,45.1,15.2,first case,1908,cases
+2020-02-25,First confirmed case reported in Pakistan,Pakistan,30.3753,69.3451,first case,10076,cases
+2020-02-25,"First confirmed case reported in Quebec, Canada","Quebec, Canada",52.9399,-73.5491,first case,22058,cases
+2020-02-25,First confirmed case reported in Switzerland,Switzerland,46.8182,8.2275,first case,28063,cases
+2020-02-26,First confirmed case reported in Brazil,Brazil,-14.235,-51.9253,first case,43079,cases
+2020-02-26,First confirmed case reported in Georgia,Georgia,42.3154,43.3569,first case,408,cases
+2020-02-26,First confirmed case reported in Greece,Greece,39.0742,21.8243,first case,2401,cases
+2020-02-26,First confirmed case reported in North Macedonia,North Macedonia,41.6086,21.7453,first case,1231,cases
+2020-02-26,First confirmed case reported in Norway,Norway,60.472,8.4689,first case,7191,cases
+2020-02-26,First confirmed case reported in Romania,Romania,45.9432,24.9668,first case,9242,cases
+2020-02-27,First confirmed case reported in Denmark,Denmark,56.2639,9.5018,first case,7695,cases
+2020-02-27,First confirmed case reported in Estonia,Estonia,58.5953,25.0136,first case,1552,cases
+2020-02-27,First confirmed case reported in Netherlands,Netherlands,52.1326,5.2913,first case,34842,cases
+2020-02-28,First confirmed case reported in Belarus,Belarus,53.7098,27.9534,first case,6723,cases
+2020-02-28,First confirmed case reported in Iceland,Iceland,64.9631,-19.0208,first case,1778,cases
+2020-02-28,First confirmed case reported in Mexico,Mexico,23.6345,-102.5528,first case,9501,cases
+2020-02-28,First confirmed case reported in New Zealand,New Zealand,-40.9006,174.886,first case,1445,cases
+2020-02-28,First confirmed case reported in Nigeria,Nigeria,9.082,8.6753,first case,665,cases
+2020-02-29,First confirmed case reported in Ireland,Ireland,53.1424,-7.6921,first case,16040,cases
+2020-02-29,First confirmed case reported in Luxembourg,Luxembourg,49.8153,6.1296,first case,3618,cases
+2020-02-29,First confirmed case reported in Monaco,Monaco,43.7333,7.4167,first case,94,cases
+2020-02-29,First confirmed case reported in Qatar,Qatar,25.3548,51.1839,first case,6533,cases
+2020-02-29,First confirmed case reported in San Marino,San Marino,43.9424,12.4578,first case,462,cases
+2020-02-29,"First confirmed case reported in Western Australia, Australia","Western Australia, Australia",-31.9505,115.8605,first case,546,cases
+2020-02-29,First death reported in San Marino,San Marino,43.9424,12.4578,first death,39,deaths
+2020-02-29,First death reported in United States,United States,40.0,-100.0,first death,48246,deaths
+2020-03-01,First confirmed case reported in Armenia,Armenia,40.0691,45.0382,first case,1401,cases
+2020-03-01,First confirmed case reported in Azerbaijan,Azerbaijan,40.1431,47.5769,first case,1480,cases
+2020-03-01,First confirmed case reported in Czechia,Czechia,49.8175,15.473,first case,7033,cases
+2020-03-01,First confirmed case reported in Dominican Republic,Dominican Republic,18.7357,-70.1627,first case,5044,cases
+2020-03-01,First confirmed case reported in Ecuador,Ecuador,-1.8312,-78.1834,first case,10398,cases
+2020-03-01,First death reported in Thailand,Thailand,15.870032,100.992541,first death,49,deaths
+2020-03-01,"First death reported in Western Australia, Australia","Western Australia, Australia",-31.9505,115.8605,first death,7,deaths
+2020-03-02,First confirmed case reported in Andorra,Andorra,42.5063,1.5218,first case,717,cases
+2020-03-02,First confirmed case reported in Indonesia,Indonesia,-0.7893,113.9213,first case,7135,cases
+2020-03-02,First confirmed case reported in Latvia,Latvia,56.8796,24.6032,first case,748,cases
+2020-03-02,First confirmed case reported in Morocco,Morocco,31.7917,-7.0926,first case,3209,cases
+2020-03-02,First confirmed case reported in Portugal,Portugal,39.3999,-8.2245,first case,21379,cases
+2020-03-02,First confirmed case reported in Saudi Arabia,Saudi Arabia,23.885942,45.079162,first case,11631,cases
+2020-03-02,First confirmed case reported in Senegal,Senegal,14.4974,-14.4524,first case,412,cases
+2020-03-02,"First confirmed case reported in Tasmania, Australia","Tasmania, Australia",-42.8821,147.3272,first case,201,cases
+2020-03-03,First confirmed case reported in Argentina,Argentina,-38.4161,-63.6167,first case,3031,cases
+2020-03-03,First confirmed case reported in Jordan,Jordan,31.24,36.51,first case,428,cases
+2020-03-03,First confirmed case reported in Ukraine,Ukraine,48.3794,31.1656,first case,6125,cases
+2020-03-03,"First death reported in Inner Mongolia, China","Inner Mongolia, China",44.0935,113.9448,first death,1,deaths
+2020-03-03,First death reported in Spain,Spain,40.463667,-3.74922,first death,21282,deaths
+2020-03-04,"First confirmed case reported in Faroe Islands, Denmark","Faroe Islands, Denmark",61.8926,-6.9118,first case,185,cases
+2020-03-04,"First confirmed case reported in Gibraltar, United Kingdom","Gibraltar, United Kingdom",36.1408,-5.3536,first case,132,cases
+2020-03-04,First confirmed case reported in Hungary,Hungary,47.1625,19.5033,first case,2098,cases
+2020-03-04,First confirmed case reported in Liechtenstein,Liechtenstein,47.14,9.55,first case,82,cases
+2020-03-04,"First confirmed case reported in Northern Territory, Australia","Northern Territory, Australia",-12.4634,130.8456,first case,28,cases
+2020-03-04,First confirmed case reported in Poland,Poland,51.9194,19.1451,first case,9856,cases
+2020-03-04,"First confirmed case reported in Saint Barthelemy, France","Saint Barthelemy, France",17.9,-62.8333,first case,6,cases
+2020-03-04,First confirmed case reported in Tunisia,Tunisia,33.886917,9.537499,first case,884,cases
+2020-03-04,First death reported in Iraq,Iraq,33.223191,43.679291,first death,83,deaths
+2020-03-04,"First death reported in New South Wales, Australia","New South Wales, Australia",-33.8688,151.2093,first death,26,deaths
+2020-03-05,First confirmed case reported in Bosnia and Herzegovina,Bosnia and Herzegovina,43.9159,17.6791,first case,1342,cases
+2020-03-05,First confirmed case reported in Slovenia,Slovenia,46.1512,14.9955,first case,1344,cases
+2020-03-05,First confirmed case reported in South Africa,South Africa,-30.5595,22.9375,first case,3465,cases
+2020-03-05,First confirmed case reported in West Bank and Gaza,West Bank and Gaza,31.9522,35.2332,first case,329,cases
+2020-03-06,"First confirmed case reported in Alberta, Canada","Alberta, Canada",53.9333,-116.5765,first case,3095,cases
+2020-03-06,First confirmed case reported in Bhutan,Bhutan,27.5142,90.4336,first case,6,cases
+2020-03-06,First confirmed case reported in Cameroon,Cameroon,3.848,11.5021,first case,1163,cases
+2020-03-06,First confirmed case reported in Colombia,Colombia,4.5709,-74.2973,first case,4149,cases
+2020-03-06,First confirmed case reported in Costa Rica,Costa Rica,9.7489,-83.7534,first case,669,cases
+2020-03-06,First confirmed case reported in Holy See,Holy See,41.9029,12.4534,first case,9,cases
+2020-03-06,First confirmed case reported in Peru,Peru,-9.19,-75.0152,first case,17837,cases
+2020-03-06,First confirmed case reported in Serbia,Serbia,44.0165,21.0059,first case,6890,cases
+2020-03-06,First confirmed case reported in Slovakia,Slovakia,48.669,19.699,first case,1199,cases
+2020-03-06,First confirmed case reported in Togo,Togo,8.6195,0.8248,first case,86,cases
+2020-03-06,First death reported in Netherlands,Netherlands,52.1326,5.2913,first death,3916,deaths
+2020-03-06,First death reported in Peru,Peru,-9.19,-75.0152,first death,2199,deaths
+2020-03-06,First death reported in Switzerland,Switzerland,46.8182,8.2275,first death,1469,deaths
+2020-03-07,"First confirmed case reported in French Guiana, France","French Guiana, France",3.9339,-53.1258,first case,97,cases
+2020-03-07,First confirmed case reported in Malta,Malta,35.9375,14.3754,first case,443,cases
+2020-03-07,"First confirmed case reported in Martinique, France","Martinique, France",14.6415,-61.0242,first case,163,cases
+2020-03-07,First death reported in Finland,Finland,61.92411,25.748151,first death,228,deaths
+2020-03-08,First confirmed case reported in Bangladesh,Bangladesh,23.685,90.3563,first case,3382,cases
+2020-03-08,First confirmed case reported in Bulgaria,Bulgaria,42.7339,25.4858,first case,975,cases
+2020-03-08,First confirmed case reported in Maldives,Maldives,3.2028,73.2207,first case,83,cases
+2020-03-08,First confirmed case reported in Moldova,Moldova,47.4116,28.3699,first case,2614,cases
+2020-03-08,First confirmed case reported in Paraguay,Paraguay,-23.4425,-58.4438,first case,213,cases
+2020-03-08,First death reported in Argentina,Argentina,-38.4161,-63.6167,first death,147,deaths
+2020-03-08,First death reported in Egypt,Egypt,26.820553,30.802498,first death,264,deaths
+2020-03-09,First confirmed case reported in Albania,Albania,41.1533,20.1683,first case,609,cases
+2020-03-09,First confirmed case reported in Brunei,Brunei,4.5353,114.7277,first case,138,cases
+2020-03-09,"First confirmed case reported in St Martin, France","St Martin, France",18.0708,-63.0501,first case,37,cases
+2020-03-09,"First death reported in British Columbia, Canada","British Columbia, Canada",53.7267,-127.6476,first death,87,deaths
+2020-03-09,First death reported in Germany,Germany,51.165691,10.451526,first death,4598,deaths
+2020-03-10,First confirmed case reported in Burkina Faso,Burkina Faso,12.2383,-1.5616,first case,600,cases
+2020-03-10,First confirmed case reported in Cyprus,Cyprus,35.1264,33.4299,first case,772,cases
+2020-03-10,First confirmed case reported in Mongolia,Mongolia,46.8625,103.8467,first case,34,cases
+2020-03-10,First confirmed case reported in Panama,Panama,8.538,-80.7821,first case,4658,cases
+2020-03-10,First death reported in Lebanon,Lebanon,33.8547,35.8623,first death,21,deaths
+2020-03-10,First death reported in Morocco,Morocco,31.7917,-7.0926,first death,145,deaths
+2020-03-10,First death reported in Sweden,Sweden,60.128161,18.643501,first death,1765,deaths
+2020-03-11,First confirmed case reported in Bolivia,Bolivia,-16.2902,-63.5887,first case,598,cases
+2020-03-11,First confirmed case reported in Congo (Kinshasa),Congo (Kinshasa),-4.0383,21.7587,first case,350,cases
+2020-03-11,First confirmed case reported in Cote d'Ivoire,Cote d'Ivoire,7.54,-5.5471,first case,916,cases
+2020-03-11,First confirmed case reported in Honduras,Honduras,15.2,-86.2419,first case,494,cases
+2020-03-11,First confirmed case reported in Jamaica,Jamaica,18.1096,-77.2975,first case,223,cases
+2020-03-11,"First confirmed case reported in New Brunswick, Canada","New Brunswick, Canada",46.5653,-66.4619,first case,118,cases
+2020-03-11,"First confirmed case reported in Reunion, France","Reunion, France",-21.1151,55.5364,first case,410,cases
+2020-03-11,First confirmed case reported in Turkey,Turkey,38.9637,35.2433,first case,95591,cases
+2020-03-11,First death reported in Albania,Albania,41.1533,20.1683,first death,26,deaths
+2020-03-11,First death reported in Belgium,Belgium,50.8333,4.469936,first death,5998,deaths
+2020-03-11,First death reported in Bulgaria,Bulgaria,42.7339,25.4858,first death,45,deaths
+2020-03-11,First death reported in Greece,Greece,39.0742,21.8243,first death,121,deaths
+2020-03-11,First death reported in India,India,20.593684,78.96288,first death,645,deaths
+2020-03-11,First death reported in Indonesia,Indonesia,-0.7893,113.9213,first death,616,deaths
+2020-03-11,First death reported in Ireland,Ireland,53.1424,-7.6921,first death,730,deaths
+2020-03-11,First death reported in Panama,Panama,8.538,-80.7821,first death,136,deaths
+2020-03-12,First confirmed case reported in Cuba,Cuba,21.521757,-77.781167,first case,1137,cases
+2020-03-12,First confirmed case reported in Guyana,Guyana,4.860416,-58.93018,first case,66,cases
+2020-03-12,First death reported in Algeria,Algeria,28.0339,1.6596,first death,392,deaths
+2020-03-12,First death reported in Guyana,Guyana,4.860416,-58.93018,first death,7,deaths
+2020-03-12,First death reported in Poland,Poland,51.9194,19.1451,first death,401,deaths
+2020-03-13,First confirmed case reported in Antigua and Barbuda,Antigua and Barbuda,17.0608,-61.7964,first case,23,cases
+2020-03-13,"First confirmed case reported in Aruba, Netherlands","Aruba, Netherlands",12.5211,-69.9683,first case,97,cases
+2020-03-13,"First confirmed case reported in Australian Capital Territory, Australia","Australian Capital Territory, Australia",-35.4735,149.0124,first case,104,cases
+2020-03-13,"First confirmed case reported in Cayman Islands, United Kingdom","Cayman Islands, United Kingdom",19.3133,-81.2546,first case,66,cases
+2020-03-13,First confirmed case reported in Ethiopia,Ethiopia,9.145,40.4897,first case,114,cases
+2020-03-13,"First confirmed case reported in French Polynesia, France","French Polynesia, France",-17.6797,149.4068,first case,56,cases
+2020-03-13,"First confirmed case reported in Guadeloupe, France","Guadeloupe, France",16.265,-61.551,first case,148,cases
+2020-03-13,First confirmed case reported in Guinea,Guinea,9.9456,-9.6966,first case,688,cases
+2020-03-13,First confirmed case reported in Kazakhstan,Kazakhstan,48.0196,66.9237,first case,1995,cases
+2020-03-13,First confirmed case reported in Kenya,Kenya,-0.0236,37.9062,first case,296,cases
+2020-03-13,"First confirmed case reported in Manitoba, Canada","Manitoba, Canada",53.7609,-98.8139,first case,255,cases
+2020-03-13,"First confirmed case reported in Saskatchewan, Canada","Saskatchewan, Canada",52.9399,-106.4509,first case,320,cases
+2020-03-13,First confirmed case reported in Uruguay,Uruguay,-32.5228,-55.7658,first case,543,cases
+2020-03-13,First death reported in Azerbaijan,Azerbaijan,40.1431,47.5769,first death,20,deaths
+2020-03-13,First death reported in Sudan,Sudan,12.8628,30.2176,first death,12,deaths
+2020-03-13,First death reported in Ukraine,Ukraine,48.3794,31.1656,first death,161,deaths
+2020-03-14,"First confirmed case reported in Curacao, Netherlands","Curacao, Netherlands",12.1696,-68.99,first case,14,cases
+2020-03-14,First confirmed case reported in Eswatini,Eswatini,-26.5225,31.4659,first case,31,cases
+2020-03-14,First confirmed case reported in Gabon,Gabon,-0.8037,11.6094,first case,156,cases
+2020-03-14,First confirmed case reported in Ghana,Ghana,7.9465,-1.0232,first case,1042,cases
+2020-03-14,First confirmed case reported in Guatemala,Guatemala,15.7835,-90.2308,first case,294,cases
+2020-03-14,First confirmed case reported in Kosovo,Kosovo,42.602636,20.902977,first case,598,cases
+2020-03-14,First confirmed case reported in Mauritania,Mauritania,21.0079,-10.9408,first case,7,cases
+2020-03-14,First confirmed case reported in Namibia,Namibia,-22.9576,18.4904,first case,16,cases
+2020-03-14,First confirmed case reported in Rwanda,Rwanda,-1.9403,29.8739,first case,150,cases
+2020-03-14,First confirmed case reported in Saint Lucia,Saint Lucia,13.9094,-60.9789,first case,15,cases
+2020-03-14,First confirmed case reported in Saint Vincent and the Grenadines,Saint Vincent and the Grenadines,12.9843,-61.2872,first case,12,cases
+2020-03-14,First confirmed case reported in Sudan,Sudan,12.8628,30.2176,first case,107,cases
+2020-03-14,First confirmed case reported in Suriname,Suriname,3.9193,-56.0278,first case,10,cases
+2020-03-14,First confirmed case reported in Trinidad and Tobago,Trinidad and Tobago,10.6918,-61.2225,first case,115,cases
+2020-03-14,First confirmed case reported in Venezuela,Venezuela,6.4238,-66.5897,first case,285,cases
+2020-03-14,First death reported in Austria,Austria,47.5162,14.5501,first death,537,deaths
+2020-03-14,First death reported in Denmark,Denmark,56.2639,9.5018,first death,370,deaths
+2020-03-14,First death reported in Ecuador,Ecuador,-1.8312,-78.1834,first death,520,deaths
+2020-03-14,First death reported in Luxembourg,Luxembourg,49.8153,6.1296,first death,78,deaths
+2020-03-14,First death reported in Norway,Norway,60.472,8.4689,first death,182,deaths
+2020-03-14,First death reported in Slovenia,Slovenia,46.1512,14.9955,first death,77,deaths
+2020-03-15,First confirmed case reported in Central African Republic,Central African Republic,6.6111,20.9394,first case,14,cases
+2020-03-15,First confirmed case reported in Congo (Brazzaville),Congo (Brazzaville),-0.228,15.8277,first case,165,cases
+2020-03-15,First confirmed case reported in Equatorial Guinea,Equatorial Guinea,1.6508,10.2679,first case,83,cases
+2020-03-15,"First confirmed case reported in Mayotte, France","Mayotte, France",-12.8275,45.166244,first case,311,cases
+2020-03-15,"First confirmed case reported in Newfoundland and Labrador, Canada","Newfoundland and Labrador, Canada",53.1355,-57.6604,first case,256,cases
+2020-03-15,"First confirmed case reported in Prince Edward Island, Canada","Prince Edward Island, Canada",46.5107,-63.4168,first case,26,cases
+2020-03-15,First confirmed case reported in Seychelles,Seychelles,-4.6796,55.492,first case,11,cases
+2020-03-15,First confirmed case reported in Uzbekistan,Uzbekistan,41.377491,64.585262,first case,1678,cases
+2020-03-15,First death reported in Hungary,Hungary,47.1625,19.5033,first death,213,deaths
+2020-03-15,First death reported in Iceland,Iceland,64.9631,-19.0208,first death,10,deaths
+2020-03-16,First confirmed case reported in Bahamas,Bahamas,25.025885,-78.035889,first case,65,cases
+2020-03-16,First confirmed case reported in Benin,Benin,9.3077,2.3158,first case,54,cases
+2020-03-16,"First confirmed case reported in Greenland, Denmark","Greenland, Denmark",71.7069,-42.6043,first case,11,cases
+2020-03-16,"First confirmed case reported in Nova Scotia, Canada","Nova Scotia, Canada",44.682,-63.7443,first case,737,cases
+2020-03-16,First confirmed case reported in Somalia,Somalia,5.152149,46.199616,first case,286,cases
+2020-03-16,First confirmed case reported in Tanzania,Tanzania,-6.369028,34.888822,first case,254,cases
+2020-03-16,First death reported in Bahrain,Bahrain,26.0275,50.55,first death,7,deaths
+2020-03-16,"First death reported in Cayman Islands, United Kingdom","Cayman Islands, United Kingdom",19.3133,-81.2546,first death,1,deaths
+2020-03-16,First death reported in Guatemala,Guatemala,15.7835,-90.2308,first death,7,deaths
+2020-03-16,"First death reported in Martinique, France","Martinique, France",14.6415,-61.0242,first death,14,deaths
+2020-03-17,First confirmed case reported in Barbados,Barbados,13.1939,-59.5432,first case,75,cases
+2020-03-17,First confirmed case reported in Gambia,Gambia,13.4432,-15.3101,first case,10,cases
+2020-03-17,First confirmed case reported in Liberia,Liberia,6.428055,-9.429499,first case,99,cases
+2020-03-17,First confirmed case reported in Montenegro,Montenegro,42.708678,19.37439,first case,313,cases
+2020-03-17,First death reported in Brazil,Brazil,-14.235,-51.9253,first death,2741,deaths
+2020-03-17,First death reported in Dominican Republic,Dominican Republic,18.7357,-70.1627,first death,245,deaths
+2020-03-17,First death reported in Malaysia,Malaysia,4.210484,101.975766,first death,92,deaths
+2020-03-17,"First death reported in Ontario, Canada","Ontario, Canada",51.2538,-85.3232,first death,622,deaths
+2020-03-17,First death reported in Portugal,Portugal,39.3999,-8.2245,first death,762,deaths
+2020-03-17,"First death reported in Quebec, Canada","Quebec, Canada",52.9399,-73.5491,first death,1618,deaths
+2020-03-17,First death reported in Turkey,Turkey,38.9637,35.2433,first death,2259,deaths
+2020-03-18,First confirmed case reported in Djibouti,Djibouti,11.8251,42.5903,first case,945,cases
+2020-03-18,First confirmed case reported in Kyrgyzstan,Kyrgyzstan,41.20438,74.766098,first case,590,cases
+2020-03-18,First confirmed case reported in Mauritius,Mauritius,-20.348404,57.552152,first case,328,cases
+2020-03-18,"First confirmed case reported in Montserrat, United Kingdom","Montserrat, United Kingdom",16.742498,-62.187366,first case,11,cases
+2020-03-18,"First confirmed case reported in Saint Helena, Ascension and Tristan da Cunha, United Kingdom","Saint Helena, Ascension and Tristan da Cunha, United Kingdom",-7.9467,-14.3559,first case,0,cases
+2020-03-18,First confirmed case reported in Zambia,Zambia,-13.133897,27.849332,first case,70,cases
+2020-03-18,First death reported in Bangladesh,Bangladesh,23.685,90.3563,first death,110,deaths
+2020-03-18,First death reported in Burkina Faso,Burkina Faso,12.2383,-1.5616,first death,38,deaths
+2020-03-18,First death reported in Cuba,Cuba,21.521757,-77.781167,first death,38,deaths
+2020-03-18,First death reported in Moldova,Moldova,47.4116,28.3699,first death,72,deaths
+2020-03-18,First death reported in Pakistan,Pakistan,30.3753,69.3451,first death,212,deaths
+2020-03-18,"First death reported in Saint Helena, Ascension and Tristan da Cunha, United Kingdom","Saint Helena, Ascension and Tristan da Cunha, United Kingdom",-7.9467,-14.3559,first death,0,deaths
+2020-03-18,First death reported in Slovakia,Slovakia,48.669,19.699,first death,14,deaths
+2020-03-19,"First confirmed case reported in Bermuda, United Kingdom","Bermuda, United Kingdom",32.3078,-64.7505,first case,86,cases
+2020-03-19,First confirmed case reported in Chad,Chad,15.4542,18.7322,first case,33,cases
+2020-03-19,First confirmed case reported in El Salvador,El Salvador,13.7942,-88.8965,first case,225,cases
+2020-03-19,First confirmed case reported in Fiji,Fiji,-17.7134,178.065,first case,18,cases
+2020-03-19,First confirmed case reported in Lithuania,Lithuania,55.1694,23.8813,first case,1166,cases
+2020-03-19,"First confirmed case reported in New Caledonia, France","New Caledonia, France",-20.904305,165.618042,first case,18,cases
+2020-03-19,First confirmed case reported in Nicaragua,Nicaragua,12.865416,-85.207229,first case,9,cases
+2020-03-19,First death reported in Costa Rica,Costa Rica,9.7489,-83.7534,first death,6,deaths
+2020-03-19,First death reported in Croatia,Croatia,45.1,15.2,first death,48,deaths
+2020-03-19,"First death reported in Curacao, Netherlands","Curacao, Netherlands",12.1696,-68.99,first death,1,deaths
+2020-03-19,First death reported in Jamaica,Jamaica,18.1096,-77.2975,first death,6,deaths
+2020-03-19,First death reported in Mexico,Mexico,23.6345,-102.5528,first death,857,deaths
+2020-03-19,First death reported in Russia,Russia,61.52401,105.318756,first death,456,deaths
+2020-03-19,First death reported in Tunisia,Tunisia,33.886917,9.537499,first death,38,deaths
+2020-03-20,First confirmed case reported in Angola,Angola,-11.2027,17.8739,first case,24,cases
+2020-03-20,First confirmed case reported in Cabo Verde,Cabo Verde,16.5388,-23.0418,first case,68,cases
+2020-03-20,First confirmed case reported in Haiti,Haiti,18.9712,-72.2852,first case,47,cases
+2020-03-20,"First confirmed case reported in Isle of Man, United Kingdom","Isle of Man, United Kingdom",54.2361,-4.5481,first case,307,cases
+2020-03-20,First confirmed case reported in Madagascar,Madagascar,-18.766947,46.869107,first case,121,cases
+2020-03-20,First confirmed case reported in Niger,Niger,17.607789,8.081666,first case,657,cases
+2020-03-20,First confirmed case reported in Papua New Guinea,Papua New Guinea,-6.314993,143.95555,first case,7,cases
+2020-03-20,"First confirmed case reported in Sint Maarten, Netherlands","Sint Maarten, Netherlands",18.0425,-63.0548,first case,67,cases
+2020-03-20,First confirmed case reported in Zimbabwe,Zimbabwe,-19.015438,29.154857,first case,28,cases
+2020-03-20,"First death reported in Alberta, Canada","Alberta, Canada",53.9333,-116.5765,first death,61,deaths
+2020-03-20,First death reported in Gabon,Gabon,-0.8037,11.6094,first death,1,deaths
+2020-03-20,First death reported in Israel,Israel,31.046051,34.851612,first death,189,deaths
+2020-03-20,First death reported in Paraguay,Paraguay,-23.4425,-58.4438,first death,9,deaths
+2020-03-20,First death reported in Serbia,Serbia,44.0165,21.0059,first death,130,deaths
+2020-03-20,First death reported in United Arab Emirates,United Arab Emirates,23.424076,53.847818,first death,46,deaths
+2020-03-21,First confirmed case reported in Eritrea,Eritrea,15.1794,39.7823,first case,39,cases
+2020-03-21,First confirmed case reported in Uganda,Uganda,1.373333,32.290275,first case,61,cases
+2020-03-21,First death reported in Bosnia and Herzegovina,Bosnia and Herzegovina,43.9159,17.6791,first death,51,deaths
+2020-03-21,First death reported in Congo (Kinshasa),Congo (Kinshasa),-4.0383,21.7587,first death,25,deaths
+2020-03-21,First death reported in Ghana,Ghana,7.9465,-1.0232,first death,9,deaths
+2020-03-21,First death reported in Singapore,Singapore,1.2833,103.8333,first death,11,deaths
+2020-03-22,First confirmed case reported in Dominica,Dominica,15.415,-61.371,first case,16,cases
+2020-03-22,First confirmed case reported in Grenada,Grenada,12.1165,-61.679,first case,14,cases
+2020-03-22,"First confirmed case reported in Guernsey, United Kingdom","Guernsey, United Kingdom",49.448196,-2.58949,first case,239,cases
+2020-03-22,"First confirmed case reported in Jersey, United Kingdom","Jersey, United Kingdom",49.2138,-2.1358,first case,245,cases
+2020-03-22,First confirmed case reported in Mozambique,Mozambique,-18.665695,35.529562,first case,39,cases
+2020-03-22,"First confirmed case reported in Northwest Territories, Canada","Northwest Territories, Canada",64.8255,-124.8457,first case,5,cases
+2020-03-22,First confirmed case reported in Syria,Syria,34.802075,38.996815,first case,42,cases
+2020-03-22,First confirmed case reported in Timor-Leste,Timor-Leste,-8.874217,125.727539,first case,23,cases
+2020-03-22,First death reported in Andorra,Andorra,42.5063,1.5218,first death,37,deaths
+2020-03-22,First death reported in Chile,Chile,-35.6751,-71.543,first death,147,deaths
+2020-03-22,First death reported in Colombia,Colombia,4.5709,-74.2973,first death,196,deaths
+2020-03-22,First death reported in Czechia,Czechia,49.8175,15.473,first death,201,deaths
+2020-03-22,"First death reported in Guadeloupe, France","Guadeloupe, France",16.265,-61.551,first death,12,deaths
+2020-03-22,First death reported in North Macedonia,North Macedonia,41.6086,21.7453,first death,55,deaths
+2020-03-22,First death reported in Romania,Romania,45.9432,24.9668,first death,498,deaths
+2020-03-23,First confirmed case reported in Belize,Belize,17.1899,-88.4976,first case,18,cases
+2020-03-23,First death reported in Afghanistan,Afghanistan,33.93911,67.709953,first death,36,deaths
+2020-03-23,First death reported in Gambia,Gambia,13.4432,-15.3101,first death,1,deaths
+2020-03-23,First death reported in Kosovo,Kosovo,42.602636,20.902977,first death,15,deaths
+2020-03-23,First death reported in Montenegro,Montenegro,42.708678,19.37439,first death,5,deaths
+2020-03-23,First death reported in Nigeria,Nigeria,9.082,8.6753,first death,22,deaths
+2020-03-23,First death reported in Zimbabwe,Zimbabwe,-19.015438,29.154857,first death,3,deaths
+2020-03-24,First confirmed case reported in Laos,Laos,19.85627,102.495496,first case,19,cases
+2020-03-24,First confirmed case reported in Libya,Libya,26.3351,17.228331,first case,51,cases
+2020-03-24,First death reported in Cabo Verde,Cabo Verde,16.5388,-23.0418,first death,1,deaths
+2020-03-24,First death reported in Lithuania,Lithuania,55.1694,23.8813,first death,26,deaths
+2020-03-24,First death reported in Saudi Arabia,Saudi Arabia,23.885942,45.079162,first death,109,deaths
+2020-03-25,First confirmed case reported in Guinea-Bissau,Guinea-Bissau,11.8037,-15.1804,first case,50,cases
+2020-03-25,First confirmed case reported in Mali,Mali,17.570692,-3.996166,first case,258,cases
+2020-03-25,First confirmed case reported in Saint Kitts and Nevis,Saint Kitts and Nevis,17.357822,-62.782998,first case,15,cases
+2020-03-25,First death reported in Cameroon,Cameroon,3.848,11.5021,first death,43,deaths
+2020-03-25,First death reported in Cyprus,Cyprus,35.1264,33.4299,first death,12,deaths
+2020-03-25,First death reported in Estonia,Estonia,58.5953,25.0136,first death,43,deaths
+2020-03-25,First death reported in Mauritius,Mauritius,-20.348404,57.552152,first death,9,deaths
+2020-03-25,First death reported in Niger,Niger,17.607789,8.081666,first death,20,deaths
+2020-03-25,First death reported in Trinidad and Tobago,Trinidad and Tobago,10.6918,-61.2225,first death,8,deaths
+2020-03-26,"First confirmed case reported in Yukon, Canada","Yukon, Canada",64.2823,-135.0,first case,11,cases
+2020-03-26,First death reported in Armenia,Armenia,40.0691,45.0382,first death,24,deaths
+2020-03-26,First death reported in Honduras,Honduras,15.2,-86.2419,first death,46,deaths
+2020-03-26,First death reported in Kenya,Kenya,-0.0236,37.9062,first death,14,deaths
+2020-03-26,"First death reported in Queensland, Australia","Queensland, Australia",-27.4698,153.0251,first death,6,deaths
+2020-03-26,"First death reported in Victoria, Australia","Victoria, Australia",-37.8136,144.9631,first death,14,deaths
+2020-03-26,First death reported in West Bank and Gaza,West Bank and Gaza,31.9522,35.2332,first death,2,deaths
+2020-03-27,First confirmed case reported in Myanmar,Myanmar,21.9162,95.956,first case,121,cases
+2020-03-27,"First death reported in Jersey, United Kingdom","Jersey, United Kingdom",49.2138,-2.1358,first death,12,deaths
+2020-03-27,First death reported in Jordan,Jordan,31.24,36.51,first death,7,deaths
+2020-03-27,First death reported in Kazakhstan,Kazakhstan,48.0196,66.9237,first death,19,deaths
+2020-03-27,"First death reported in Manitoba, Canada","Manitoba, Canada",53.7609,-98.8139,first death,6,deaths
+2020-03-27,First death reported in South Africa,South Africa,-30.5595,22.9375,first death,58,deaths
+2020-03-27,First death reported in Togo,Togo,8.6195,0.8248,first death,6,deaths
+2020-03-27,First death reported in Uzbekistan,Uzbekistan,41.377491,64.585262,first death,6,deaths
+2020-03-27,First death reported in Venezuela,Venezuela,6.4238,-66.5897,first death,10,deaths
+2020-03-28,"First confirmed case reported in Anguilla, United Kingdom","Anguilla, United Kingdom",18.2206,-63.0686,first case,3,cases
+2020-03-28,"First confirmed case reported in British Virgin Islands, United Kingdom","British Virgin Islands, United Kingdom",18.4207,-64.64,first case,5,cases
+2020-03-28,"First confirmed case reported in Turks and Caicos Islands, United Kingdom","Turks and Caicos Islands, United Kingdom",21.694,-71.7979,first case,11,cases
+2020-03-28,First death reported in Brunei,Brunei,4.5353,114.7277,first death,1,deaths
+2020-03-28,First death reported in Nicaragua,Nicaragua,12.865416,-85.207229,first death,2,deaths
+2020-03-28,First death reported in Qatar,Qatar,25.3548,51.1839,first death,9,deaths
+2020-03-28,First death reported in Sri Lanka,Sri Lanka,7.873054,80.771797,first death,7,deaths
+2020-03-28,First death reported in Uruguay,Uruguay,-32.5228,-55.7658,first death,12,deaths
+2020-03-29,First death reported in Angola,Angola,-11.2027,17.8739,first death,2,deaths
+2020-03-29,First death reported in Bolivia,Bolivia,-16.2902,-63.5887,first death,34,deaths
+2020-03-29,First death reported in Cote d'Ivoire,Cote d'Ivoire,7.54,-5.5471,first death,13,deaths
+2020-03-29,First death reported in Mali,Mali,17.570692,-3.996166,first death,14,deaths
+2020-03-29,First death reported in Monaco,Monaco,43.7333,7.4167,first death,3,deaths
+2020-03-29,First death reported in New Zealand,New Zealand,-40.9006,174.886,first death,18,deaths
+2020-03-29,First death reported in Syria,Syria,34.802075,38.996815,first death,3,deaths
+2020-03-30,First confirmed case reported in Botswana,Botswana,-22.3285,24.6849,first case,20,cases
+2020-03-30,"First death reported in Australian Capital Territory, Australia","Australian Capital Territory, Australia",-35.4735,149.0124,first death,3,deaths
+2020-03-30,"First death reported in Guernsey, United Kingdom","Guernsey, United Kingdom",49.448196,-2.58949,first death,13,deaths
+2020-03-30,First death reported in Mauritania,Mauritania,21.0079,-10.9408,first death,1,deaths
+2020-03-30,"First death reported in Newfoundland and Labrador, Canada","Newfoundland and Labrador, Canada",53.1355,-57.6604,first death,3,deaths
+2020-03-30,"First death reported in Saskatchewan, Canada","Saskatchewan, Canada",52.9399,-106.4509,first death,4,deaths
+2020-03-31,First confirmed case reported in Burundi,Burundi,-3.3731,29.9189,first case,5,cases
+2020-03-31,First confirmed case reported in Sierra Leone,Sierra Leone,8.460555,-11.779889,first case,50,cases
+2020-03-31,First death reported in Belarus,Belarus,53.7098,27.9534,first death,55,deaths
+2020-03-31,First death reported in Botswana,Botswana,-22.3285,24.6849,first death,1,deaths
+2020-03-31,First death reported in El Salvador,El Salvador,13.7942,-88.8965,first death,7,deaths
+2020-03-31,"First death reported in Mayotte, France","Mayotte, France",-12.8275,45.166244,first death,4,deaths
+2020-03-31,First death reported in Myanmar,Myanmar,21.9162,95.956,first death,5,deaths
+2020-03-31,First death reported in Oman,Oman,21.512583,55.923255,first death,8,deaths
+2020-03-31,"First death reported in St Martin, France","St Martin, France",18.0708,-63.0501,first death,2,deaths
+2020-03-31,First death reported in Tanzania,Tanzania,-6.369028,34.888822,first death,10,deaths
+2020-03-31,"First death reported in Tasmania, Australia","Tasmania, Australia",-42.8821,147.3272,first death,7,deaths
+2020-04-01,First death reported in Bahamas,Bahamas,25.025885,-78.035889,first death,9,deaths
+2020-04-01,"First death reported in Isle of Man, United Kingdom","Isle of Man, United Kingdom",54.2361,-4.5481,first death,9,deaths
+2020-04-01,First death reported in Senegal,Senegal,14.4974,-14.4524,first death,5,deaths
+2020-04-01,"First death reported in Sint Maarten, Netherlands","Sint Maarten, Netherlands",18.0425,-63.0548,first death,10,deaths
+2020-04-02,"First confirmed case reported in Bonaire, Sint Eustatius and Saba, Netherlands","Bonaire, Sint Eustatius and Saba, Netherlands",12.1784,-68.2385,first case,5,cases
+2020-04-02,First confirmed case reported in Malawi,Malawi,-13.2543,34.3015,first case,18,cases
+2020-04-02,First death reported in Congo (Brazzaville),Congo (Brazzaville),-0.228,15.8277,first death,6,deaths
+2020-04-02,First death reported in Libya,Libya,26.3351,17.228331,first death,1,deaths
+2020-04-02,First death reported in Zambia,Zambia,-13.133897,27.849332,first death,3,deaths
+2020-04-03,First death reported in Kyrgyzstan,Kyrgyzstan,41.20438,74.766098,first death,7,deaths
+2020-04-03,First death reported in Latvia,Latvia,56.8796,24.6032,first death,9,deaths
+2020-04-03,First death reported in Suriname,Suriname,3.9193,-56.0278,first death,1,deaths
+2020-04-04,"First confirmed case reported in Falkland Islands (Malvinas), United Kingdom","Falkland Islands (Malvinas), United Kingdom",-51.7963,-59.5236,first case,11,cases
+2020-04-04,First death reported in Kuwait,Kuwait,29.31166,47.481766,first death,11,deaths
+2020-04-04,First death reported in Liechtenstein,Liechtenstein,47.14,9.55,first death,1,deaths
+2020-04-05,"First confirmed case reported in Saint Pierre and Miquelon, France","Saint Pierre and Miquelon, France",46.8852,-56.3159,first case,1,cases
+2020-04-05,First confirmed case reported in South Sudan,South Sudan,6.877,31.307,first case,4,cases
+2020-04-05,First death reported in Barbados,Barbados,13.1939,-59.5432,first death,5,deaths
+2020-04-05,First death reported in Ethiopia,Ethiopia,9.145,40.4897,first death,3,deaths
+2020-04-05,First death reported in Georgia,Georgia,42.3154,43.3569,first death,4,deaths
+2020-04-05,First death reported in Liberia,Liberia,6.428055,-9.429499,first death,8,deaths
+2020-04-05,"First death reported in Turks and Caicos Islands, United Kingdom","Turks and Caicos Islands, United Kingdom",21.694,-71.7979,first death,1,deaths
+2020-04-06,First confirmed case reported in Sao Tome and Principe,Sao Tome and Principe,0.1864,6.6131,first case,4,cases
+2020-04-06,First death reported in Belize,Belize,17.1899,-88.4976,first death,2,deaths
+2020-04-06,First death reported in Benin,Benin,9.3077,2.3158,first death,1,deaths
+2020-04-06,"First death reported in Bermuda, United Kingdom","Bermuda, United Kingdom",32.3078,-64.7505,first death,5,deaths
+2020-04-07,First death reported in Antigua and Barbuda,Antigua and Barbuda,17.0608,-61.7964,first death,3,deaths
+2020-04-07,First death reported in Haiti,Haiti,18.9712,-72.2852,first death,3,deaths
+2020-04-07,First death reported in Malawi,Malawi,-13.2543,34.3015,first death,2,deaths
+2020-04-07,"First death reported in South Australia, Australia","South Australia, Australia",-34.9285,138.6007,first death,4,deaths
+2020-04-08,First death reported in Malta,Malta,35.9375,14.3754,first death,3,deaths
+2020-04-08,"First death reported in Nova Scotia, Canada","Nova Scotia, Canada",44.682,-63.7443,first death,10,deaths
+2020-04-08,"First death reported in Prince Edward Island, Canada","Prince Edward Island, Canada",46.5107,-63.4168,first death,0,deaths
+2020-04-08,First death reported in Somalia,Somalia,5.152149,46.199616,first death,8,deaths
+2020-04-10,First confirmed case reported in Yemen,Yemen,15.552727,48.516388,first case,1,cases
+2020-04-10,First death reported in Djibouti,Djibouti,11.8251,42.5903,first death,2,deaths
+2020-04-13,First death reported in Burundi,Burundi,-3.3731,29.9189,first death,1,deaths
+2020-04-15,"First death reported in Aruba, Netherlands","Aruba, Netherlands",12.5211,-69.9683,first death,2,deaths
+2020-04-15,First death reported in Guinea,Guinea,9.9456,-9.6966,first death,6,deaths
+2020-04-16,First death reported in Eswatini,Eswatini,-26.5225,31.4659,first death,1,deaths
+2020-04-19,"First death reported in British Virgin Islands, United Kingdom","British Virgin Islands, United Kingdom",18.4207,-64.64,first death,1,deaths
+2020-04-20,"First death reported in French Guiana, France","French Guiana, France",3.9339,-53.1258,first death,1,deaths

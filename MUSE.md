@@ -1,6 +1,6 @@
 # Muse in AIGIS
 
-AIGIS turns unstructured material (documents, spreadsheets, photos, scans) into animated time-series maps. Every step that needs judgement rather than arithmetic is delegated to a Meta Muse model. This file lists each of those steps, which model handles it, how it is prompted, and what happens around it.
+AIGIS turns unstructured material (documents, spreadsheets, photos, scans) into animated time-series maps. Every step that needs judgment rather than arithmetic is delegated to a Meta Muse model. This file lists each of those steps, which model handles it, how it is prompted, and what happens around it.
 
 All calls go through the Vercel AI SDK (`ai` v7) against the Vercel AI Gateway, so a model is a plain `provider/model` string. The IDs live in `src/lib/ai/models.ts` and can be overridden per environment:
 
@@ -19,7 +19,7 @@ Entry points: `POST /api/ingest` (new story) and `POST /api/datasets/[id]/source
 
 ### 1a. Text extraction (`src/lib/ingest/extract.ts`, `extractFromText`)
 
-- Input: PDF, DOCX, Markdown, TXT, HTML, email and similar, parsed to plain text and split into chunks of about 7,000 characters with 400 characters of overlap (`chunkText` in `parse.ts`). Chunks run four at a time.
+- Input: PDF, DOCX, Markdown, TXT, HTML, email and similar, parsed to plain text and split into chunks of about 3,000 characters with 400 characters of overlap (`chunkText` in `parse.ts`). Chunks run four at a time.
 - Model: Muse Spark via `generateText` with `Output.object(ExtractionResultSchema)`, temperature 0.1.
 - System prompt casts the model as a geospatial analyst. It must return one event per distinct (what, where, when), the most specific place with disambiguating parents, ISO dates (first of month or year when only that is known), a reusable lowercase category, an optional value and unit, a verbatim source quote under 200 characters, a confidence score, and no invented events. Coordinates are returned only when the model is sure (well known cities, landmarks); otherwise null and the geocoder fills them in.
 - The file name and any document date are passed so relative dates ("last Tuesday") can be resolved. Clock times are treated as local to the event's place and converted to UTC, never read in the author's home zone.
@@ -61,7 +61,7 @@ Route: `POST /api/looks` with `{ prompt }`; repaint with `PATCH /api/looks/[id] 
 
 ### 3a. Design (`designLook`)
 
-Muse Spark is prompted as a cartographic designer and returns a `LookDesignSchema` object: every colour the style generator needs (land, water, wood, park, residential, building, road major/minor/casing, rail, boundary, label and halo), hillshade and its opacity, landcover and road opacity, label density, edge bleed, line style (solid or sketch), road style (cased, single, hidden), buildings on or off, halftone (enabled, size, opacity, colour), grain, relief saturation, label transform and spacing, and a `textureOverlay` block (enabled, prompt, opacity, blend, scale). The prompt explains how each field renders and the design rules (must read at zoom 2 and zoom 13, water above roads in contrast, markers are the subject). Two built-in looks are included as calibration examples. The result is saved as a `Theme` with `custom: true` and renders through `buildStyle` in `src/lib/map/styles.ts` exactly like a built-in look.
+Muse Spark is prompted as a cartographic designer and returns a `LookDesignSchema` object: every color the style generator needs (land, water, wood, park, residential, building, road major/minor/casing, rail, boundary, label and halo), hillshade and its opacity, landcover and road opacity, label density, edge bleed, line style (solid or sketch), road style (cased, single, hidden), buildings on or off, halftone (enabled, size, opacity, color), grain, relief saturation, label transform and spacing, and a `textureOverlay` block (enabled, prompt, opacity, blend, scale). The prompt explains how each field renders and the design rules (must read at zoom 2 and zoom 13, water above roads in contrast, markers are the subject). Two built-in looks are included as calibration examples. The result is saved as a `Theme` with `custom: true` and renders through `buildStyle` in `src/lib/map/styles.ts` exactly like a built-in look.
 
 Muse Spark's structured output returns an empty object when the schema contains nullable nested objects, so the schema uses flat objects with `enabled` flags. If the output lacks `background` the route throws rather than saving a blank look.
 

@@ -24,6 +24,9 @@ export async function extractFromText(text: string, context: { fileName: string;
     output: Output.object({ schema: ExtractionResultSchema }),
     prompt: `Source file: ${context.fileName}${context.docDate ? `\nDocument date: ${context.docDate}` : ""}\n\n<source>\n${text}\n</source>`,
     temperature: 0.1,
+    // Muse Spark reasons at length by default (minutes per chunk); low keeps
+    // recall while cutting the wait by about four fifths.
+    reasoning: "low",
   });
   return output;
 }
@@ -46,6 +49,7 @@ export async function extractFromImage(data: Uint8Array, mediaType: string, cont
       },
     ],
     temperature: 0.1,
+    reasoning: "low",
   });
   return output;
 }
@@ -62,6 +66,7 @@ export async function inferTableMapping(fileName: string, headers: string[], sam
       "You map spreadsheet columns onto a geospatial event schema. Use exact header strings from the provided list. Prefer explicit latitude/longitude columns over place names. For placeColumns list the most specific column first. If multiple date columns exist pick the one representing when the thing happened. Return null for anything not present.",
     prompt: `File: ${fileName}\nHeaders: ${JSON.stringify(headers)}\nSample rows:\n${sampleText}`,
     temperature: 0,
+    reasoning: "none",
   });
   return output;
 }

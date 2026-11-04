@@ -33,7 +33,7 @@ export function TechnologyFigure() {
           </linearGradient>
         </defs>
         {/* Browser */}
-        <Box x={10} y={20} w={130} h={110} title="Browser" lines={["Next.js 16, React 19", "MapLibre + react-map-gl", "Studio · View · Explore"]} />
+        <Box x={10} y={20} w={150} h={110} title="Browser" lines={["Next.js 16, React 19", "MapLibre GL maps", "Studio, View, Explore"]} />
         {/* Server */}
         <Box x={190} y={20} w={150} h={110} title="Vercel Functions" lines={["App Router, AI SDK 7", "Ingest pipeline", "Pattern engine"]} />
         {/* Gateway */}
@@ -56,17 +56,17 @@ export function TechnologyFigure() {
           </text>
         </g>
         {/* Open services */}
-        <Box x={190} y={160} w={150} h={110} title="Open geodata" lines={["OpenFreeMap tiles (OSM)", "Photon + Nominatim", "Natural Earth relief"]} />
-        <Box x={10} y={160} w={130} h={110} title="Storage" lines={["Vercel Blob: stories,", "looks, photo derivatives", "Signed email sessions"]} />
+        <Box x={190} y={160} w={150} h={110} title="Open geodata" lines={["OpenFreeMap tiles", "Photon, Nominatim", "Natural Earth relief"]} />
+        <Box x={10} y={160} w={150} h={110} title="Storage" lines={["Vercel Blob", "stories, looks, photos", "Signed email sessions"]} />
 
         {/* Edges */}
-        <Edge d="M140 75 H190" />
+        <Edge d="M160 75 H190" />
         <Edge d="M340 42 H390" lit />
         <Edge d="M470 64 V80" lit={!imageJob} />
         <Edge d="M470 64 V80 M470 130 V140" lit={imageJob} />
         <Edge d="M265 130 V160" />
-        <Edge d="M75 130 V160" />
-        <Edge d="M140 215 H190" />
+        <Edge d="M85 130 V160" />
+        <Edge d="M160 215 H190" />
 
         {/* Packets on the gateway edge */}
         <circle r="3.5" fill="var(--glow)">
@@ -108,7 +108,7 @@ function Box({ x, y, w, h, title, lines }: { x: number; y: number; w: number; h:
         {title}
       </text>
       {lines.map((l, i) => (
-        <text key={l} x="12" y={38 + i * 14} fontSize="9" fontFamily="var(--font-geist-mono)" fill="var(--mist)">
+        <text key={l} x="12" y={38 + i * 14} fontSize="8.5" fontFamily="var(--font-geist-mono)" fill="var(--mist)">
           {l}
         </text>
       ))}

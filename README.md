@@ -10,11 +10,11 @@ Live at [aigis.studio](https://aigis.studio). Built for the Meta Global AI Devel
 
 ## What it does
 
-1. **Ingest.** Upload PDFs, Word files, Markdown, text, HTML, CSV, XLSX or photos. Text is chunked and read by Muse Spark, which returns structured events (what, where, when, category, value, confidence, source quote). Spreadsheets are mapped column to field once, then converted row by row. Photos take place and time from EXIF; Muse Spark's vision writes the caption and recognises the landmark. Places without coordinates are geocoded against OpenStreetMap, with Muse Spark as the gazetteer of last resort.
-2. **Analyse.** A deterministic pattern engine scores temporal bursts, spatial hotspots, value outliers, lead/lag correlations between categories, and gaps. The findings are stored with the dataset and become evidence for the agent.
-3. **Watch.** The map animates through time with a scrubbable timeline, playback speeds, clustering, spiderfied coincident points, an ordered trail with direction arrows, and a detail panel with media. Markers, colour and the basemap look are the creator's choices and are saved with the story.
+1. **Ingest.** Upload PDFs, Word files, Markdown, text, HTML, CSV, XLSX or photos. Text is chunked and read by Muse Spark, which returns structured events (what, where, when, category, value, confidence, source quote). Spreadsheets are mapped column to field once, then converted row by row. Photos take place and time from EXIF; Muse Spark's vision writes the caption and recognizes the landmark. Places without coordinates are geocoded against OpenStreetMap, with Muse Spark as the gazetteer of last resort.
+2. **Analyze.** A deterministic pattern engine scores temporal bursts, spatial hotspots, value outliers, lead/lag correlations between categories, and gaps. The findings are stored with the dataset and become evidence for the agent.
+3. **Watch.** The map animates through time with a scrubbable timeline, playback speeds, clustering, spiderfied coincident points, an ordered trail with direction arrows, and a detail panel with media. Markers, color and the basemap look are the creator's choices and are saved with the story.
 4. **Explore.** Ask questions in the panel. The agent cites places, dates and counts, queries the dataset through tools, and moves the map itself (filter, highlight, fly, play) so the answer is shown, not just described.
-5. **Design.** Describe a basemap look in a sentence. Muse Spark designs the complete style (colours, relief, road treatment, labels, halftone, grain) and Muse Image paints a seamless surface texture when the look calls for one. Watercolour, photocopy, pixel world, impasto: each becomes a reusable look.
+5. **Design.** Describe a basemap look in a sentence. Muse Spark designs the complete style (colors, relief, road treatment, labels, halftone, grain) and Muse Image paints a seamless surface texture when the look calls for one. Watercolor, photocopy, pixel world, impasto: each becomes a reusable look.
 
 Every saved map is a **story**. Studio creates and edits; View is read-only for sharing.
 
@@ -25,13 +25,13 @@ Four pre-built stories ship with the app and open instantly:
 | Story | Sources |
 | --- | --- |
 | A Family Summer in Europe | A camera roll, nothing else |
-| Settlement of the American West | Historical chronicle + towns table |
-| The Renaissance, City by City | Catalogue of works + essay |
+| The Eras Tour, Night by Night | 149-show ledger + tour notes + photos |
+| The Renaissance, City by City | Catalog of works + essay |
 | Voltic: A Decade of Sports Sponsorships | Business ledger + strategy memo |
 
 ## How AIGIS uses Muse
 
-AIGIS is built on the Meta Model API. Every judgement call in the product is a Muse call. The deterministic parts (geocoding, statistics, map rendering) exist to give Muse good evidence and to render what it returns. Model IDs are gateway strings and can be overridden by environment variable (see `src/lib/ai/models.ts`). [MUSE.md](MUSE.md) has every call site, prompt and schema.
+AIGIS is built on the Meta Model API. Every judgment call in the product is a Muse call. The deterministic parts (geocoding, statistics, map rendering) exist to give Muse good evidence and to render what it returns. Model IDs are gateway strings and can be overridden by environment variable (see `src/lib/ai/models.ts`). [MUSE.md](MUSE.md) has every call site, prompt and schema.
 
 | Use case | Model | Where |
 | --- | --- | --- |
@@ -43,7 +43,7 @@ AIGIS is built on the Meta Model API. Every judgement call in the product is a M
 
 ### Extraction
 
-Prose becomes a table of events. Muse Spark reads each document chunk (about 7,000 characters, four chunks in flight) under a system prompt that casts it as a geospatial analyst and returns a structured list: one event per distinct what, where and when, the most specific place with its disambiguating parents, ISO dates with first-of-period rules when only a month or year is known, a lowercase category reused across the document, a value and unit when the event has a magnitude, a verbatim source quote, and a confidence score. Coordinates are returned only when the model is certain, otherwise the geocoder fills them in. Output is validated against a zod schema before anything is stored; nothing the model says reaches the map unchecked.
+Prose becomes a table of events. Muse Spark reads each document chunk (about 3,000 characters, four chunks in flight) under a system prompt that casts it as a geospatial analyst and returns a structured list: one event per distinct what, where and when, the most specific place with its disambiguating parents, ISO dates with first-of-period rules when only a month or year is known, a lowercase category reused across the document, a value and unit when the event has a magnitude, a verbatim source quote, and a confidence score. Coordinates are returned only when the model is certain, otherwise the geocoder fills them in. Output is validated against a zod schema before anything is stored; nothing the model says reaches the map unchecked.
 
 Place names the OpenStreetMap geocoders cannot resolve, or all of them when those services are down, go to Muse Spark in batches of 40 and come back as coordinates with a confidence score.
 
@@ -57,7 +57,7 @@ Scanned documents, charts and maps go through the extraction schema as a file pa
 
 ### Map generation
 
-Basemap looks are designed, not picked from a list. A one-line brief ("Stamen watercolour", "1970s airline poster", "Minecraft overworld") goes to Muse Spark with a system prompt that explains how every field of the style renders on OpenStreetMap vector data and what a basemap must obey so event markers stay the subject. It returns the full design: land, water, forest, park, building, road, rail, boundary and label colours; hillshade and its opacity; landcover and road opacity; label density, transform and spacing; edge bleed; sketch or solid lines; cased, single or hidden roads; buildings on or off; halftone screen; film grain; relief saturation; and a texture brief for Muse Image. A parametric style generator turns that into a MapLibre style, so a look designed in ten seconds renders at every zoom like a built-in. Looks are saved and reusable across stories.
+Basemap looks are designed, not picked from a list. A one-line brief ("Stamen watercolor", "1970s airline poster", "Minecraft overworld") goes to Muse Spark with a system prompt that explains how every field of the style renders on OpenStreetMap vector data and what a basemap must obey so event markers stay the subject. It returns the full design: land, water, forest, park, building, road, rail, boundary and label colors; hillshade and its opacity; landcover and road opacity; label density, transform and spacing; edge bleed; sketch or solid lines; cased, single or hidden roads; buildings on or off; halftone screen; film grain; relief saturation; and a texture brief for Muse Image. A parametric style generator turns that into a MapLibre style, so a look designed in ten seconds renders at every zoom like a built-in. Looks are saved and reusable across stories.
 
 ### Image generation
 
@@ -75,7 +75,7 @@ Entry for the [Meta Global AI Developer Hackathon](https://dev.meta.ai/events/gl
 
 **Problem.** Most of what people know about where and when things happened is trapped in prose, spreadsheets and camera rolls. Turning that into a map that moves takes a GIS analyst and days of cleanup.
 
-**Users.** Anyone with a pile of dated, located material: journalists, researchers, students, analysts, travellers, brand and operations teams.
+**Users.** Anyone with a pile of dated, located material: journalists, researchers, students, analysts, travelers, brand and operations teams.
 
 **How Meta's models are used.** Muse Spark 1.3 for extraction, vision, structured design and the tool-calling agent; Muse Image 1.0 for generated map textures. Detailed above and in [MUSE.md](MUSE.md).
 

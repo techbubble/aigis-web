@@ -47,6 +47,8 @@ export async function POST(req: Request) {
     messages: await convertToModelMessages(messages),
     stopWhen: stepCountIs(6),
     temperature: 0.3,
+    // Answers should start within seconds; the evidence is already in the prompt.
+    reasoning: "low",
     tools: {
       focusMap: tool({
         description:

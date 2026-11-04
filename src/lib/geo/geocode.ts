@@ -85,6 +85,7 @@ async function modelGeocode(places: string[]): Promise<Map<string, Hit>> {
           "You are a gazetteer. For each place name return its latitude and longitude in decimal degrees (WGS84). Use the most specific match: a venue or landmark gets its own position, a neighborhood its center, a city its center, a region or country its centroid. Return null coordinates only when the name is not a real place or is too ambiguous to pin to one position. Confidence below 0.4 means a guess.",
         prompt: batch.map((p, k) => `${k + 1}. ${p}`).join("\n"),
         temperature: 0,
+        reasoning: "none",
       });
       for (const r of output?.places ?? []) {
         if (r.lat == null || r.lng == null || r.confidence < 0.4 || Math.abs(r.lat) > 90 || Math.abs(r.lng) > 180) continue;

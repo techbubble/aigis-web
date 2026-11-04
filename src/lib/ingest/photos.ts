@@ -69,6 +69,7 @@ export async function processPhoto(opts: { datasetId: string; eventId: string; n
   const forModel = await img.clone().resize({ width: 1024, height: 1024, fit: "inside", withoutEnlargement: true }).jpeg({ quality: 80 }).toBuffer();
   const { output: cap } = await generateText({
     model: MODELS.extract,
+    reasoning: "none",
     output: Output.object({ schema: CaptionSchema }),
     messages: [
       {

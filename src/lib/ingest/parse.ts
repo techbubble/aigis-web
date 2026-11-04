@@ -103,7 +103,9 @@ function stripHtml(html: string) {
 }
 
 // Split long text on paragraph boundaries into ~maxChars chunks with overlap.
-export function chunkText(text: string, maxChars = 7000, overlap = 400): string[] {
+// Smaller chunks run four at a time and each finishes in well under a
+// minute, so progress shows early instead of one long silent call.
+export function chunkText(text: string, maxChars = 3000, overlap = 300): string[] {
   const clean = text.replace(/\r/g, "").replace(/[ \t]+\n/g, "\n").trim();
   if (clean.length <= maxChars) return clean ? [clean] : [];
   const paras = clean.split(/\n{2,}/);
