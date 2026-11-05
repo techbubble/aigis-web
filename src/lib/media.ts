@@ -4,8 +4,9 @@ import path from "node:path";
 // Where photo derivatives (thumb + full) live. Blob in production, the local
 // filesystem otherwise. Sample datasets write into public/ so they ship with
 // the repo and need no storage at runtime.
-// A token (classic store) or a store id (OIDC-authenticated store) means Blob is connected.
-const useBlob = !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+// A token (classic store) anywhere, or an OIDC store id when running on Vercel, means Blob is
+// connected. Locally an OIDC store cannot authenticate, so development stays on the filesystem.
+const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN || (!!process.env.BLOB_STORE_ID && !!process.env.VERCEL);
 const MEDIA_DIR = path.join(process.cwd(), ".data", "media");
 
 export async function saveMedia(datasetId: string, name: string, bytes: Uint8Array, contentType = "image/jpeg"): Promise<string> {

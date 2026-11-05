@@ -65,7 +65,7 @@ export type Theme = z.infer<typeof ThemeSchema>;
 
 // What the look designer must return: every treatment decided, nullable
 // where "none" is the answer. Strict JSON schema friendly.
-export const LookDesignSchema = ThemeSchema.omit({ id: true, texture: true, custom: true, prompt: true, createdAt: true, owner: true }).extend({
+export const LookDesignSchema = ThemeSchema.omit({ id: true, texture: true, custom: true, prompt: true, texturePrompt: true, createdAt: true, owner: true }).extend({
   grain: z.number().describe("0 to 1, film grain / paper noise over the whole map. 0 for clean digital looks"),
   // Muse Spark's structured output rejects nullable objects, so optional
   // treatments carry an `enabled` flag instead.

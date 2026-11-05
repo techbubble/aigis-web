@@ -43,6 +43,7 @@ export async function designLook(prompt: string, owner?: string): Promise<Theme>
     system: SYSTEM,
     output: Output.object({ schema: LookDesignSchema }),
     prompt: `Brief: ${prompt}\n\nFor calibration, two built-in looks (partial): \n${examples}`,
+    reasoning: "low",
   });
   const output = result.output;
   if (!output || typeof output.background !== "string") {

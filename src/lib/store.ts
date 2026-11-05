@@ -3,8 +3,9 @@ import path from "node:path";
 import type { Dataset } from "./types";
 
 // Blob in production (BLOB_READ_WRITE_TOKEN or BLOB_STORE_ID set), local filesystem otherwise.
-// A token (classic store) or a store id (OIDC-authenticated store) means Blob is connected.
-const useBlob = !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+// A token (classic store) anywhere, or an OIDC store id when running on Vercel, means Blob is
+// connected. Locally an OIDC store cannot authenticate, so development stays on the filesystem.
+const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN || (!!process.env.BLOB_STORE_ID && !!process.env.VERCEL);
 const DATA_DIR = path.join(process.cwd(), ".data", "datasets");
 const PREFIX = "aigis/datasets";
 
