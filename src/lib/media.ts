@@ -4,7 +4,8 @@ import path from "node:path";
 // Where photo derivatives (thumb + full) live. Blob in production, the local
 // filesystem otherwise. Sample datasets write into public/ so they ship with
 // the repo and need no storage at runtime.
-const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
+// A token (classic store) or a store id (OIDC-authenticated store) means Blob is connected.
+const useBlob = !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 const MEDIA_DIR = path.join(process.cwd(), ".data", "media");
 
 export async function saveMedia(datasetId: string, name: string, bytes: Uint8Array, contentType = "image/jpeg"): Promise<string> {

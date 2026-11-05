@@ -99,7 +99,7 @@ Optional environment variables:
 | --- | --- |
 | `AI_GATEWAY_API_KEY` | Gateway auth outside Vercel (instead of OIDC) |
 | `AIGIS_EXTRACT_MODEL`, `AIGIS_CHAT_MODEL`, `AIGIS_IMAGE_MODEL` | Override model IDs |
-| `BLOB_READ_WRITE_TOKEN` | Store datasets, media and looks in Vercel Blob; omitted, `.data/` is used |
+| `BLOB_READ_WRITE_TOKEN` or `BLOB_STORE_ID` | Store datasets, media and looks in Vercel Blob (classic token or OIDC store); omitted, `.data/` is used |
 
 `pnpm build` and `pnpm lint` run the production build and ESLint.
 

@@ -2,8 +2,9 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { Dataset } from "./types";
 
-// Blob in production (BLOB_READ_WRITE_TOKEN set), local filesystem otherwise.
-const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
+// Blob in production (BLOB_READ_WRITE_TOKEN or BLOB_STORE_ID set), local filesystem otherwise.
+// A token (classic store) or a store id (OIDC-authenticated store) means Blob is connected.
+const useBlob = !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 const DATA_DIR = path.join(process.cwd(), ".data", "datasets");
 const PREFIX = "aigis/datasets";
 

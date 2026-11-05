@@ -3,7 +3,8 @@ import path from "node:path";
 import { ThemeSchema, type Theme } from "./map/styles";
 
 // Looks designed in Studio. Blob in production, local files otherwise.
-const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
+// A token (classic store) or a store id (OIDC-authenticated store) means Blob is connected.
+const useBlob = !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 const DIR = path.join(process.cwd(), ".data", "looks");
 const PREFIX = "aigis/looks";
 
