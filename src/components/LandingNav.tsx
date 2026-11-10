@@ -7,7 +7,6 @@ import { AccountMenu, type SessionUser } from "./AccountMenu";
 const LINKS = [
   { href: "/#demos", label: "Demos" },
   { href: "/about", label: "About" },
-  { href: "/studio", label: "Studio" },
 ];
 
 // The landing header's navigation: inline links on wide screens, a
@@ -30,6 +29,9 @@ export function LandingNav({ user }: { user: SessionUser }) {
             {l.label}
           </Link>
         ))}
+        <Link href="/studio" className="rounded-full bg-glow px-6 py-2 text-base font-semibold text-ink shadow-[0_0_28px_rgba(56,189,248,0.35)] transition hover:opacity-90">
+          Studio
+        </Link>
         <AccountMenu user={user} />
       </nav>
       <button
@@ -50,7 +52,10 @@ export function LandingNav({ user }: { user: SessionUser }) {
                 {l.label}
               </Link>
             ))}
-            <div className="flex items-center justify-end px-5 py-3 text-sm text-dim">
+            <div className="flex items-center justify-between px-5 py-4">
+              <Link href="/studio" onClick={() => setOpen(false)} className="rounded-full bg-glow px-6 py-2 text-base font-semibold text-ink hover:opacity-90">
+                Studio
+              </Link>
               <AccountMenu user={user} />
             </div>
           </div>
