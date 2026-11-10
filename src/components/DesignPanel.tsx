@@ -147,7 +147,7 @@ export function DesignPanel({
 
 
 
-      <Section title="Design a look" hint="Describe it; Muse Spark sets every color and treatment, Muse Image paints the surface">
+      <Section title="Design a look" hint="Describe it; AIGIS sets every color and treatment and paints the surface">
         <div className={`rounded-lg border bg-white p-2 ${designing ? "border-glow" : "border-line"}`}>
           <textarea
             value={brief}

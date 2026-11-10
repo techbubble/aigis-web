@@ -24,8 +24,7 @@ export async function extractFromText(text: string, context: { fileName: string;
     output: Output.object({ schema: ExtractionResultSchema }),
     prompt: `Source file: ${context.fileName}${context.docDate ? `\nDocument date: ${context.docDate}` : ""}\n\n<source>\n${text}\n</source>`,
     temperature: 0.1,
-    // Muse Spark reasons at length by default (minutes per chunk); low keeps
-    // recall while cutting the wait by about four fifths.
+    // Low reasoning keeps recall while keeping each chunk to seconds.
     reasoning: "low",
   });
   return output;

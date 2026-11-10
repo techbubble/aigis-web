@@ -25,16 +25,12 @@ export default async function Home() {
 
         <div className="relative z-10 mx-auto max-w-7xl px-6 pt-8 md:pt-14">
           <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-glow/30 bg-glow/10 px-3.5 py-1.5 text-sm text-glow">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-glow" />
-              Meta Global AI Developer Hackathon 2026
-            </div>
             <h1 className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight md:text-7xl">
               When maps <span className="font-serif-display font-normal italic text-glow">tell a story.</span>
             </h1>
             <p className="mx-auto mt-7 max-w-3xl text-xl leading-relaxed text-mist md:text-2xl">
-              Drop in reports, spreadsheets, photos or news. Agents built on Muse find every event with a place and a time, hunt for
-              patterns, and hand you an animated map you can question in plain language.
+              Drop in reports, spreadsheets, photos or news. AIGIS finds every event with a place and a time, hunts for
+              patterns, and hands you an animated map you can question in plain language.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <a href="#demos" className="inline-flex h-14 w-56 items-center justify-center rounded-full border-2 border-glow bg-glow text-lg font-semibold text-ink shadow-[0_0_48px_rgba(56,189,248,0.45)] transition hover:opacity-90">
@@ -45,10 +41,10 @@ export default async function Home() {
               </Link>
             </div>
           </div>
-          {/* The pipeline, animated: documents in, Muse in the middle, events landing on the globe. */}
+          {/* The pipeline, animated: documents in, extraction in the middle, events landing on the globe. */}
           <div className="relative -mx-6 mt-6 pb-10 md:mx-0 md:mt-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/workflow-hero.svg" alt="Documents flow into Muse, which extracts events that land on an animated globe" className="block w-full" width={1200} height={470} />
+            <img src="/workflow-hero.svg" alt="Documents flow through extraction into events that land on an animated globe" className="block w-full" width={1200} height={470} />
           </div>
         </div>
       </section>
@@ -56,7 +52,7 @@ export default async function Home() {
       {/* How it works */}
       <section className="relative mx-auto max-w-7xl px-6 pb-8 pt-4">
         <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
-          <Step n="01" title="Ingest" body="Any file. Tables are column-mapped once by the model, then converted row by row. Prose and images go through Muse Spark's vision and structured extraction." />
+          <Step n="01" title="Ingest" body="Any file. Tables are column-mapped once by the model, then converted row by row. Prose, scans and photos are read for every event with a place and a time." />
           <Step n="02" title="Locate and date" body="Each event gets coordinates, a timestamp and a confidence score. Places are geocoded; magnitudes and entities are captured." />
           <Step n="03" title="Discover" body="A pattern engine scores temporal bursts, spatial hotspots, outliers, silences and lead/lag relationships between categories." />
           <Step n="04" title="Design and share" body="In Studio you choose the map look and markers, then save. The view link shows exactly that; only you and your editors can change it." />
@@ -115,7 +111,7 @@ export default async function Home() {
           <div className="flex items-center gap-2">
             <Logo size={18} /> AIGIS · autonomous geospatial intelligence
           </div>
-          <div>Muse Spark and Muse Image via Vercel AI Gateway · OpenFreeMap tiles · Photon and Nominatim geocoding (OpenStreetMap)</div>
+          <div>Models via Vercel AI Gateway · OpenFreeMap tiles · Photon and Nominatim geocoding (OpenStreetMap)</div>
         </div>
       </footer>
     </main>

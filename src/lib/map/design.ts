@@ -4,8 +4,8 @@ import { MODELS } from "../ai/models";
 import { saveMedia } from "../media";
 import { LookDesignSchema, THEMES, type Theme } from "./styles";
 
-// Muse Spark designs a complete look from a description; Muse Image paints
-// the surface texture when the design calls for one. The result is a Theme
+// The language model designs a complete look from a description; the image
+// model paints the surface texture when the design calls for one. The result is a Theme
 // the style generator renders like any built-in.
 
 const SYSTEM = `You are a cartographic designer producing a basemap look for AIGIS, an animated map product. You answer with one JSON object matching the schema. The map is drawn from OpenStreetMap vector data (land, water, forests, parks, built-up areas, buildings, roads, rail, boundaries, labels) and markers for events will be drawn on top of it, so the basemap must stay quiet and legible: the markers are the subject.
@@ -29,7 +29,7 @@ Design rules: the look must read at zoom 2 (continents) and zoom 13 (streets). K
 
 const TEXTURE_SYSTEM =
   "Flat surface texture photographed straight down, perfectly even lighting, no vignette, no border, no objects, no text, no watermark, uniform fine grain across the whole frame with no large strokes, swirls or distinct features, low contrast, fills the frame edge to edge: ";
-const TILE = 1600; // what Muse Image returns
+const TILE = 1600; // working tile size; generated images are resized to it
 const OVERLAP = 320;
 const OUT = 2560;
 export const TEXTURE_SCALE = 2048;

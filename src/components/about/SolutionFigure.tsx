@@ -1,6 +1,6 @@
 "use client";
 
-// The pipeline, animated on a loop: files enter, Muse Spark turns them into
+// The pipeline, animated on a loop: files enter, extraction turns them into
 // event rows, the rows land on a map as markers while the timeline cursor
 // sweeps, then a question arrives and the map focuses on the answer.
 const FILES = ["shows.csv", "notes.md", "IMG_2291.jpg", "memo.pdf"];
@@ -17,9 +17,9 @@ const EVENTS = [
 
 export function SolutionFigure() {
   return (
-    <svg viewBox="0 0 560 360" className="w-full" role="img" aria-label="Files flow through Muse Spark into events that land on an animated map, then a question focuses the map">
+    <svg viewBox="0 0 560 360" className="w-full" role="img" aria-label="Files flow through extraction into events that land on an animated map, then a question focuses the map">
       <defs>
-        <linearGradient id="sfMuse" x1="0" x2="1">
+        <linearGradient id="sfModel" x1="0" x2="1">
           <stop offset="0" stopColor="var(--glow)" />
           <stop offset="1" stopColor="var(--glow-2)" />
         </linearGradient>
@@ -44,16 +44,16 @@ export function SolutionFigure() {
         ))}
       </g>
 
-      {/* Muse */}
+      {/* Models */}
       <g transform="translate(196 72)">
-        <rect width="104" height="96" rx="14" fill="var(--ink-2)" stroke="url(#sfMuse)" strokeWidth="1.5" />
-        <circle cx="52" cy="40" r="16" fill="none" stroke="url(#sfMuse)" strokeWidth="1.5" className="sf-spin" style={{ transformOrigin: "52px 40px" }} strokeDasharray="60 40" />
-        <circle cx="52" cy="40" r="5" fill="url(#sfMuse)" />
+        <rect width="104" height="96" rx="14" fill="var(--ink-2)" stroke="url(#sfModel)" strokeWidth="1.5" />
+        <circle cx="52" cy="40" r="16" fill="none" stroke="url(#sfModel)" strokeWidth="1.5" className="sf-spin" style={{ transformOrigin: "52px 40px" }} strokeDasharray="60 40" />
+        <circle cx="52" cy="40" r="5" fill="url(#sfModel)" />
         <text x="52" y="74" textAnchor="middle" fontSize="10" fontWeight="600" fill="var(--fog)" letterSpacing="1">
-          MUSE SPARK
+          EXTRACT
         </text>
         <text x="52" y="87" textAnchor="middle" fontSize="8" fontFamily="var(--font-geist-mono)" fill="var(--dim)">
-          extract · caption · chat
+          read · caption · answer
         </text>
       </g>
 

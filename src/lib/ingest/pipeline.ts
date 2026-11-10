@@ -76,7 +76,7 @@ export async function runIngest(
       const meta = metaByName.get(src.file.name);
       const isPhoto = !!(meta?.time || (meta?.lat != null && meta?.lng != null)) || (await looksLikePhoto(src.data));
       if (isPhoto) {
-        emit({ type: "status", message: `Reading photo ${src.file.name}: EXIF and Muse Spark vision`, pct: 10 });
+        emit({ type: "status", message: `Reading photo ${src.file.name}: EXIF and caption`, pct: 10 });
         try {
           const eventId = nanoid(8);
           const r = await processPhoto({ datasetId: id, eventId, name: src.file.name, bytes: src.data, mediaType: src.mediaType, meta, docDate: opts.docDate });
@@ -87,7 +87,7 @@ export async function runIngest(
           emit({ type: "status", message: `${src.file.name}: photo failed: ${(err as Error).message}` });
         }
       } else {
-        emit({ type: "status", message: `Reading image ${src.file.name} with Muse Spark`, pct: 10 });
+        emit({ type: "status", message: `Reading image ${src.file.name}`, pct: 10 });
         try {
           const r = await extractFromImage(src.data, src.mediaType, { fileName: src.file.name });
           for (const e of r.events) drafts.push({ e, sourceFile: src.file.name });

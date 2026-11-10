@@ -210,7 +210,7 @@ export function SourcesPanel({
       <div>
         <div className="text-xs font-medium uppercase tracking-[0.2em] text-dim">Sources</div>
         <p className="mt-1 text-xs leading-relaxed text-mist">
-          {isNew ? "Drop the documents, spreadsheets or photos the map should be made from. Where and when come from the files; the story from Muse Spark." : "The documents this story is built from. Add more to grow it, remove one and its events leave the map."}
+          {isNew ? "Drop the documents, spreadsheets or photos the map should be made from. Where and when come from the files; AIGIS writes the story." : "The documents this story is built from. Add more to grow it, remove one and its events leave the map."}
         </p>
       </div>
 

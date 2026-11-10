@@ -7,7 +7,7 @@ import { PlaceType, type ExtractedEvent } from "../types";
 import { saveMedia } from "../media";
 
 // A photo becomes one event. Where and when come from EXIF whenever the
-// camera recorded them; Muse Spark's vision writes the title, summary,
+// camera recorded them; the vision model writes the title, summary,
 // category and a place guess (used only if there is no GPS fix).
 
 export type PhotoMeta = { lat?: number | null; lng?: number | null; time?: string | null; make?: string | null; model?: string | null };

@@ -9,9 +9,8 @@ import { ProblemFigure } from "./ProblemFigure";
 import { SolutionFigure } from "./SolutionFigure";
 import { MarketFigure } from "./MarketFigure";
 import { TechnologyFigure } from "./TechnologyFigure";
-import { MuseFigure } from "./MuseFigure";
 
-// The pitch as a page: four full-height chapters, each with one animated
+// The pitch as a page: full-height chapters, each with one animated
 // figure that makes the chapter's point. Arrow keys and the rail on the
 // left move between chapters, so it can be narrated over without scrolling
 // by hand.
@@ -21,7 +20,6 @@ const CHAPTERS = [
   { id: "solution", n: "02", label: "Solution" },
   { id: "market", n: "03", label: "Market" },
   { id: "technology", n: "04", label: "Technology" },
-  { id: "muse", n: "05", label: "Muse" },
 ] as const;
 
 export function About({ user }: { user: SessionUser }) {
@@ -102,15 +100,11 @@ export function About({ user }: { user: SessionUser }) {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 hero-fade-b" />
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 md:pl-36 lg:pl-40">
           <div className="chapter-in mx-auto max-w-4xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-glow/30 bg-glow/10 px-3.5 py-1.5 text-sm text-glow">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-glow" />
-              Meta Global AI Developer Hackathon 2026
-            </div>
             <h1 className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight md:text-7xl">
               When maps <span className="font-serif-display font-normal italic text-glow">tell a story.</span>
             </h1>
             <p className="mx-auto mt-7 max-w-3xl text-xl leading-relaxed text-mist md:text-2xl">
-              Drop in reports, spreadsheets, photos or news. Agents built on Muse find every event with a place and a time, hunt for patterns, and hand you an animated map you can question in plain language.
+              Drop in reports, spreadsheets, photos or news. AIGIS finds every event with a place and a time, hunts for patterns, and hands you an animated map you can question in plain language.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <Link href="/#demos" className="inline-flex h-14 w-56 items-center justify-center rounded-full border-2 border-glow bg-glow text-lg font-semibold text-ink shadow-[0_0_48px_rgba(56,189,248,0.45)] transition hover:opacity-90">
@@ -123,7 +117,7 @@ export function About({ user }: { user: SessionUser }) {
           </div>
           <div className="chapter-in relative -mx-6 mt-6 pb-10 md:mx-0 md:mt-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/workflow-hero.svg" alt="Documents flow into Muse, which extracts events that land on an animated globe" className="block w-full" width={1200} height={470} />
+            <img src="/workflow-hero.svg" alt="Documents flow through extraction into events that land on an animated globe" className="block w-full" width={1200} height={470} />
           </div>
         </div>
       </section>
@@ -164,10 +158,10 @@ export function About({ user }: { user: SessionUser }) {
       >
         <ul>
           <li>Any input: PDF, CSV, XLSX, Markdown, photos with EXIF, scans and charts.</li>
-          <li>Agents built on Muse Spark extract every event with place, time, value and a confidence score.</li>
+          <li>Every event is extracted with place, time, value and a confidence score.</li>
           <li>A pattern engine scores bursts, hotspots, outliers and silences.</li>
           <li>An animated story: scrub it, design its look, share a link.</li>
-          <li>Ask in plain language; the model answers with evidence and moves the map itself.</li>
+          <li>Ask in plain language; AIGIS answers with evidence and moves the map itself.</li>
         </ul>
       </Chapter>
 
@@ -199,35 +193,15 @@ export function About({ user }: { user: SessionUser }) {
         eyebrow="How it is built"
         title={
           <>
-            Next.js on Vercel, Muse through the <em>AI Gateway</em>, open geodata for everything else.
+            Next.js on Vercel, models through the <em>AI Gateway</em>, open geodata for everything else.
           </>
         }
         figure={<TechnologyFigure />}
       >
         <ul>
           <li>Vercel Functions run the ingest pipeline, the pattern engine and the chat agent with the AI SDK.</li>
-          <li>Meta&apos;s Muse models are reached through the Vercel AI Gateway: one key, zero data retention, no other provider.</li>
+          <li>Reading, captioning, geocoding fallback, look design and the chat agent are small, inexpensive model calls through the Vercel AI Gateway, each with a typed schema and validated before anything reaches the map.</li>
           <li>Deterministic and open: MapLibre, OpenFreeMap tiles, Photon and Nominatim geocoding, Natural Earth relief, Vercel Blob.</li>
-        </ul>
-      </Chapter>
-
-      <Chapter
-        ref={(el) => {
-          refs.current[5] = el;
-        }}
-        c={CHAPTERS[5]}
-        eyebrow="Six Muse Spark jobs, one Muse Image job"
-        title={
-          <>
-            Every <em>judgment</em> in AIGIS is a Muse call.
-          </>
-        }
-        figure={<MuseFigure />}
-      >
-        <ul>
-          <li>Six Muse Spark 1.3 jobs and one Muse Image 1.0 job, each a single call with a typed schema.</li>
-          <li>Everything the model returns is validated before it reaches the map; the geocoders, statistics and rendering only give it evidence and draw what it says.</li>
-          <li>Reasoning effort is set per call, so extraction answers in seconds and the agent moves the map as it talks.</li>
         </ul>
         <div className="flex flex-wrap gap-3 pt-2">
           <Link href="/#demos" className="rounded-full bg-glow px-6 py-2.5 text-sm font-semibold text-ink hover:opacity-90">

@@ -117,6 +117,6 @@ function Row({ k, v, mono }: { k: string; v: string; mono?: boolean }) {
 
 function geocoderLabel(g: GeoEvent["geocoder"]) {
   if (g === "exif") return "Photo GPS (EXIF)";
-  return g === "source" ? "coordinates in source" : g === "model" ? "Muse Spark" : g === "photon" ? "Photon (OSM)" : "Nominatim (OSM)";
+  return g === "source" ? "coordinates in source" : g === "model" ? "AIGIS" : g === "photon" ? "Photon (OSM)" : "Nominatim (OSM)";
 }
 

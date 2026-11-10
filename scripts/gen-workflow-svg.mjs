@@ -1,4 +1,4 @@
-// Generates the animated workflow graphic (documents -> Muse -> globe) as
+// Generates the animated workflow graphic (documents -> extraction -> globe) as
 // self-contained SVG with SMIL animation, so it plays in a README and in an
 // <img>. Two variants: workflow.svg with a dark card background for the
 // README, workflow-hero.svg transparent for the landing page.
@@ -16,7 +16,7 @@ const DOCS = Array.from({ length: N }, (_, i) => {
   const lane = (i * 7) % 6;
   return [label, color, 70 + lane * 52 + ((i * 13) % 3) * 6, i * STEP];
 });
-const mx = 600, my = 218; // thirds: documents at 200, Muse at 600, globe at 1000
+const mx = 600, my = 218; // thirds: documents at 200, extraction at 600, globe at 1000
 const gx = 1000, gy = 218, gr = 150;
 const LAND = [[945, 150], [1030, 128], [1080, 212], [963, 250], [1020, 285], [913, 195]];
 
@@ -76,7 +76,7 @@ function build(withBg, land) {
     o.push(`<text x="${x}" y="438" fill="#e5e9f0" font-size="17" text-anchor="middle"><tspan font-weight="700">${verb}</tspan><tspan fill="#aab3c2"> ${detail}</tspan></text>`);
   };
   cap(200, "ANY DOCUMENT", "Read", "PDF, XLSX, CSV, images, text");
-  cap(mx, "MUSE", "Extract", "place, time, magnitude");
+  cap(mx, "AIGIS", "Extract", "place, time, magnitude");
   cap(gx, "ANIMATED MAP", "Discover", "bursts, hotspots, lead/lag");
 
   DOCS.forEach(([label, color, y, b]) => {
@@ -102,9 +102,9 @@ function build(withBg, land) {
   o.push(`<path d="${gear(mx - 52, my + 46, 16, 7)}" stroke="#34d399"><animateTransform attributeName="transform" type="rotate" from="360 ${mx - 52} ${my + 46}" to="0 ${mx - 52} ${my + 46}" dur="5.5s" repeatCount="indefinite"/></path>`);
   o.push(`</g>`);
   o.push(`<circle cx="${mx}" cy="${my}" r="16" fill="#60a5fa" opacity="0.9"><animate attributeName="r" values="14;18;14" dur="2s" repeatCount="indefinite"/></circle>`);
-  o.push(`<text x="${mx}" y="${my + 5}" fill="#171a20" font-size="11" font-weight="800" text-anchor="middle">M</text>`);
-  o.push(`<text x="${mx}" y="${my - 72}" fill="#e5e9f0" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="1">Muse Spark · Muse Image</text>`);
-  o.push(`<text x="${mx}" y="${my + 84}" fill="#8b95a7" font-size="11" text-anchor="middle">extract · caption · design · paint</text>`);
+  o.push(`<text x="${mx}" y="${my + 5}" fill="#171a20" font-size="11" font-weight="800" text-anchor="middle">A</text>`);
+  o.push(`<text x="${mx}" y="${my - 72}" fill="#e5e9f0" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="1">Read · Locate · Date</text>`);
+  o.push(`<text x="${mx}" y="${my + 84}" fill="#8b95a7" font-size="11" text-anchor="middle">extract · caption · design · texture</text>`);
 
   DOCS.forEach(([, color, , b], i) => {
     const [lx, ly] = LAND[i % LAND.length];

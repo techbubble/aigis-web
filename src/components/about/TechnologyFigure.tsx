@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-// The architecture. The Muse boxes take turns lighting up with their edges;
-// the Muse chapter that follows shows each call in detail.
+// The architecture. The two model boxes take turns lighting up with their edges.
 export function TechnologyFigure() {
   const [imageJob, setImageJob] = useState(false);
   useEffect(() => {
@@ -12,9 +11,9 @@ export function TechnologyFigure() {
   }, []);
   return (
     <div>
-      <svg viewBox="0 0 560 300" className="w-full" role="img" aria-label="Architecture: browser, Next.js on Vercel, AI Gateway, Muse Spark and Muse Image, open geodata services">
+      <svg viewBox="0 0 560 300" className="w-full" role="img" aria-label="Architecture: browser, Next.js on Vercel, AI Gateway, language and image models, open geodata services">
         <defs>
-          <linearGradient id="tfMuse" x1="0" x2="1">
+          <linearGradient id="tfModel" x1="0" x2="1">
             <stop offset="0" stopColor="var(--glow)" />
             <stop offset="1" stopColor="var(--glow-2)" />
           </linearGradient>
@@ -25,18 +24,18 @@ export function TechnologyFigure() {
         <Box x={190} y={20} w={150} h={110} title="Vercel Functions" lines={["App Router, AI SDK 7", "Ingest pipeline", "Pattern engine"]} />
         {/* Gateway */}
         <Box x={390} y={20} w={160} h={44} title="Vercel AI Gateway" lines={["one key, every model"]} />
-        {/* Muse */}
+        {/* Models */}
         <g>
-          <rect x="390" y="80" width="160" height="50" rx="10" fill="var(--ink-2)" stroke={imageJob ? "var(--line)" : "url(#tfMuse)"} strokeWidth={imageJob ? 1 : 2} className={imageJob ? "" : "tf-lit"} />
+          <rect x="390" y="80" width="160" height="50" rx="10" fill="var(--ink-2)" stroke={imageJob ? "var(--line)" : "url(#tfModel)"} strokeWidth={imageJob ? 1 : 2} className={imageJob ? "" : "tf-lit"} />
           <text x="402" y="100" fontSize="11" fontWeight="600" fill="var(--fog)">
-            Muse Spark 1.3
+            Language model
           </text>
           <text x="402" y="116" fontSize="9" fontFamily="var(--font-geist-mono)" fill="var(--dim)">
             text · vision · tools
           </text>
-          <rect x="390" y="140" width="160" height="40" rx="10" fill="var(--ink-2)" stroke={imageJob ? "url(#tfMuse)" : "var(--line)"} strokeWidth={imageJob ? 2 : 1} className={imageJob ? "tf-lit" : ""} />
+          <rect x="390" y="140" width="160" height="40" rx="10" fill="var(--ink-2)" stroke={imageJob ? "url(#tfModel)" : "var(--line)"} strokeWidth={imageJob ? 2 : 1} className={imageJob ? "tf-lit" : ""} />
           <text x="402" y="158" fontSize="11" fontWeight="600" fill="var(--fog)">
-            Muse Image 1.0
+            Image model
           </text>
           <text x="402" y="172" fontSize="9" fontFamily="var(--font-geist-mono)" fill="var(--dim)">
             textures for looks

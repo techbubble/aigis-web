@@ -1,4 +1,4 @@
-// Generates the geotagged photo set for the family demo with Muse Image,
+// Generates the geotagged photo set for the family demo with an image model,
 // then writes EXIF (GPS, capture time, camera) so the ingest pipeline can
 // read it like any phone photo. Resumable: existing files are skipped.
 // Run: node --env-file=.env.local scripts/gen-photos.mjs
@@ -9,7 +9,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 const OUT = path.join(process.cwd(), "public/samples/europe-vacation/photos");
-const MODEL = "meta/muse-image-1.0";
+const MODEL = process.env.AIGIS_IMAGE_MODEL ?? "bfl/flux-3-image-klein";
 const STYLE = "Candid smartphone travel photo taken by a parent on a family trip, summer 2025, natural light, realistic, slightly imperfect handheld framing, no text, no watermark, no captions. ";
 
 // [file, local time, lat, lng, prompt]

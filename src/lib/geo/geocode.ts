@@ -1,7 +1,7 @@
 // Geocoding with an in-process cache. Photon (komoot) first, Nominatim as
 // fallback; both are free OSM-backed services, respect their usage policies.
 // Whatever they cannot resolve (or when they are down or rate limited) goes
-// to Muse Spark in batches, which knows cities, venues and landmarks well
+// to the language model in batches, which knows cities, venues and landmarks well
 // enough for a map at the scale AIGIS draws.
 import { generateText, Output } from "ai";
 import { z } from "zod";
@@ -10,7 +10,7 @@ import { MODELS } from "../ai/models";
 type Hit = { lat: number; lng: number; provider: "photon" | "nominatim" | "model" } | null;
 
 const cache = new Map<string, Hit>();
-const UA = "AIGIS/0.1 (hackathon prototype)";
+const UA = "AIGIS/0.1 (aigis.studio)";
 
 function norm(q: string) {
   return q.trim().toLowerCase().replace(/\s+/g, " ");

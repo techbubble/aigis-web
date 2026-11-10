@@ -30,7 +30,6 @@ export function LandingNav({ user }: { user: SessionUser }) {
             {l.label}
           </Link>
         ))}
-        <span className="rounded-full border border-line px-4 py-1.5 text-base text-dim">Built on Muse</span>
         <AccountMenu user={user} />
       </nav>
       <button
@@ -51,8 +50,7 @@ export function LandingNav({ user }: { user: SessionUser }) {
                 {l.label}
               </Link>
             ))}
-            <div className="flex items-center justify-between px-5 py-3 text-sm text-dim">
-              Built on Muse
+            <div className="flex items-center justify-end px-5 py-3 text-sm text-dim">
               <AccountMenu user={user} />
             </div>
           </div>

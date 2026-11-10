@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "About AIGIS",
-  description: "Problem, solution, market and technology: how AIGIS turns documents into animated maps with Meta's Muse models.",
+  description: "Problem, solution, market and technology: how AIGIS turns documents into animated maps.",
 };
 
 export default async function AboutPage() {
