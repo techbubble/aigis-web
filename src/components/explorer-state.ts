@@ -1,4 +1,24 @@
 import type { Dataset, GeoEvent } from "@/lib/types";
+import { periodBounds, periodNext, periodStart, type Period } from "@/lib/period";
+
+// The window a story opens on: one period around `t`, grown a period at a
+// time on alternating sides until it holds at least `min` events (or every
+// event, for small stories), so the first frame is wide enough to read.
+export const OPENING_EVENTS = 20;
+export function openingWindow(events: { t: number }[], t: number, p: Period, min = OPENING_EVENTS): [number, number] {
+  let [from, to] = periodBounds(t, p);
+  const need = Math.min(min, events.length);
+  const count = () => events.reduce((n, e) => n + (e.t >= from && e.t < to ? 1 : 0), 0);
+  const tMin = events.reduce((m, e) => Math.min(m, e.t), Infinity);
+  const tMax = events.reduce((m, e) => Math.max(m, e.t), -Infinity);
+  let side = 0;
+  while (count() < need && (from > tMin || to <= tMax)) {
+    if (side++ % 2 === 0 ? to <= tMax : from <= tMin) to = periodNext(to, p);
+    else from = periodStart(from - 1, p);
+  }
+  return [from, to];
+}
+
 
 export type Filter = {
   timeRange: [number, number] | null;

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { DEFAULT_MARKER, type Dataset, type GeoEvent, type Insight, type MarkerStyle } from "@/lib/types";
 import { DAY, STORY, storyTime } from "@/lib/story";
 import type { FocusMapInputT } from "@/lib/ai/tools";
-import { applyFilter, bboxOf, EMPTY_FILTER, rangeOf, type Filter } from "./explorer-state";
+import { applyFilter, bboxOf, EMPTY_FILTER, openingWindow, rangeOf, type Filter } from "./explorer-state";
 import { defaultPeriod, periodBounds, type Period } from "@/lib/period";
 import { fmtDate } from "@/lib/format";
 import { MapView } from "./MapView";
@@ -139,8 +139,9 @@ export function Explorer({
   // Playback is only offered for stories that cross a border.
   const travels = useMemo(() => countryCount(events) > 1, [events]);
   // The time window is the region the map shows.
-  // Start in the middle of the story rather than at its first event.
-  const [rawWin, setWinRaw] = useState<[number, number]>(() => periodBounds(range[0] + span / 2, defaultPeriod(span, events.length)));
+  // Start in the middle of the story rather than at its first event, on a
+  // window wide enough to show at least twenty events.
+  const [rawWin, setWinRaw] = useState<[number, number]>(() => openingWindow(events, range[0] + span / 2, defaultPeriod(span, events.length)));
   // Story playback: play walks through the events inside the window one at
   // a time. storyCursor is the time of the event the story has reached;
   // null when the window is being used as a plain time filter.
@@ -338,7 +339,7 @@ export function Explorer({
     setPeriod(np);
     setBounds(dataset.summary.bbox);
     setBoundsKey((k) => k + 1);
-    setWin(periodBounds(tMin, np));
+    setWin(openingWindow(dataset.events, tMin, np));
     setPlaying(false);
   };
 
