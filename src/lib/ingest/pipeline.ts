@@ -7,6 +7,8 @@ import { detectInsights, summarize } from "../analysis/insights";
 import { saveDataset } from "../store";
 import { deleteMedia } from "../media";
 import { processPhoto, type PhotoMeta } from "./photos";
+import { proposeContexts } from "../ai/contexts";
+import { discover } from "../ai/discover";
 import type { EventMedia } from "../types";
 
 export type InputFile = { name: string; bytes: Uint8Array; mediaType: string; meta?: PhotoMeta };
@@ -213,9 +215,34 @@ export async function runIngest(
   const summary = summarize(allEvents, allDropped);
   const insights = detectInsights({ events: allEvents, summary });
 
+  // Outside sources that would explain the events, for the user to switch on.
+  // Topics already enabled on the story survive a re-ingest.
+  let contexts = into?.contexts;
+  if (allEvents.length >= 5) {
+    emit({ type: "status", message: "Proposing outside context sources", pct: 95 });
+    try {
+      const proposed = await proposeContexts({ name: opts.name, sources: allSources, summary, events: allEvents });
+      const on = new Set((into?.contexts ?? []).filter((t) => t.enabled).map((t) => t.id));
+      contexts = proposed.map((t) => ({ ...t, enabled: on.has(t.id) }));
+    } catch (err) {
+      emit({ type: "status", message: `Context proposal failed: ${(err as Error).message}` });
+    }
+  }
+
+  // The findings a reader sees first: patterns and connections across the whole story.
+  let discoveries: Dataset["discoveries"];
+  if (allEvents.length >= 10) {
+    emit({ type: "status", message: "Finding patterns and connections", pct: 97 });
+    try {
+      discoveries = await discover({ name: opts.name, events: allEvents, summary, insights, sources: allSources });
+    } catch (err) {
+      emit({ type: "status", message: `Discovery failed: ${(err as Error).message}` });
+    }
+  }
+
   const ds: Dataset = into
-    ? { ...into, sources: allSources, events: allEvents, summary, insights, savedAt: new Date().toISOString() }
-    : { id, name: opts.name, subtitle: opts.subtitle, createdAt: new Date().toISOString(), sources, events, summary, insights, theme: opts.theme, owner: opts.owner };
+    ? { ...into, sources: allSources, events: allEvents, summary, insights, contexts, discoveries, savedAt: new Date().toISOString() }
+    : { id, name: opts.name, subtitle: opts.subtitle, createdAt: new Date().toISOString(), sources, events, summary, insights, contexts, discoveries, theme: opts.theme, owner: opts.owner };
   await saveDataset(ds);
   emit({ type: "done", datasetId: id, summary });
   return ds;

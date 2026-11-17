@@ -53,7 +53,7 @@ export function SolutionFigure() {
           EXTRACT
         </text>
         <text x="52" y="87" textAnchor="middle" fontSize="8" fontFamily="var(--font-geist-mono)" fill="var(--dim)">
-          read · caption · answer
+          read · brief · research
         </text>
       </g>
 

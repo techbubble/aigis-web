@@ -127,9 +127,16 @@ export type Dataset = {
   events: GeoEvent[];
   summary: DatasetSummary;
   insights?: Insight[];
+  // Outside sources the ingest proposed for deeper analysis; the user turns them on.
+  contexts?: ContextTopic[];
+  // What AIGIS found across the whole story: patterns and connections, written
+  // by the model over computed evidence. The first thing a viewer reads.
+  discoveries?: Discovery[];
   // Studio settings, chosen by the creator and shown as-is to viewers.
   theme?: string;
   marker?: MarkerStyle;
+  // The camera viewers open on: saved from Studio with "Save current view as default".
+  view?: MapCamera;
   // Ownership. Single user today; shaped for real accounts later.
   owner?: string;
   editors?: string[];
@@ -154,6 +161,33 @@ export type Insight = {
   eventIds: string[];
   timeRange: [number, number] | null;
   bbox: [number, number, number, number] | null;
+};
+
+// An outside source of context (an industry index, a government series, a
+// news beat) that would explain the events. Proposed at ingest, enabled by
+// the user; when enabled, briefings and chat research it.
+export type MapCamera = { longitude: number; latitude: number; zoom: number };
+
+export type ContextTopic = {
+  id: string;
+  label: string;
+  why: string;
+  // Named public sources worth consulting, e.g. "Freddie Mac PMMS", "BLS metro unemployment".
+  sources: string[];
+  enabled: boolean;
+};
+
+export type Discovery = {
+  id: string;
+  kind: "turning-point" | "divergence" | "trend" | "connection" | "outlier" | "leader";
+  headline: string;
+  detail: string;
+  // Where to point the map when the card is clicked.
+  timeRange: [string, string] | null;
+  places: string[];
+  categories: string[];
+  eventIds: string[];
+  confidence: number;
 };
 
 export type IngestProgress =

@@ -4,11 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Map, { Layer, NavigationControl, Source, useControl, type MapLayerMouseEvent, type MapRef } from "react-map-gl/maplibre";
 import maplibregl from "@/lib/map/maplibre";
 import type { StyleSpecification } from "maplibre-gl";
-import type { ExpressionSpecification, FilterSpecification } from "maplibre-gl";
+import type { FilterSpecification } from "maplibre-gl";
 import type { FeatureCollection, LineString, Point } from "geojson";
-import type { GeoEvent, MarkerStyle } from "@/lib/types";
+import type { GeoEvent, MapCamera, MarkerStyle } from "@/lib/types";
 import { drawArrowIcon, drawMarkerIcon, drawVehicleIcon, SHAPE_IDS, shapeAnchor } from "@/lib/markers";
-import { STORY, storyTime } from "@/lib/story";
 import type { MarkerShape } from "@/lib/types";
 
 const CLUSTER_MAX_ZOOM = 15;
@@ -82,10 +81,6 @@ export function MapView({
   events,
   color,
   cursor,
-  story,
-  storyPath,
-  revealAfter,
-  speed,
   insetLeft = 0,
   insetRight = 0,
   insetBottom = 0,
@@ -95,21 +90,17 @@ export function MapView({
   selectedId,
   bounds,
   boundsKey,
-  followBounds,
   mapStyle,
   marker,
   onSelect,
+  onViewBounds,
+  onCamera,
+  defaultView,
+  viewKey,
 }: {
   events: GeoEvent[];
   color: string;
   cursor: number;
-  // True while a story is being played (or paused mid-way): only then are hops drawn.
-  story: boolean;
-  // One marker per stop the story has reached, in order; the last two form the hop being drawn.
-  storyPath: GeoEvent[];
-  // Markers newer than this stay hidden until the hop arrives.
-  revealAfter: number;
-  speed: number;
   // Pixels covered by overlays on each side, so fits land in the visible part of the map.
   insetLeft?: number;
   insetRight?: number;
@@ -120,12 +111,31 @@ export function MapView({
   selectedId: string | null;
   bounds: [number, number, number, number] | null;
   boundsKey: number;
-  followBounds: [number, number, number, number] | null;
   mapStyle: StyleSpecification | string;
   marker: MarkerStyle;
   onSelect: (id: string | null) => void;
+  // The region in view after every move, [west, south, east, north].
+  onViewBounds?: (bb: [number, number, number, number]) => void;
+  // The camera after every move, for saving as the story's default.
+  onCamera?: (c: MapCamera) => void;
+  // The story's saved default camera; used when this browser has no remembered view.
+  defaultView?: MapCamera | null;
+  // Where the camera was last left on this story is remembered per browser
+  // under this key and restored on the next visit.
+  viewKey?: string;
 }) {
   const mapRef = useRef<MapRef>(null);
+  const [savedView] = useState(() => readView(viewKey));
+  const reportBounds = () => {
+    const m = mapRef.current?.getMap();
+    if (!m) return;
+    const b = m.getBounds();
+    onViewBounds?.([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
+    const c = m.getCenter();
+    const cam = { longitude: c.lng, latitude: c.lat, zoom: m.getZoom() };
+    onCamera?.(cam);
+    writeView(viewKey, cam);
+  };
   // A cluster whose points cannot be separated by zooming (same geocoded
   // coordinate) is fanned out around its center instead. Tied to the visible
   // set so it closes when the time window moves on.
@@ -135,22 +145,13 @@ export function MapView({
   // Only the events inside the time window go to the map, so clustering
   // reflects what is on screen. The set is keyed by id list to avoid
   // re-indexing the cluster tree while the window slides without changes.
-  // While a hop is drawing, everything the step reveals stays hidden until
-  // the line arrives.
-  const n = storyPath.length;
-  const hop = useMemo(() => (story && n >= 2 ? { key: `${storyPath[n - 2].id}>${storyPath[n - 1].id}`, from: storyPath[n - 2], to: storyPath[n - 1] } : null), [story, storyPath, n]);
-  const [hopProgress, setHopProgress] = useState(1);
-  const hideAfter = hop && hopProgress < 1 ? revealAfter : Infinity;
-  const visible = useMemo(() => {
-    const at = story ? storyTime : (e: GeoEvent) => e.t;
-    const shown = events.filter((e) => at(e) <= cursor && e.t <= to && (e.tEnd ?? e.t) >= from);
-    return hideAfter === Infinity ? shown : shown.filter((e) => storyTime(e) <= hideAfter);
-  }, [events, cursor, from, to, hideAfter, story]);
+  const visible = useMemo(() => events.filter((e) => e.t <= cursor && e.t <= to && (e.tEnd ?? e.t) >= from), [events, cursor, from, to]);
   const visibleKey = useMemo(() => visible.map((e) => e.id).join(","), [visible]);
   const visibleStable = useMemo(() => visible, [visibleKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { geojson, maxVal } = useMemo(() => {
-    const vals = events.map((e) => e.value ?? 0).filter((v) => v > 0);
+    // Magnitude sizes the marker; a fall counts as much as a rise.
+    const vals = events.map((e) => Math.abs(e.value ?? 0)).filter((v) => v > 0);
     const maxVal = vals.length ? Math.max(...vals) : 0;
     const dense = events.length > 2000;
     const sizeBy = marker.sizeByValue;
@@ -166,7 +167,7 @@ export function MapView({
           tEnd: e.tEnd ?? e.t,
           cat: e.category,
           color,
-          r: sizeBy && maxVal > 0 && e.value != null && e.value > 0 ? (dense ? 3 : 5) + (dense ? 9 : 14) * Math.sqrt(e.value / maxVal) : dense ? 3.5 : 6,
+          r: sizeBy && maxVal > 0 && e.value != null && e.value !== 0 ? (dense ? 3 : 5) + (dense ? 9 : 14) * Math.sqrt(Math.abs(e.value) / maxVal) : dense ? 3.5 : 6,
           hl: highlight ? (highlight.has(e.id) ? 1 : 0) : 1,
           sel: e.id === selectedId ? 1 : 0,
         },
@@ -220,45 +221,6 @@ export function MapView({
   const iconSize = ["interpolate", ["linear"], ["get", "r"], 3, 0.42, 6, 0.62, 12, 0.95, 19, 1.35];
   const selBoost = ["case", ["==", ["get", "sel"], 1], 1.35, 1];
 
-  // Trail: one hop at a time, like a film showing a journey. The line runs
-  // from the previous stop to the newest one, draws itself over a few
-  // seconds, and is replaced by the next hop. Earlier hops stay as a
-  // large-dashed route behind the solid one.
-  const historyGeo = useMemo<FeatureCollection<LineString> | null>(() => {
-    if (!story || storyPath.length < 3) return null;
-    return { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: storyPath.slice(0, -1).map((e) => [e.lng, e.lat]) } }] };
-  }, [story, storyPath]);
-  const hopKey = hop?.key ?? null;
-  useEffect(() => {
-    if (!hopKey) return;
-    // Wait for the camera to frame the pair, then grow the line.
-    let raf = 0;
-    const t0 = performance.now() + STORY.frame / speed;
-    const dur = STORY.draw / speed;
-    const tick = (now: number) => {
-      const lin = Math.min(1, Math.max(0, (now - t0) / dur));
-      const k = Math.max(0.001, 1 - Math.pow(1 - lin, 3)); // ease out: quick start, gentle arrival
-      setHopProgress(k);
-      if (lin < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [hopKey, speed]);
-  const trailGeo: FeatureCollection<LineString> | null = hop
-    ? { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: [[hop.from.lng, hop.from.lat], [hop.to.lng, hop.to.lat]] } }] }
-    : null;
-  const p = Math.max(0.001, Math.min(0.999, hopProgress));
-  const trailGradient = ["step", ["line-progress"], color, p, "rgba(0,0,0,0)"] as unknown as ExpressionSpecification;
-  // The plane at the head of the line.
-  const headGeo = useMemo<FeatureCollection<Point> | null>(() => {
-    if (!hop) return null;
-    const [ax, ay] = project(hop.from.lng, hop.from.lat, 0);
-    const [bx, by] = project(hop.to.lng, hop.to.lat, 0);
-    const bearing = (Math.atan2(bx - ax, -(by - ay)) * 180) / Math.PI;
-    const head = unproject(ax + (bx - ax) * p, ay + (by - ay) * p, 0);
-    return { type: "FeatureCollection", features: [{ type: "Feature", properties: { bearing, vehicle: "plane" }, geometry: { type: "Point", coordinates: head } }] };
-  }, [hop, p]);
-
   const single = ["!", ["has", "point_count"]] as unknown as FilterSpecification;
   const clustered = ["has", "point_count"] as unknown as FilterSpecification;
   const clusterText = luminance(color) > 0.55 ? "#0b0d12" : "#ffffff";
@@ -278,16 +240,17 @@ export function MapView({
     m.fitBounds(bb, { padding, duration, maxZoom, essential: true });
   }, [insetLeft, insetRight, insetBottom]);
 
+  // The camera moves only on an explicit request (boundsKey advances), never
+  // because a panel opened or the layout shifted.
+  const fitRef = useRef(fit);
   useEffect(() => {
-    if (!bounds) return;
-    fit(bounds, 1600, 13);
-  }, [bounds, boundsKey, fit]);
-
-  // Follow mode: ease the camera onto whatever the time window is showing.
+    fitRef.current = fit;
+  }, [fit]);
   useEffect(() => {
-    if (!followBounds) return;
-    fit(followBounds, STORY.frame, 11);
-  }, [followBounds, fit]);
+    if (!bounds || boundsKey === 0) return;
+    fitRef.current(bounds, 1600, 13);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boundsKey]);
 
   const onClick = async (e: MapLayerMouseEvent) => {
     const f = e.features?.[0];
@@ -341,10 +304,12 @@ export function MapView({
       ref={setMapRef}
       mapLib={maplibregl}
       mapStyle={mapStyle}
-      initialViewState={bounds ? { bounds, fitBoundsOptions: { padding: { top: 90, bottom: insetBottom + 48, left: insetLeft + 80, right: insetRight + 80 }, maxZoom: 12 } } : { longitude: 0, latitude: 20, zoom: 1.5 }}
+      initialViewState={savedView ?? defaultView ?? (bounds ? { bounds, fitBoundsOptions: { padding: { top: 90, bottom: insetBottom + 48, left: insetLeft + 80, right: insetRight + 80 }, maxZoom: 12 } } : { longitude: 0, latitude: 20, zoom: 1.5 })}
       style={{ width: "100%", height: "100%" }}
       interactiveLayerIds={["spider-points", "events", "clusters"]}
       onClick={onClick}
+      onLoad={reportBounds}
+      onMoveEnd={reportBounds}
       onMouseEnter={() => {
         const c = mapRef.current?.getCanvas();
         if (c) c.style.cursor = "pointer";
@@ -363,32 +328,6 @@ export function MapView({
             fit(bboxOf(events.map((e) => [e.lng, e.lat])), 900, 12);
           }}
         />
-      )}
-      {historyGeo && (
-        <Source id="trail-history" type="geojson" data={historyGeo}>
-          <Layer id="trail-history" type="line" paint={{ "line-color": color, "line-width": 2, "line-opacity": 0.6, "line-dasharray": [4, 3] }} layout={{ "line-join": "round" }} />
-        </Source>
-      )}
-      {trailGeo && (
-        <Source id="trail" type="geojson" data={trailGeo} lineMetrics>
-          <Layer id="trail-line" type="line" paint={{ "line-width": 3, "line-opacity": 0.95, "line-gradient": trailGradient }} layout={{ "line-join": "round", "line-cap": "round" }} />
-        </Source>
-      )}
-      {headGeo && hopProgress < 1 && (
-        <Source id="trail-head" type="geojson" data={headGeo}>
-          <Layer
-            id="trail-head"
-            type="symbol"
-            layout={{
-              "icon-image": ["concat", ["get", "vehicle"], `|${color}`] as unknown as string,
-              "icon-size": 0.56,
-              "icon-rotate": ["get", "bearing"] as unknown as number,
-              "icon-rotation-alignment": "map",
-              "icon-allow-overlap": true,
-              "icon-ignore-placement": true,
-            }}
-          />
-        </Source>
       )}
       <Source id="events" type="geojson" data={geojson} cluster clusterRadius={CLUSTER_RADIUS} clusterMaxZoom={CLUSTER_MAX_ZOOM}>
         <Layer
@@ -539,4 +478,23 @@ function FitAllControl({ onFit }: { onFit: () => void }) {
     { position: "top-right" },
   );
   return null;
+}
+
+type SavedView = MapCamera;
+function readView(key?: string): SavedView | null {
+  if (!key || typeof window === "undefined") return null;
+  try {
+    const v = JSON.parse(localStorage.getItem(`aigis:view:${key}`) ?? "null") as SavedView | null;
+    return v && [v.longitude, v.latitude, v.zoom].every(Number.isFinite) ? v : null;
+  } catch {
+    return null;
+  }
+}
+function writeView(key: string | undefined, v: SavedView) {
+  if (!key) return;
+  try {
+    localStorage.setItem(`aigis:view:${key}`, JSON.stringify(v));
+  } catch {
+    /* private mode or full */
+  }
 }

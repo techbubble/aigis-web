@@ -9,7 +9,14 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  serverExternalPackages: ["unpdf", "xlsx", "exifr", "sharp"],
+  // The investor folder moved from /investors; keep old links working.
+  async redirects() {
+    return [
+      { source: "/investors/:path*", destination: "/investor/:path*", permanent: true },
+      { source: "/investor/saft", destination: "/investor/safe", permanent: true },
+    ];
+  },
+  serverExternalPackages: ["unpdf", "xlsx", "exifr", "sharp", "@react-pdf/renderer"],
   // Bundled sample datasets are read from disk by the store at runtime.
   outputFileTracingIncludes: {
     "/explore/[id]": ["./public/samples/**/dataset.json"],

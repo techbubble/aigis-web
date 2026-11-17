@@ -2,12 +2,10 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { DEFAULT_MARKER, type Dataset, type GeoEvent, type Insight, type MarkerStyle } from "@/lib/types";
-import { DAY, STORY, storyTime } from "@/lib/story";
+import { DEFAULT_MARKER, type Dataset, type MapCamera, type MarkerStyle } from "@/lib/types";
 import type { FocusMapInputT } from "@/lib/ai/tools";
-import { applyFilter, bboxOf, EMPTY_FILTER, openingWindow, rangeOf, type Filter } from "./explorer-state";
-import { defaultPeriod, periodBounds, type Period } from "@/lib/period";
-import { fmtDate } from "@/lib/format";
+import { applyFilter, bboxOf, EMPTY_FILTER, halfWindow, rangeOf, type Filter } from "./explorer-state";
+import { defaultPeriod, type Period } from "@/lib/period";
 import { MapView } from "./MapView";
 import { Timeline } from "./Timeline";
 import { DetailPanel } from "./DetailPanel";
@@ -15,90 +13,11 @@ import { ChatPanel, type ChatHandle } from "./ChatPanel";
 import { DesignPanel } from "./DesignPanel";
 import { SourcesPanel, type LibraryItem } from "./SourcesPanel";
 import { Logo } from "@/components/Logo";
-import { buildStyle, isDarkTheme, themeById, type Theme } from "@/lib/map/styles";
+import { buildStyle, isDarkTheme, themeById } from "@/lib/map/styles";
 import { LookOverlay } from "./LookOverlay";
 import { useClickOutside } from "@/lib/use-click-outside";
 import { AccountMenu, type SessionUser } from "./AccountMenu";
 
-
-// Camera frames for playback. The story plays inside one frame that holds
-// every stop in the window; the camera only dives when the last few stops
-// sit close together (a city's worth of photos), and climbs back out when
-// the story leaves that region.
-function spanBounds(stops: GeoEvent[]): [number, number, number, number] {
-  const minSpan = 0.25; // degrees, about 25 km
-  const lats = stops.map((e) => e.lat);
-  const lngs = stops.map((e) => e.lng);
-  const minLat = Math.min(...lats), maxLat = Math.max(...lats);
-  const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
-  const cLat = (minLat + maxLat) / 2;
-  const cLng = (minLng + maxLng) / 2;
-  const hLat = Math.max((maxLat - minLat) * 0.75, minSpan * 0.6) / 2 + (maxLat - minLat) * 0.125;
-  const hLng = Math.max((maxLng - minLng) * 0.75, minSpan) / 2 + (maxLng - minLng) * 0.125;
-  return [cLng - hLng, Math.max(-85, cLat - hLat), cLng + hLng, Math.min(85, cLat + hLat)];
-}
-
-// What to call a stop: the city, read as the segment before the country in
-// each member's place string; a cluster takes its commonest city and is
-// marked as a region.
-function cityOf(place: string): string {
-  const segs = place.split(",").map((x) => x.trim()).filter(Boolean);
-  return segs.length >= 2 ? segs[segs.length - 2] : segs[0] ?? "";
-}
-function stopLabel(stop: StoryStop): string {
-  const tally = new Map<string, number>();
-  for (const e of stop.members) {
-    const c = cityOf(e.place);
-    tally.set(c, (tally.get(c) ?? 0) + 1);
-  }
-  const city = [...tally.entries()].sort((x, y) => y[1] - x[1])[0]?.[0] ?? stop.rep.place;
-  return stop.members.length > 1 ? `${city} Region` : city;
-}
-
-// How many countries the story touches, read from the last segment of each
-// place string. A story that never leaves one country has nothing to play.
-const COUNTRY_ALIAS: Record<string, string> = {
-  "usa": "united states", "us": "united states", "u.s.": "united states", "u.s.a.": "united states", "united states of america": "united states",
-  "uk": "united kingdom", "u.k.": "united kingdom", "england": "united kingdom", "scotland": "united kingdom", "wales": "united kingdom", "northern ireland": "united kingdom", "great britain": "united kingdom",
-  "czech republic": "czechia", "holland": "netherlands", "the netherlands": "netherlands",
-};
-function countryCount(list: GeoEvent[]): number {
-  const seen = new Set<string>();
-  for (const e of list) {
-    const parts = e.place.split(",").map((x) => x.trim().toLowerCase()).filter(Boolean);
-    if (!parts.length) continue;
-    const last = parts[parts.length - 1];
-    seen.add(COUNTRY_ALIAS[last] ?? last);
-  }
-  return seen.size;
-}
-
-// The play list: one stop per cluster. Events that follow each other within
-// a city's reach (half a degree, about 50 km) collapse into one stop,
-// represented by the first event that has a picture. The stop's time is the
-// cluster's last event, so every marker in the cluster appears on arrival.
-export type StoryStop = { rep: GeoEvent; at: number; members: GeoEvent[] };
-function storyStops(list: GeoEvent[]): StoryStop[] {
-  const sorted = [...list].sort((x, y) => storyTime(x) - storyTime(y));
-  // A date-only row (a ledger line on a city centroid) adds nothing when a
-  // timed event of the same day already took the story to that city.
-  const timed = sorted.filter((e) => e.t % DAY !== 0);
-  const redundant = (e: GeoEvent) => e.t % DAY === 0 && timed.some((o) => Math.floor(o.t / DAY) === Math.floor(e.t / DAY) && Math.abs(o.lat - e.lat) < 0.3 && Math.abs(o.lng - e.lng) < 0.3);
-  const reach = 0.5;
-  const out: StoryStop[] = [];
-  for (const e of sorted) {
-    if (redundant(e)) continue;
-    const last = out[out.length - 1];
-    if (last && Math.abs(last.members[0].lat - e.lat) < reach && Math.abs(last.members[0].lng - e.lng) < reach) {
-      last.members.push(e);
-      last.at = Math.max(last.at, storyTime(e));
-      if (!last.rep.media && e.media) last.rep = e;
-      continue;
-    }
-    out.push({ rep: e, at: storyTime(e), members: [e] });
-  }
-  return out;
-}
 
 export function Explorer({
   dataset: initial,
@@ -108,7 +27,6 @@ export function Explorer({
   editable,
   user = null,
   library = [],
-  looks: initialLooks = [],
 }: {
   dataset: Dataset;
   suggestions: string[];
@@ -118,7 +36,6 @@ export function Explorer({
   user?: SessionUser;
   library?: LibraryItem[];
   // Looks designed in Studio, alongside the built-ins.
-  looks?: Theme[];
 }) {
   const studio = mode === "studio";
   // The dataset is held in state so the sources panel can swap in a fresh
@@ -129,38 +46,26 @@ export function Explorer({
   const isNew = !dataset.id;
   const hasEvents = dataset.events.length > 0;
   const [filter, setFilter] = useState<Filter>(EMPTY_FILTER);
+  // Outside context topics proposed at ingest. Toggles persist on the story
+  // for people who can edit it; viewers' choices last for the visit.
+  const [contexts, setContexts] = useState(dataset.contexts ?? []);
+  const setEnabledContexts = useCallback(
+    (ids: string[]) => {
+      const on = new Set(ids);
+      setContexts((cs) => cs.map((t) => ({ ...t, enabled: on.has(t.id) })));
+      if (editable && dataset.id) void fetch(`/api/datasets/${dataset.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ contexts: ids }) });
+    },
+    [editable, dataset.id],
+  );
   const events = useMemo(() => applyFilter(dataset, filter), [dataset, filter]);
   const range = useMemo(() => rangeOf(dataset, filter), [dataset, filter]);
   const span = range[1] - range[0];
 
-  const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1);
   const [period, setPeriod] = useState<Period>(() => defaultPeriod(span, events.length));
-  // Playback is only offered for stories that cross a border.
-  const travels = useMemo(() => countryCount(events) > 1, [events]);
   // The time window is the region the map shows.
-  // Start in the middle of the story rather than at its first event, on a
-  // window wide enough to show at least twenty events.
-  const [rawWin, setWinRaw] = useState<[number, number]>(() => openingWindow(events, range[0] + span / 2, defaultPeriod(span, events.length)));
-  // Story playback: play walks through the events inside the window one at
-  // a time. storyCursor is the time of the event the story has reached;
-  // null when the window is being used as a plain time filter.
-  const [storyCursor, setStoryCursor] = useState<number | null>(null);
-  // The stops the story has reached so far (one marker per cluster) and the
-  // cursor before the latest step; markers newer than that stay hidden
-  // until the hop arrives.
-  const [storyPath, setStoryPath] = useState<GeoEvent[]>([]);
-  const [revealAfter, setRevealAfter] = useState(-Infinity);
-  const [storyLabel, setStoryLabel] = useState<string | null>(null);
-  const storyPos = useRef(-1);
-  const setWin = useCallback((w: [number, number]) => {
-    setWinRaw(w);
-    setStoryCursor(null);
-    setStoryPath([]);
-    setRevealAfter(-Infinity);
-    setStoryLabel(null);
-    storyPos.current = -1;
-  }, []);
+  // Open on the middle half of the story.
+  const [rawWin, setWinRaw] = useState<[number, number]>(() => halfWindow(range, events));
+  const setWin = useCallback((w: [number, number]) => setWinRaw(w), []);
   const win = useMemo<[number, number]>(() => {
     const MINW = 60000;
     const w = Math.min(Math.max(rawWin[1] - rawWin[0], MINW), span * 1.2 + MINW);
@@ -170,9 +75,6 @@ export function Explorer({
     return [from, from + w];
   }, [rawWin, range, span]);
   const [pFrom, pTo] = win;
-  const cursor = storyCursor ?? pTo;
-  // The camera always follows: it re-frames on whatever the time window shows.
-  const [followBounds, setFollowBounds] = useState<[number, number, number, number] | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [highlight, setHighlight] = useState<Set<string> | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
@@ -213,68 +115,30 @@ export function Explorer({
       setSaving(false);
     }
   };
-  const [looks, setLooks] = useState<Theme[]>(initialLooks);
-  const theme = useMemo(() => themeById(themeId, looks), [themeId, looks]);
+  // The camera right now, and the saving of it as the story's default view.
+  const [camera, setCamera] = useState<MapCamera | null>(null);
+  const [viewSaving, setViewSaving] = useState(false);
+  const [viewSavedAt, setViewSavedAt] = useState<string | null>(null);
+  const saveView = async () => {
+    if (!studio || !dataset.id || !camera || viewSaving) return;
+    setViewSaving(true);
+    try {
+      const res = await fetch(`/api/datasets/${dataset.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ view: camera }) });
+      if (res.ok) {
+        setViewSavedAt(new Date().toISOString());
+        setDataset((d) => ({ ...d, view: camera }));
+      }
+    } finally {
+      setViewSaving(false);
+    }
+  };
+  const theme = useMemo(() => themeById(themeId), [themeId]);
   const mapStyle = useMemo(() => buildStyle(theme), [theme]);
 
-  const winRef = useRef(win);
-  useEffect(() => {
-    winRef.current = win;
-  }, [win]);
-  // Story playback: every stop inside the highlighted window, first to last.
-  // The camera is set once to hold all of them and never moves during play.
-  // Each step: let the line grow to the stop, hold. Nothing opens.
-  useEffect(() => {
-    if (!playing) return;
-    const [a, b] = winRef.current;
-    const inWin = events.filter((e) => e.t >= a && e.t <= b);
-    const seq = storyStops(inWin);
-    if (!seq.length) return;
-    const whole = spanBounds(inWin);
-    const frame = (bb: [number, number, number, number]) => setFollowBounds((old) => (old && old.every((v, k) => v === bb[k]) ? old : bb));
-    let i = storyPos.current + 1 < seq.length ? storyPos.current + 1 : 0;
-    let timer = 0;
-    let canceled = false;
-    const step = () => {
-      if (canceled) return;
-      if (i >= seq.length) {
-        storyPos.current = -1;
-        setPlaying(false);
-        return;
-      }
-      const stop = seq[i];
-      const first = i === 0;
-      storyPos.current = i;
-      i++;
-      frame(whole);
-      setRevealAfter(first ? -Infinity : seq[i - 2].at);
-      setStoryPath(seq.slice(0, i).map((x) => x.rep));
-      setStoryCursor(stop.at);
-      setStoryLabel(stopLabel(stop));
-      timer = window.setTimeout(step, ((first ? 0 : STORY.frame + STORY.draw) + STORY.hold) / speed);
-    };
-    step();
-    return () => {
-      canceled = true;
-      window.clearTimeout(timer);
-    };
-  }, [playing, speed, events]);
-
-  // Events the map is showing right now; the camera re-frames only when this set changes.
-  const visible = useMemo(() => events.filter((e) => e.t <= cursor && (e.tEnd ?? e.t) >= pFrom), [events, pFrom, cursor]);
-  const visibleKey = useMemo(() => visible.map((e) => e.id).join(","), [visible]);
-  // Not while a story is playing or has finished: that frame holds until the
-  // window is moved by hand.
-  const storyActive = playing || storyCursor !== null;
-  useEffect(() => {
-    if (storyActive) return;
-    const h = setTimeout(() => {
-      const bb = bboxOf(visible);
-      if (bb) setFollowBounds((prev) => (prev && prev.every((v, i) => v === bb[i]) ? prev : bb));
-    }, 160);
-    return () => clearTimeout(h);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleKey, storyActive]);
+  // The camera is the viewer's: moving the time window never pans or zooms
+  // the map. The region in view, together with the window, is what the
+  // intelligence is about; the map reports its bounds after every move.
+  const [viewBounds, setViewBounds] = useState<[number, number, number, number] | null>(null);
 
   const selected = useMemo(() => (selectedId ? dataset.events.find((e) => e.id === selectedId) ?? null : null), [dataset, selectedId]);
 
@@ -301,33 +165,12 @@ export function Explorer({
         setBoundsKey((k) => k + 1);
       }
       const r = rangeOf(dataset, nf);
-      const newSpan = r[1] - r[0];
-      if (f.play) {
-        const np = defaultPeriod(newSpan, subset.length);
-        setPeriod(np);
-        setWin(periodBounds(r[0], np));
-        setPlaying(true);
-      } else {
-        // Show everything in the focused range at once: one window over it.
-        setPlaying(false);
-        setWin([r[0], r[1]]);
-      }
+      // Show everything in the focused range at once: one window over it.
+      setWin([r[0], r[1]]);
       if (focusList.length === 1) setSelectedId(focusList[0].id);
     },
     [dataset, setWin],
   );
-
-  const pickInsight = (i: Insight) => {
-    focus({
-      timeRange: i.timeRange ? [new Date(i.timeRange[0]).toISOString(), new Date(i.timeRange[1]).toISOString()] : null,
-      categories: null,
-      placeContains: null,
-      eventIds: i.eventIds.length ? i.eventIds : null,
-      bbox: i.bbox,
-      play: false,
-      caption: i.title,
-    });
-  };
 
   const reset = () => {
     setFilter(EMPTY_FILTER);
@@ -339,8 +182,7 @@ export function Explorer({
     setPeriod(np);
     setBounds(dataset.summary.bbox);
     setBoundsKey((k) => k + 1);
-    setWin(openingWindow(dataset.events, tMin, np));
-    setPlaying(false);
+    setWin(halfWindow([tMin, dataset.summary.tMax ?? tMin + 1], dataset.events));
   };
 
   const ask = (q: string) => {
@@ -362,7 +204,7 @@ export function Explorer({
     ...(studio ? [{ id: "sources" as const, label: "General" }] : []),
     ...(studio ? [{ id: "look" as const, label: `Appearance${dirty ? " •" : ""}` }] : []),
     ...(studio ? [{ id: "stories" as const, label: "Stories" }] : []),
-    ...(!isNew ? [{ id: "chat" as const, label: "Explore" }] : []),
+    ...(!isNew ? [{ id: "chat" as const, label: "Intelligence" }] : []),
   ];
   // Edit | View: one control, only for people who can edit.
   const modeToggle =
@@ -384,11 +226,7 @@ export function Explorer({
         <MapView
           events={events}
           color={markerColor}
-          cursor={cursor}
-          story={storyCursor !== null}
-          storyPath={storyPath}
-          revealAfter={revealAfter}
-          speed={speed}
+          cursor={pTo}
           insetLeft={wide && selected ? 380 : 0}
           insetRight={wide && panelOpen ? 412 : 0}
           insetBottom={hasEvents ? timelineH + 12 : 0}
@@ -398,10 +236,13 @@ export function Explorer({
           selectedId={selectedId}
           bounds={bounds}
           boundsKey={boundsKey}
-          followBounds={followBounds}
           mapStyle={mapStyle}
           marker={marker}
           onSelect={setSelectedId}
+          onViewBounds={setViewBounds}
+          onCamera={setCamera}
+          defaultView={dataset.view ?? null}
+          viewKey={dataset.id || undefined}
         />
         <LookOverlay theme={theme} />
       </div>
@@ -563,7 +404,7 @@ export function Explorer({
         <div className="min-h-0 flex-1">
           {!isNew && (
             <div className={panel === "chat" ? "h-full" : "hidden"}>
-              <ChatPanel datasetId={dataset.id} suggestions={suggestions} insights={dataset.insights ?? []} onPickInsight={pickInsight} onFocus={focus} handleRef={chatRef} inputHeight={wide ? timelineH : 0} />
+              <ChatPanel dataset={dataset} window={win} viewBounds={viewBounds} filter={filter} contexts={contexts} onContexts={setEnabledContexts} suggestions={suggestions} onFocus={focus} handleRef={chatRef} inputHeight={wide ? timelineH : 0} />
             </div>
           )}
           {(panel === "sources" || panel === "stories") && studio && (
@@ -571,8 +412,6 @@ export function Explorer({
           )}
           {panel === "look" && studio && (
             <DesignPanel
-              looks={looks}
-              onLooks={setLooks}
               marker={marker}
               onMarker={setMarker}
               themeId={themeId}
@@ -581,24 +420,14 @@ export function Explorer({
               savedAt={savedAt}
               onTheme={setThemeId}
               onSave={save}
+              onSaveView={saveView}
+              viewSaving={viewSaving}
+              viewSavedAt={viewSavedAt}
+              hasDefaultView={Boolean(dataset.view)}
             />
           )}
         </div>
       </aside>
-
-      {/* Story caption: where the story is right now. */}
-      {storyLabel && storyCursor !== null && (
-        <div
-          key={storyLabel + storyCursor}
-          className={`story-caption pointer-events-none absolute left-3 right-3 z-30 flex justify-center ${panelOpen ? "hidden md:flex md:right-[412px]" : ""}`}
-          style={{ bottom: timelineH + 28 }}
-        >
-          <div className="rounded-full border border-line bg-ink/85 px-6 py-2.5 text-center shadow-2xl backdrop-blur">
-            <div className="text-lg font-semibold text-fog md:text-xl">{storyLabel}</div>
-            <div className="font-mono text-xs text-mist">{fmtDate(storyCursor, span)}</div>
-          </div>
-        </div>
-      )}
 
       {/* Timeline */}
       {hasEvents && (
@@ -608,15 +437,10 @@ export function Explorer({
           color={markerColor}
           range={range}
           window={win}
-          playing={playing}
-          playable={travels}
-          speed={speed}
           period={period}
           selectedId={selectedId}
           onSelect={(id) => setSelectedId(id)}
           onWindow={setWin}
-          onPlay={setPlaying}
-          onSpeed={setSpeed}
           onPeriod={setPeriod}
         />
       </div>

@@ -103,8 +103,8 @@ function build(withBg, land) {
   o.push(`</g>`);
   o.push(`<circle cx="${mx}" cy="${my}" r="16" fill="#60a5fa" opacity="0.9"><animate attributeName="r" values="14;18;14" dur="2s" repeatCount="indefinite"/></circle>`);
   o.push(`<text x="${mx}" y="${my + 5}" fill="#171a20" font-size="11" font-weight="800" text-anchor="middle">A</text>`);
-  o.push(`<text x="${mx}" y="${my - 72}" fill="#e5e9f0" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="1">Read · Locate · Date</text>`);
-  o.push(`<text x="${mx}" y="${my + 84}" fill="#8b95a7" font-size="11" text-anchor="middle">extract · caption · design · texture</text>`);
+  o.push(`<text x="${mx}" y="${my - 72}" fill="#e5e9f0" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="1">Read · Locate · Analyze</text>`);
+  o.push(`<text x="${mx}" y="${my + 84}" fill="#8b95a7" font-size="11" text-anchor="middle">extract · brief · research · answer</text>`);
 
   DOCS.forEach(([, color, , b], i) => {
     const [lx, ly] = LAND[i % LAND.length];

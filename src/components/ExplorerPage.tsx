@@ -4,7 +4,6 @@ import { listDatasets, loadDataset } from "@/lib/store";
 import { Explorer } from "@/components/Explorer";
 import { sampleById } from "@/lib/samples";
 import { canEdit, currentUser } from "@/lib/auth";
-import { listLooks } from "@/lib/looks";
 
 // Shared loader for /studio/[id] and /view/[id].
 export async function ExplorerPage({ id, mode }: { id: string; mode: "studio" | "view" }) {
@@ -41,7 +40,7 @@ export async function ExplorerPage({ id, mode }: { id: string; mode: "studio" | 
       </main>
     );
   }
-  const [all, looks] = await Promise.all([listDatasets(), listLooks()]);
+  const all = await listDatasets();
   const library = all.filter((d) => canEdit(d, user) && !d.id.startsWith("sample-"));
   return (
     <Explorer
@@ -52,7 +51,6 @@ export async function ExplorerPage({ id, mode }: { id: string; mode: "studio" | 
       editable={editable}
       user={user && { email: user.email, name: user.name }}
       library={library}
-      looks={looks}
     />
   );
 }

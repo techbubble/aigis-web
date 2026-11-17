@@ -101,14 +101,14 @@ export function About({ user }: { user: SessionUser }) {
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 md:pl-36 lg:pl-40">
           <div className="chapter-in mx-auto max-w-4xl text-center">
             <h1 className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight md:text-7xl">
-              When maps <span className="font-serif-display font-normal italic text-glow">tell a story.</span>
+              Maps that <span className="font-serif-display font-normal italic text-glow">think.</span>
             </h1>
             <p className="mx-auto mt-7 max-w-3xl text-xl leading-relaxed text-mist md:text-2xl">
-              Drop in reports, spreadsheets, photos or news. AIGIS finds every event with a place and a time, hunts for patterns, and hands you an animated map you can question in plain language.
+              Geographic intelligence from the documents you already have. Drop in research, reports and spreadsheets; AIGIS puts every located, dated fact on a timeline map, analyzes whatever window you select, pulls in the outside context you approve, and tells you what it means.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <Link href="/#demos" className="inline-flex h-14 w-56 items-center justify-center rounded-full border-2 border-glow bg-glow text-lg font-semibold text-ink shadow-[0_0_48px_rgba(56,189,248,0.45)] transition hover:opacity-90">
-                Watch a demo
+                View Demo
               </Link>
               <Link href="/studio" className="inline-flex h-14 w-56 items-center justify-center rounded-full border-2 border-fog/70 text-lg font-semibold text-fog transition hover:border-fog hover:bg-fog/10">
                 New story
@@ -127,19 +127,18 @@ export function About({ user }: { user: SessionUser }) {
           refs.current[1] = el;
         }}
         c={CHAPTERS[1]}
-        eyebrow="The world is described in documents"
+        eyebrow="Maps show. They do not explain."
         title={
           <>
-            Everything happens <em>somewhere</em>, at some <em>time</em>. Almost none of it arrives as a map.
+            Everything happens <em>somewhere</em>, at some <em>time</em>. The map that says <em>why</em> is almost never built.
           </>
         }
         figure={<ProblemFigure />}
       >
         <ul>
-          <li>Reports, spreadsheets, journals, camera rolls, news. The where and the when are in there, buried in prose and columns, and turning them into a map is a specialist&apos;s job.</li>
-          <li>ArcGIS is priced for enterprises: hundreds to thousands of dollars a seat, every year, before training.</li>
-          <li>QGIS, the open-source alternative, is free and clunky: a course to learn, a day of plugins and projections to make one map.</li>
-          <li>The map that moves through time, the view that makes patterns obvious, is almost never built.</li>
+          <li>Research reports, filings, spreadsheets, news. The where and the when are in there, buried in prose and columns, and the analyst who reads it all is the bottleneck.</li>
+          <li>GIS tools draw what you already structured. ArcGIS costs thousands a seat before training; QGIS costs a course and a day of plugins. Neither reads a PDF or draws a conclusion.</li>
+          <li>Asking questions of a map is routine. Getting an answer that counts the evidence, checks the outside world and states a hypothesis is not.</li>
         </ul>
       </Chapter>
 
@@ -148,20 +147,19 @@ export function About({ user }: { user: SessionUser }) {
           refs.current[2] = el;
         }}
         c={CHAPTERS[2]}
-        eyebrow="Drop in files, get a story"
+        eyebrow="Drop in documents, get intelligence"
         title={
           <>
-            AIGIS reads the files, finds every <em>located, dated</em> event, and plays it back on a map you can question.
+            AIGIS reads the files, maps every <em>located, dated</em> fact, and analyzes whatever <em>window</em> you select.
           </>
         }
         figure={<SolutionFigure />}
       >
         <ul>
-          <li>Any input: PDF, CSV, XLSX, Markdown, photos with EXIF, scans and charts.</li>
-          <li>Every event is extracted with place, time, value and a confidence score.</li>
-          <li>A pattern engine scores bursts, hotspots, outliers and silences.</li>
-          <li>An animated story: scrub it, design its look, share a link.</li>
-          <li>Ask in plain language; AIGIS answers with evidence and moves the map itself.</li>
+          <li>Any input: PDF, CSV, XLSX, Markdown, photos, scans and charts. Every event gets place, time, value and a confidence score.</li>
+          <li>Select a span on the timeline and get a briefing: what is inside it, how it compares with the span before, what it may mean.</li>
+          <li>At ingest AIGIS proposes the outside sources that would explain the data. Switch them on and the analysis goes deeper, with citations.</li>
+          <li>Ask in plain language; AIGIS answers with evidence from the data and the outside world, and moves the map itself.</li>
         </ul>
       </Chapter>
 
@@ -180,8 +178,8 @@ export function About({ user }: { user: SessionUser }) {
       >
         <ul>
           <li>Geospatial analytics: about 100 billion dollars a year, growing 11 to 13 percent, built for trained GIS users.</li>
-          <li>AIGIS moves the starting line: anyone with a folder of files gets the animated map, the findings and the conversation.</li>
-          <li>Newsrooms, supply chain and insurance analysts, public health, researchers and historians, tour and event operators, brands, families with a camera roll.</li>
+          <li>AIGIS moves the starting line: anyone with a folder of documents gets the map, the analysis and the conversation.</li>
+          <li>Housing and mortgage analysts, insurers, supply chain teams, public health, newsrooms, researchers, policy staff: anyone whose questions start with where and when.</li>
         </ul>
       </Chapter>
 
@@ -190,7 +188,7 @@ export function About({ user }: { user: SessionUser }) {
           refs.current[4] = el;
         }}
         c={CHAPTERS[4]}
-        eyebrow="How it is built"
+        eyebrow="Technology"
         title={
           <>
             Next.js on Vercel, models through the <em>AI Gateway</em>, open geodata for everything else.
@@ -200,12 +198,12 @@ export function About({ user }: { user: SessionUser }) {
       >
         <ul>
           <li>Vercel Functions run the ingest pipeline, the pattern engine and the chat agent with the AI SDK.</li>
-          <li>Reading, captioning, geocoding fallback, look design and the chat agent are small, inexpensive model calls through the Vercel AI Gateway, each with a typed schema and validated before anything reaches the map.</li>
-          <li>Deterministic and open: MapLibre, OpenFreeMap tiles, Photon and Nominatim geocoding, Natural Earth relief, Vercel Blob.</li>
+          <li>Reading, window briefings, context proposals and the chat agent are small, inexpensive model calls through the Vercel AI Gateway; outside research runs on a search-grounded model that cites its sources.</li>
+          <li>Deterministic where it counts: the window statistics and the pattern engine are computed, not generated. MapLibre, OpenFreeMap tiles, Photon and Nominatim geocoding, Vercel Blob.</li>
         </ul>
         <div className="flex flex-wrap gap-3 pt-2">
           <Link href="/#demos" className="rounded-full bg-glow px-6 py-2.5 text-sm font-semibold text-ink hover:opacity-90">
-            Watch a demo
+            View Demo
           </Link>
           <Link href="/studio" className="rounded-full border border-fog/60 px-6 py-2.5 text-sm font-semibold text-fog hover:bg-fog/10">
             Make a story

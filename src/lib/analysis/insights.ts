@@ -110,9 +110,17 @@ export function detectInsights(ds: Pick<Dataset, "events" | "summary">): Insight
     }
   }
 
-  // 3. Value outliers
-  const withVal = ev.filter((e) => e.value != null && Number.isFinite(e.value));
-  if (withVal.length >= 10) {
+  // 3. Value outliers, within one unit at a time so dollars and percentages
+  // are never compared.
+  const byUnit = new Map<string, GeoEvent[]>();
+  for (const e of ev) {
+    if (e.value == null || !Number.isFinite(e.value)) continue;
+    const u = (e.unit ?? "").toLowerCase();
+    if (!byUnit.has(u)) byUnit.set(u, []);
+    byUnit.get(u)!.push(e);
+  }
+  for (const withVal of byUnit.values()) {
+    if (withVal.length < 10) continue;
     const { mean, sd } = stats(withVal.map((e) => e.value as number));
     if (sd > 0) {
       for (const e of withVal) {

@@ -26,15 +26,16 @@ export default async function Home() {
         <div className="relative z-10 mx-auto max-w-7xl px-6 pt-8 md:pt-14">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight md:text-7xl">
-              When maps <span className="font-serif-display font-normal italic text-glow">tell a story.</span>
+              Maps that <span className="font-serif-display font-normal italic text-glow">think.</span>
             </h1>
             <p className="mx-auto mt-7 max-w-3xl text-xl leading-relaxed text-mist md:text-2xl">
-              Drop in reports, spreadsheets, photos or news. AIGIS finds every event with a place and a time, hunts for
-              patterns, and hands you an animated map you can question in plain language.
+              Geographic intelligence from the documents you already have. Drop in research, reports and spreadsheets;
+              AIGIS puts every located, dated fact on a timeline map, analyzes whatever window you select, pulls in the
+              outside context you approve, and tells you what it means.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <a href="#demos" className="inline-flex h-14 w-56 items-center justify-center rounded-full border-2 border-glow bg-glow text-lg font-semibold text-ink shadow-[0_0_48px_rgba(56,189,248,0.45)] transition hover:opacity-90">
-                Watch a demo
+                View Demo
               </a>
               <Link href="/studio" className="inline-flex h-14 w-56 items-center justify-center rounded-full border-2 border-fog/70 text-lg font-semibold text-fog transition hover:border-fog hover:bg-fog/10">
                 New story
@@ -51,54 +52,72 @@ export default async function Home() {
 
       {/* How it works */}
       <section className="relative mx-auto max-w-7xl px-6 pb-8 pt-4">
-        <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
-          <Step n="01" title="Ingest" body="Any file. Tables are column-mapped once by the model, then converted row by row. Prose, scans and photos are read for every event with a place and a time." />
-          <Step n="02" title="Locate and date" body="Each event gets coordinates, a timestamp and a confidence score. Places are geocoded; magnitudes and entities are captured." />
-          <Step n="03" title="Discover" body="A pattern engine scores temporal bursts, spatial hotspots, outliers, silences and lead/lag relationships between categories." />
-          <Step n="04" title="Design and share" body="In Studio you choose the map look and markers, then save. The view link shows exactly that; only you and your editors can change it." />
+        <div className="grid gap-4 md:grid-cols-4">
+          <Step n="01" color="#38bdf8" title="Ingest" body="Any file. Tables are column-mapped once by the model, then converted row by row. Prose, scans and photos are read for every event with a place and a time." />
+          <Step n="02" color="#a78bfa" title="Discover" body="Every event gets coordinates, a time, a value and a confidence score. Then AIGIS reads the whole set for what matters: turning points, divergences, leaders and laggards, and connections between what the documents claimed and what the numbers did." />
+          <Step n="03" color="#34d399" title="Brief the window" body="Move the window on the timeline and the briefing follows: what is inside it, how it compares with the span before, and what it may mean. Numbers are computed; the model only writes over them." />
+          <Step n="04" color="#fbbf24" title="Go deeper" body="At ingest AIGIS proposes the outside sources that would explain the data: an industry index, a government series, a news beat. Switch them on and briefings and chat research them, with citations." />
         </div>
       </section>
 
       {/* Demos: public views of saved stories */}
       <section id="demos" className="mx-auto max-w-7xl scroll-mt-10 px-6 pb-24 pt-20">
-        <div className="flex items-end justify-between">
-          <div>
-            <h2 className="text-sm font-medium uppercase tracking-[0.2em] text-dim">Demos</h2>
-            <p className="mt-2 text-balance text-3xl font-semibold tracking-tight md:text-4xl">
-              Four stories, <span className="font-serif-display font-normal italic text-mist">one engine.</span>
-            </p>
-          </div>
-          <p className="hidden max-w-sm text-base text-mist md:block">Each is a saved story. Open the view, scrub the timeline, ask it questions. Make your own in Studio.</p>
+        <div>
+          <h2 className="text-sm font-medium uppercase tracking-[0.2em] text-dim">Demo</h2>
+          <p className="mt-2 text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+            Public research, <span className="font-serif-display font-normal italic text-mist">read as intelligence.</span>
+          </p>
         </div>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="mt-8 space-y-6">
           {SAMPLES.map((s) => (
-            <Link
+            <div
               key={s.id}
-              href={`/view/sample-${s.id}`}
-              className="card-sheen group glass relative flex min-h-[220px] flex-col rounded-2xl p-6 text-left transition hover:-translate-y-0.5 hover:border-mist/40"
-              style={{ color: s.accent }}
+              className="relative grid overflow-hidden rounded-3xl border md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+              style={{
+                background: `linear-gradient(135deg, color-mix(in srgb, ${s.accent} 26%, var(--ink-3)) 0%, color-mix(in srgb, ${s.accent} 6%, var(--ink-2)) 65%)`,
+                borderColor: `color-mix(in srgb, ${s.accent} 45%, transparent)`,
+                boxShadow: `0 30px 80px -40px ${s.accent}`,
+              }}
             >
-              <div className="text-xs font-medium uppercase tracking-[0.2em]" style={{ color: s.accent }}>
-                {s.tagline}
+              <div className="p-8 md:p-12">
+                <div className="text-xs font-medium uppercase tracking-[0.2em]" style={{ color: s.accent }}>
+                  {s.tagline}
+                </div>
+                <h3 className="mt-3 text-4xl font-semibold leading-tight tracking-tight text-fog md:text-5xl">{s.title}</h3>
+                <p className="mt-5 max-w-2xl text-lg leading-relaxed text-mist md:text-xl">{s.blurb}</p>
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <Link href={`/view/sample-${s.id}`} className="inline-flex h-14 items-center justify-center rounded-full bg-glow px-10 text-lg font-semibold text-ink shadow-[0_0_48px_rgba(56,189,248,0.45)] transition hover:opacity-90">
+                    View Demo
+                  </Link>
+                  <span className="text-sm text-dim">No sign-in needed</span>
+                </div>
+                <div className="mt-8 flex flex-wrap gap-2">
+                  {s.questions.map((q) => (
+                    <span key={q} className="rounded-full border border-line px-3 py-1 text-xs text-mist">
+                      {q}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="mt-2 max-w-[80%] text-3xl font-semibold leading-tight text-fog">{s.title}</div>
-              <p className="mt-3 max-w-lg text-base leading-relaxed text-mist">{s.blurb}</p>
-              <div className="mt-auto flex items-center gap-2 pt-5 text-sm text-dim">
-                <span className="font-mono">{fileSummary(s.files)}</span>
-                <span className="ml-auto flex items-center gap-1 text-fog opacity-0 transition group-hover:opacity-100">
-                  Open view
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6">
-                    <path d="M3 8h10M9 4l4 4-4 4" />
-                  </svg>
-                </span>
+              <div className="border-t border-white/10 bg-ink/40 p-8 md:border-l md:border-t-0 md:p-10">
+                <div className="text-xs font-medium uppercase tracking-[0.2em] text-dim">Built from public documents</div>
+                <ul className="mt-5 space-y-4">
+                  {s.sources.map((src) => (
+                    <li key={src.label} className="flex items-start gap-3">
+                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-line font-mono text-[10px] font-semibold uppercase text-mist">{src.kind === "table" ? "csv" : "pdf"}</span>
+                      <span className="text-base leading-snug text-fog">{src.label}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-6 text-sm leading-relaxed text-dim">Every number on the map traces back to one of these files. Outside context, when you switch it on, is researched live and cited.</p>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
-        <div className="mt-10 flex items-center justify-between rounded-2xl border border-line bg-ink-2 px-6 py-5">
+        <div className="mt-10 flex items-center justify-between rounded-2xl border px-6 py-5" style={{ background: "linear-gradient(135deg, color-mix(in srgb, #f1f6f6 14%, var(--ink-3)) 0%, var(--ink-2) 70%)", borderColor: "rgba(255,255,255,0.18)" }}>
           <div>
-            <div className="text-xl font-semibold">Ready to make your own?</div>
-            <div className="text-base text-mist">Studio turns your files into a story you design, save and share as a view.</div>
+            <div className="text-xl font-semibold">Ready to use your own documents?</div>
+            <div className="text-base text-mist">Studio turns your files into an intelligent map you can save, share and question.</div>
           </div>
           <Link href="/studio" className="rounded-full bg-fog px-7 py-3.5 text-base font-semibold text-ink hover:opacity-85">
             New story
@@ -109,7 +128,7 @@ export default async function Home() {
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-sm text-dim">
           <div className="flex items-center gap-2">
-            <Logo size={18} /> AIGIS · autonomous geospatial intelligence
+            <Logo size={18} /> AIGIS · geographic intelligence
           </div>
           <div>Models via Vercel AI Gateway · OpenFreeMap tiles · Photon and Nominatim geocoding (OpenStreetMap)</div>
         </div>
@@ -118,18 +137,22 @@ export default async function Home() {
   );
 }
 
-function Step({ n, title, body }: { n: string; title: string; body: string }) {
+function Step({ n, color, title, body }: { n: string; color: string; title: string; body: string }) {
   return (
-    <div className="bg-ink-2 p-6">
-      <div className="font-mono text-sm text-glow">{n}</div>
+    <div
+      className="relative overflow-hidden rounded-2xl border p-6 pl-7"
+      style={{
+        background: `linear-gradient(160deg, color-mix(in srgb, ${color} 34%, var(--ink-3)) 0%, color-mix(in srgb, ${color} 8%, var(--ink-2)) 70%)`,
+        borderColor: `color-mix(in srgb, ${color} 45%, transparent)`,
+        boxShadow: `0 24px 60px -32px ${color}`,
+      }}
+    >
+      <span className="absolute inset-y-0 left-0 w-1.5" style={{ background: color }} />
+      <div className="font-mono text-sm" style={{ color }}>
+        {n}
+      </div>
       <div className="mt-2 text-xl font-semibold">{title}</div>
       <p className="mt-2 text-base leading-relaxed text-mist">{body}</p>
     </div>
   );
-}
-
-function fileSummary(files: string[]) {
-  const photos = files.filter((f) => /\.(jpe?g|png|webp)$/i.test(f)).length;
-  const rest = files.filter((f) => !/\.(jpe?g|png|webp)$/i.test(f));
-  return [photos ? `${photos} photos` : null, ...rest].filter(Boolean).join(" + ");
 }

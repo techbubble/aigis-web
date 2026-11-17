@@ -4,11 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GeoEvent } from "@/lib/types";
 import { fmtDate } from "@/lib/format";
 import { PERIODS, periodBounds, periodLabel, periodsInSpan, type Period } from "@/lib/period";
-import { useClickOutside } from "@/lib/use-click-outside";
 
 // Two-band timeline in the spirit of SIMILE Exhibit/Timeline. The time window
 // is the region the map shows: slide it to scrub, resize it to widen or narrow
-// the period, press play to let it travel across the range. The detail band is
+// the period. The detail band is
 // a magnified view of the window with dimmed context either side; the overview
 // band shows the whole range with the window as a draggable, resizable handle.
 
@@ -18,28 +17,25 @@ const MIN = 60000,
   MONTH = 30.4375 * DAY,
   YEAR = 365.25 * DAY;
 const DETAIL_H = 92;
-const OVERVIEW_H = 34;
-const HANDLE_W = 7;
+const OVERVIEW_H = 46;
+const HANDLE_W = 10;
+// The brush never shrinks below this on screen, however short the window.
+const BRUSH_MIN = 56;
 
 type Props = {
   events: GeoEvent[];
   color: string;
   range: [number, number];
   window: [number, number];
-  playing: boolean;
-  playable: boolean;
-  speed: number;
   period: Period;
   selectedId: string | null;
   onWindow: (w: [number, number]) => void;
-  onPlay: (p: boolean) => void;
-  onSpeed: (s: number) => void;
   onPeriod: (p: Period) => void;
   onSelect: (id: string) => void;
 };
 
 export function Timeline(p: Props) {
-  const { events, color, range, window: win, playing, period } = p;
+  const { events, color, range, window: win } = p;
   const [wFrom, wTo] = win;
   const wWidth = Math.max(MIN, wTo - wFrom);
   const span = Math.max(1, range[1] - range[0]);
@@ -53,9 +49,6 @@ export function Timeline(p: Props) {
   const [dragging, setDragging] = useState(false);
   const [ovHover, setOvHover] = useState<"edge" | "inside" | "outside" | null>(null);
   const [ovDragging, setOvDragging] = useState<"move" | "resize" | false>(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const settingsRef = useRef<HTMLDivElement>(null);
-  useClickOutside(settingsRef, settingsOpen, () => setSettingsOpen(false));
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -155,7 +148,6 @@ export function Timeline(p: Props) {
     detRef.current?.setPointerCapture?.(e.pointerId);
     drag.current = { x0: px(e, detRef), w0: win, moved: false, snap: snapped };
     setDragging(true);
-    p.onPlay(false);
   };
   const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
     const x = px(e, detRef);
@@ -210,8 +202,9 @@ export function Timeline(p: Props) {
   const ovX = (t: number) => ((t - range[0]) / span) * width;
   const ovT = (x: number) => range[0] + (x / width) * span;
   const ovZone = (x: number): "left" | "right" | "inside" | "outside" => {
+    // The drawn brush never shrinks below BRUSH_MIN; hit the handle where it is drawn.
     const a = ovX(wFrom),
-      b = ovX(wTo);
+      b = Math.max(a + BRUSH_MIN, ovX(wTo));
     if (Math.abs(x - a) <= HANDLE_W + 2) return "left";
     if (Math.abs(x - b) <= HANDLE_W + 2) return "right";
     return x > a && x < b ? "inside" : "outside";
@@ -220,7 +213,6 @@ export function Timeline(p: Props) {
     ovRef.current?.setPointerCapture?.(e.pointerId);
     const x = px(e, ovRef);
     const zone = ovZone(x);
-    p.onPlay(false);
     if (zone === "left" || zone === "right") {
       ovDrag.current = { x0: x, w0: win, mode: zone, snap: null };
       setOvDragging("resize");
@@ -264,7 +256,6 @@ export function Timeline(p: Props) {
 
   const periods = periodsInSpan(span);
   const step = (dir: 1 | -1) => {
-    p.onPlay(false);
     if (snapped) {
       const [a, b] = periodBounds(dir > 0 ? wTo + 1 : wFrom - 1, snapped);
       setWindow(a, b);
@@ -278,20 +269,6 @@ export function Timeline(p: Props) {
   return (
     <div className="pointer-events-auto rounded-xl border border-line bg-ink/85 shadow-2xl backdrop-blur">
       <div className="flex items-center gap-3 px-4 pt-3">
-        {p.playable && (
-        <button onClick={() => p.onPlay(!playing)} className="flex h-9 w-9 items-center justify-center rounded-full bg-fog text-ink hover:opacity-85" aria-label={playing ? "Pause" : "Play"}>
-          {playing ? (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-              <rect x="2" y="1" width="3.5" height="12" />
-              <rect x="8.5" y="1" width="3.5" height="12" />
-            </svg>
-          ) : (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-              <path d="M3 1l10 6-10 6z" />
-            </svg>
-          )}
-        </button>
-        )}
         <button onClick={() => step(-1)} className="text-mist hover:text-fog" title="Previous period" aria-label="Previous period">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
             <path d="M10 1L3 7l7 6z" />
@@ -302,23 +279,6 @@ export function Timeline(p: Props) {
             <path d="M4 1l7 6-7 6z" />
           </svg>
         </button>
-        {p.playable && (
-        <button
-          onClick={() => {
-            p.onPlay(false);
-            const [a, b] = periodBounds(range[0], period);
-            setWindow(a, b);
-          }}
-          className="text-mist hover:text-fog"
-          title="Restart"
-          aria-label="Restart"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-            <rect x="1" y="1" width="2" height="12" />
-            <path d="M12 1L4 7l8 6z" />
-          </svg>
-        </button>
-        )}
         <div className="ml-2 whitespace-nowrap font-mono text-base tabular-nums text-fog xl:text-lg">{label}</div>
         <div className="ml-auto flex items-center gap-1 text-xs">
           <span className="mr-1 whitespace-nowrap text-dim">Show by</span>
@@ -327,8 +287,7 @@ export function Timeline(p: Props) {
               key={pp}
               active={snapped === pp}
               onClick={() => {
-                p.onPlay(false);
-                p.onPeriod(pp);
+                            p.onPeriod(pp);
                 const [a, b] = periodBounds(wFrom + wWidth / 2, pp);
                 p.onWindow([a, b]);
               }}
@@ -337,41 +296,6 @@ export function Timeline(p: Props) {
             </Chip>
           ))}
 
-          {p.playable && (
-          <div ref={settingsRef} className="relative ml-2">
-            <button
-              onClick={() => setSettingsOpen((v) => !v)}
-              className={`flex items-center gap-1 rounded px-1.5 py-0.5 font-mono ${settingsOpen ? "bg-ink-3 text-fog" : "text-mist hover:bg-ink-3 hover:text-fog"}`}
-              aria-haspopup="menu"
-              aria-expanded={settingsOpen}
-              title="Playback speed"
-            >
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="8" cy="8" r="2.2" />
-                <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4" />
-              </svg>
-              {p.speed}x
-            </button>
-            {settingsOpen && (
-              <>
-                <div role="menu" className="absolute bottom-full right-0 z-40 mb-2 w-52 rounded-xl border border-line bg-ink/95 p-1.5 text-xs shadow-2xl backdrop-blur">
-                  <div className="px-2 pb-1 pt-1 text-[10px] font-medium uppercase tracking-[0.2em] text-dim">Speed</div>
-                  {[0.5, 1, 2, 4].map((sp) => (
-                    <button
-                      key={sp}
-                      role="menuitemradio"
-                      aria-checked={p.speed === sp}
-                      onClick={() => p.onSpeed(sp)}
-                      className={`flex w-full items-center justify-between rounded-lg px-2 py-1.5 font-mono ${p.speed === sp ? "bg-ink-3 text-fog" : "text-mist hover:bg-ink-3 hover:text-fog"}`}
-                    >
-                      {sp}x{p.speed === sp && <span className="text-glow">&#10003;</span>}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-          )}
         </div>
       </div>
 
@@ -445,7 +369,7 @@ export function Timeline(p: Props) {
           {(() => {
             const a = Math.max(0, ovX(wFrom));
             const b = Math.min(width, ovX(wTo));
-            const w = Math.max(HANDLE_W * 2 + 4, b - a);
+            const w = Math.max(BRUSH_MIN, b - a);
             const hy = 5,
               hh = OVERVIEW_H - 10;
             return (
@@ -457,6 +381,11 @@ export function Timeline(p: Props) {
                 <rect x={a + w - HANDLE_W + 1} y={hy} width={HANDLE_W} height={hh} rx={2} fill="var(--fog)" />
                 <line x1={a + 2.5} x2={a + 2.5} y1={hy + 5} y2={hy + hh - 5} stroke="var(--ink)" strokeOpacity={0.6} />
                 <line x1={a + w - 2.5} x2={a + w - 2.5} y1={hy + 5} y2={hy + hh - 5} stroke="var(--ink)" strokeOpacity={0.6} />
+                {w >= 150 && (
+                  <text x={a + w / 2} y={OVERVIEW_H / 2 + 4} textAnchor="middle" fill="var(--fog)" fontSize={10} fontFamily="var(--font-geist-mono)" pointerEvents="none">
+                    {fmtDate(wFrom, span)} to {fmtDate(wTo, span)}
+                  </text>
+                )}
               </g>
             );
           })()}

@@ -4,39 +4,60 @@ import { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from "ai";
 import type { FocusMapInputT } from "@/lib/ai/tools";
-import type { Insight } from "@/lib/types";
-import { FindingsList } from "./InsightsPanel";
+import type { ContextTopic, Dataset } from "@/lib/types";
+import { Briefing } from "./Briefing";
+import { Markdown } from "./Markdown";
+import type { Filter } from "./explorer-state";
 
 export type ChatHandle = { ask: (q: string) => void };
 
 export function ChatPanel({
-  datasetId,
+  dataset,
+  window: win,
+  viewBounds,
+  filter,
+  contexts,
+  onContexts,
   suggestions,
-  insights,
-  onPickInsight,
   onFocus,
   handleRef,
   inputHeight = 0,
 }: {
-  datasetId: string;
+  dataset: Dataset;
+  window: [number, number];
+  viewBounds: [number, number, number, number] | null;
+  filter: Filter;
+  contexts: ContextTopic[];
+  onContexts: (ids: string[]) => void;
   suggestions: string[];
-  insights: Insight[];
-  onPickInsight: (i: Insight) => void;
   onFocus: (f: FocusMapInputT) => void;
   handleRef: React.MutableRefObject<ChatHandle | null>;
   // When set, the input block is this tall (matches the timeline bar beside it).
   inputHeight?: number;
 }) {
+  const datasetId = dataset.id;
   const [input, setInput] = useState("");
-  const [findingsOpen, setFindingsOpen] = useState<boolean | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const onFocusRef = useRef(onFocus);
   useEffect(() => {
     onFocusRef.current = onFocus;
   }, [onFocus]);
+  // Every message carries what the user is looking at and which outside
+  // sources are on, read at send time.
+  const viewRef = useRef({ win, contexts, viewBounds });
+  useEffect(() => {
+    viewRef.current = { win, contexts, viewBounds };
+  }, [win, contexts, viewBounds]);
 
   const { messages, sendMessage, status, error, addToolOutput, stop } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat", body: { datasetId } }),
+    // The request body is built at send time, not during render; the ref holds the latest view.
+    // eslint-disable-next-line react-hooks/refs
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+      prepareSendMessagesRequest: ({ messages, id }) => ({
+        body: { id, messages, datasetId, window: viewRef.current.win, bbox: viewRef.current.viewBounds, contexts: viewRef.current.contexts.filter((t) => t.enabled).map((t) => t.id) },
+      }),
+    }),
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     onToolCall({ toolCall }) {
       if (toolCall.dynamic) return;
@@ -75,31 +96,11 @@ export function ChatPanel({
   return (
     <div className="flex h-full flex-col">
       <div className="scroll-thin flex-1 space-y-4 overflow-auto px-4 py-4">
-        {/* Findings: open until the conversation starts, then a header to reopen. */}
-        {(() => {
-          const open = findingsOpen ?? messages.length === 0;
-          return (
-            <div>
-              <button onClick={() => setFindingsOpen(!open)} className="flex w-full items-center justify-between text-left">
-                <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-dim">Findings{insights.length ? ` (${insights.length})` : ""}</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className={`text-dim transition ${open ? "rotate-180" : ""}`}>
-                  <path d="M2 4l4 4 4-4" />
-                </svg>
-              </button>
-              {open && (
-                <div className="mt-2">
-                  {insights.length > 0 && <p className="mb-2 text-xs text-dim">Computed from the data, not by the model. Click one to see it on the map.</p>}
-                  <FindingsList insights={insights} onPick={onPickInsight} onAsk={(q) => void sendMessage({ text: q })} />
-                </div>
-              )}
-            </div>
-          );
-        })()}
+        <Briefing dataset={dataset} window={win} viewBounds={viewBounds} filter={filter} contexts={contexts} onContexts={onContexts} />
         {messages.length === 0 && (
           <div className="text-sm text-mist">
-            <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-dim">Ask</div>
-            <p className="mt-2 text-xs leading-relaxed">Ask about the map. I can filter it, replay a period, zoom to a place, compare categories and explain the findings.</p>
-            <div className="mt-3 space-y-1.5">
+            <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-dim">Follow up</div>
+            <div className="mt-2 space-y-1.5">
               {(suggestions.length ? suggestions : DEFAULTS).map((s) => (
                 <button key={s} onClick={() => void sendMessage({ text: s })} className="block w-full rounded-md border border-line bg-ink-2 px-3 py-2 text-left text-xs text-fog hover:bg-ink-3">
                   {s}
@@ -134,7 +135,7 @@ export function ChatPanel({
               }
             }}
             rows={1}
-            placeholder="Ask AIGIS"
+            placeholder="Ask a follow-up"
             className={`flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-dim ${inputHeight ? "h-full" : "max-h-32"}`}
           />
           {busy ? (
@@ -178,12 +179,26 @@ function Message({ m }: { m: UIMessage }) {
               </div>
             );
           }
-          const out = tp.output as { total?: number } | unknown[] | undefined;
+          const out = tp.output as { total?: number; sources?: { title: string; url: string }[] } | unknown[] | undefined;
           const n = Array.isArray(out) ? out.length : out && typeof out === "object" && "total" in out ? (out as { total?: number }).total : undefined;
+          const cites = !Array.isArray(out) && out && typeof out === "object" && Array.isArray(out.sources) ? out.sources.slice(0, 4) : [];
+          if (name === "research" && cites.length)
+            return (
+              <div key={i} className="text-xs text-mist">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1">Researched {(tp.input?.topic as string) ?? "the web"}</span>
+                <span className="ml-2">
+                  {cites.map((c, k) => (
+                    <a key={k} href={c.url} target="_blank" rel="noreferrer" className="mr-2 text-glow underline decoration-glow/40">
+                      {c.title.slice(0, 40)}
+                    </a>
+                  ))}
+                </span>
+              </div>
+            );
           return (
             <div key={i} className="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1 text-xs text-mist">
               {tp.state === "output-available" ? "" : "Running "}
-              {name === "queryEvents" ? `Searched events${n != null ? ": " + n + " matched" : ""}` : name === "getInsights" ? `Checked pattern engine${n != null ? ": " + n + " findings" : ""}` : name === "getEvent" ? "Read event record" : name}
+              {name === "queryEvents" ? `Searched events${n != null ? ": " + n + " matched" : ""}` : name === "getInsights" ? `Checked pattern engine${n != null ? ": " + n + " findings" : ""}` : name === "getEvent" ? "Read event record" : name === "research" ? `Researched ${(tp.input?.topic as string) ?? "the web"}` : name}
             </div>
           );
         }
@@ -196,53 +211,3 @@ function Message({ m }: { m: UIMessage }) {
 function Dot() {
   return <span className="h-1.5 w-1.5 rounded-full bg-glow" />;
 }
-
-// Small markdown subset: paragraphs, bullet lists, bold, inline code.
-function Markdown({ text }: { text: string }) {
-  const blocks = text.trim().split(/\n{2,}/);
-  return (
-    <div className="prose-chat leading-relaxed text-fog/90">
-      {blocks.map((b, i) => {
-        const lines = b.split("\n");
-        const isList = lines.every((l) => /^\s*([-*]|\d+\.)\s+/.test(l));
-        if (isList) {
-          const ordered = /^\s*\d+\./.test(lines[0]);
-          const items = lines.map((l) => l.replace(/^\s*([-*]|\d+\.)\s+/, ""));
-          return ordered ? (
-            <ol key={i}>
-              {items.map((it, j) => (
-                <li key={j}>{inline(it)}</li>
-              ))}
-            </ol>
-          ) : (
-            <ul key={i}>
-              {items.map((it, j) => (
-                <li key={j}>{inline(it)}</li>
-              ))}
-            </ul>
-          );
-        }
-        if (/^#{1,4}\s/.test(b)) return <p key={i} className="font-semibold">{inline(b.replace(/^#{1,4}\s/, ""))}</p>;
-        return <p key={i}>{inline(b.replace(/\n/g, " "))}</p>;
-      })}
-    </div>
-  );
-}
-
-function inline(s: string): React.ReactNode[] {
-  const out: React.ReactNode[] = [];
-  const re = /(\*\*[^*]+\*\*|`[^`]+`)/g;
-  let last = 0,
-    m: RegExpExecArray | null,
-    k = 0;
-  while ((m = re.exec(s))) {
-    if (m.index > last) out.push(s.slice(last, m.index));
-    const tok = m[0];
-    if (tok.startsWith("**")) out.push(<strong key={k++}>{tok.slice(2, -2)}</strong>);
-    else out.push(<code key={k++}>{tok.slice(1, -1)}</code>);
-    last = m.index + tok.length;
-  }
-  if (last < s.length) out.push(s.slice(last));
-  return out;
-}
-

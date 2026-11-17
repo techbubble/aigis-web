@@ -5,6 +5,25 @@ import { periodBounds, periodNext, periodStart, type Period } from "@/lib/period
 // time on alternating sides until it holds at least `min` events (or every
 // event, for small stories), so the first frame is wide enough to read.
 export const OPENING_EVENTS = 20;
+
+// The window a story opens on: the middle half of its range, never under a
+// month wide. If that holds no events it grows a month at a time on
+// alternating sides until it does.
+const MONTH = 30.4375 * 86400000;
+export function halfWindow(range: [number, number], events: { t: number }[] = []): [number, number] {
+  const span = Math.max(1, range[1] - range[0]);
+  const w = Math.max(span / 2, MONTH);
+  const mid = range[0] + span / 2;
+  let from = mid - w / 2;
+  let to = mid + w / 2;
+  const count = () => events.reduce((n, e) => n + (e.t >= from && e.t <= to ? 1 : 0), 0);
+  let side = 0;
+  while (events.length && count() === 0 && (from > range[0] || to < range[1])) {
+    if (side++ % 2 === 0 ? to < range[1] : from <= range[0]) to += MONTH;
+    else from -= MONTH;
+  }
+  return [from, to];
+}
 export function openingWindow(events: { t: number }[], t: number, p: Period, min = OPENING_EVENTS): [number, number] {
   let [from, to] = periodBounds(t, p);
   const need = Math.min(min, events.length);
@@ -38,6 +57,21 @@ export function applyFilter(ds: Dataset, f: Filter): GeoEvent[] {
       (!cats || cats.has(e.category)) &&
       (!pc || e.place.toLowerCase().includes(pc)),
   );
+}
+
+// Events inside a map viewport. A box that crosses the antimeridian has
+// west > east; a box wider than the world holds everything.
+export function inBounds<T extends { lat: number; lng: number }>(list: T[], bb: [number, number, number, number] | null): T[] {
+  if (!bb) return list;
+  const [w, s, e, n] = bb;
+  if (e - w >= 360) return list.filter((p) => p.lat >= s && p.lat <= n);
+  const wrap = (x: number) => ((((x + 180) % 360) + 360) % 360) - 180;
+  const W = wrap(w), E = wrap(e);
+  return list.filter((p) => {
+    if (p.lat < s || p.lat > n) return false;
+    const x = wrap(p.lng);
+    return W <= E ? x >= W && x <= E : x >= W || x <= E;
+  });
 }
 
 export function rangeOf(ds: Dataset, f: Filter): [number, number] {

@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { AccountMenu, type SessionUser } from "./AccountMenu";
 
 const LINKS = [
-  { href: "/#demos", label: "Demos" },
-  { href: "/about", label: "About" },
+  { href: "/#demos", label: "Demo" },
+  { href: "/investor", label: "Investor" },
 ];
 
 // The landing header's navigation: inline links on wide screens, a

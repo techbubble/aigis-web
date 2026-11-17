@@ -1,8 +1,8 @@
 # AIGIS
 
-**When maps tell a story.**
+**Maps that think.**
 
-AIGIS turns unstructured material into animated time-series maps. Drop in reports, spreadsheets, photos, scans or news. AIGIS pulls out every event that has a place and a time, geocodes it, look for patterns and anomalies, and hand back a map you can scrub through time and interrogate in plain language.
+AIGIS is a geographic intelligence system. Drop in research reports, filings, spreadsheets, scans or news. AIGIS pulls out every fact that has a place and a time, puts it on a timeline map, and then does the analyst's work: select any window on the timeline and it counts what is inside, compares it with the window before, pulls in the outside context you have switched on, and writes a briefing on what changed, where, and what it may mean. Ask it questions and it answers from the data and the outside world, with citations, and moves the map itself.
 
 Live at [aigis.studio](https://aigis.studio).
 
@@ -11,23 +11,24 @@ Live at [aigis.studio](https://aigis.studio).
 ## What it does
 
 1. **Ingest.** Upload PDFs, Word files, Markdown, text, HTML, CSV, XLSX or photos. Text is chunked and read by the model, which returns structured events (what, where, when, category, value, confidence, source quote). Spreadsheets are mapped column to field once, then converted row by row. Photos take place and time from EXIF; the vision model writes the caption and recognizes the landmark. Places without coordinates are geocoded against OpenStreetMap, with the model as the gazetteer of last resort.
-2. **Analyze.** A deterministic pattern engine scores temporal bursts, spatial hotspots, value outliers, lead/lag correlations between categories, and gaps. The findings are stored with the dataset and become evidence for the agent.
-3. **Watch.** The map animates through time with a scrubbable timeline, playback speeds, clustering, spiderfied coincident points, an ordered trail with direction arrows, and a detail panel with media. Markers, color and the basemap look are the creator's choices and are saved with the story.
-4. **Explore.** Ask questions in the panel. The agent cites places, dates and counts, queries the dataset through tools, and moves the map itself (filter, highlight, fly, play) so the answer is shown, not just described.
-5. **Design.** Describe a basemap look in a sentence. The model designs the complete style (colors, relief, road treatment, labels, halftone, grain) and an image model paints a seamless surface texture when the look calls for one. Watercolor, photocopy, pixel world, impasto: each becomes a reusable look.
+2. **Analyze.** A deterministic pattern engine scores temporal bursts, spatial hotspots, value outliers, lead/lag correlations between categories, and gaps. The findings are stored with the dataset and become evidence for the briefings and the agent.
+3. **Discover.** A discovery pass reads computed evidence for the whole story (time slices, each place's trajectory when the events carry a value, how categories diverge, what the documents state, the pattern engine's findings) and writes the five to eight findings a reader should see first: turning points, divergences, leaders and laggards, connections between what the documents claimed and what the numbers did, outliers. They open the Intelligence panel as cards; each one points the map at its evidence.
+4. **Propose context.** After extraction the model proposes four to six outside sources that would explain the events: an industry index, a government series, a regulator's actions, a news beat. They are stored with the story as switches. Nothing is fetched until a user turns one on.
+5. **Brief the window.** The timeline window is the unit of analysis. For whatever span is selected, AIGIS computes the counts by category and place, the value distribution, the change against the previous span of equal length and the findings that overlap it, researches each enabled context topic on the live web, and streams a briefing: headline, what the window shows, outside context with citations, what it may mean, what to ask next.
+6. **Explore.** Ask questions in the panel. The agent knows what the viewer is looking at, cites places, dates and counts, queries the dataset through tools, researches outside sources when a context topic is on, and moves the map itself (filter, highlight, fly) so the answer is shown, not just described.
+7. **Appearance.** Pick a basemap and marker style in Studio and save the map position viewers open on.
 
 Every saved map is a **story**. Studio creates and edits; View is read-only for sharing.
 
-## Demos
+## Demo
 
-Four pre-built stories ship with the app and open instantly:
+One pre-built story ships with the app, built entirely from public research documents:
 
 | Story | Sources |
 | --- | --- |
-| A Family Summer in Europe | A camera roll, nothing else |
-| The Eras Tour, Night by Night | 149-show ledger + tour notes + photos |
-| The Renaissance, City by City | Catalog of works + essay |
-| Voltic: A Decade of Sports Sponsorships | Business ledger + strategy memo |
+| U.S. Housing Markets | Freddie Mac House Price Index (185 metros, quarterly since 2019, with year-over-year change computed from the master file), Freddie Mac Multifamily Outlook 2024, Midyear 2024 and 2025, FHFA House Price Index quarterly report 2026 Q2 |
+
+The source files are in `public/samples/housing-markets/` next to the prebuilt `dataset.json`.
 
 ## Models
 
@@ -35,11 +36,11 @@ Every judgment call in the product is a model call; the deterministic parts (geo
 
 | Role | Default | Price (per 1M tokens) | Used for |
 | --- | --- | --- | --- |
-| extract | `google/gemini-2.5-flash-lite` | $0.10 in / $0.40 out | Event extraction, table mapping, photo captions, geocoding fallback, look design |
+| extract | `google/gemini-2.5-flash-lite` | $0.10 in / $0.40 out | Event extraction, table mapping, photo captions, geocoding fallback |
 | chat | `anthropic/claude-haiku-5.5` | $0.10 in / $0.50 out | The Explore agent (streaming, tool calling) |
-| image | `bfl/flux-3-image-klein` | $0.009 per image | Surface textures for custom map looks |
+| research | `perplexity/sonar` | $0.25 in / $2.50 out, plus $0.001 per search | Outside context: grounded answers with citations for enabled topics |
 
-Any gateway model with vision, structured output and tool calling works in the text roles; any gateway image model works for textures.
+Any gateway model with vision, structured output and tool calling works in the text roles; any search-grounded model that returns URL sources works for research.
 
 ### Extraction
 
@@ -55,17 +56,15 @@ Photos, scans, charts and screenshots are read, not OCR'd. A phone photo becomes
 
 Scanned documents, charts and maps go through the extraction schema as a file part in a multimodal message, with the prompt pointing the model at signage, captions, axis labels and legends. A photographed timetable yields dated events the same way a PDF does.
 
-### Map generation
+### Window briefings and outside context
 
-Basemap looks are designed, not picked from a list. A one-line brief ("Stamen watercolor", "1970s airline poster", "Minecraft overworld") goes to the model with a system prompt that explains how every field of the style renders on OpenStreetMap vector data and what a basemap must obey so event markers stay the subject. It returns the full design: land, water, forest, park, building, road, rail, boundary and label colors; hillshade and its opacity; landcover and road opacity; label density, transform and spacing; edge bleed; sketch or solid lines; cased, single or hidden roads; buildings on or off; halftone screen; film grain; relief saturation; and a texture brief for the image model. A parametric style generator turns that into a MapLibre style, so a look designed in ten seconds renders at every zoom like a built-in. Looks are saved and reusable across stories.
+The window statistics (`src/lib/analysis/window.ts`) are computed, not generated: events in the window and in the previous window of equal length, counts by category and place with the change, the value distribution with the highest and lowest records, entities, and the pattern-engine findings that overlap the span. The same function runs in the browser for the chips and on the server for the prompt, so the model only ever reasons over counted facts.
 
-### Image generation
-
-The image model paints the surface of a look. Paper tooth, photocopy toner, canvas weave, pixel grid: whatever the designer asked for, prefixed with instructions for a flat, evenly lit, featureless, fine-grained surface. Two renderings are requested, resized to 1,600 pixels, tone-matched, each used twice with a half-turn rotation, and feathered together on a torus into one seamless 2,560 pixel tile. The tile is laid over the map in screen space with the blend mode the designer chose, and repaint is one click when a result is not right.
+Context topics are proposed once per ingest (`src/lib/ai/contexts.ts`) from the dataset summary and a sample of events, and stored on the story as switches. When a briefing or a chat question runs with topics on, each topic becomes one question to the research model, scoped to the window's dates and most active places (`src/lib/ai/research.ts`). The research model searches the web and returns prose plus URL sources; the briefing model is told to connect those facts to what the map shows and to end each such bullet with citation markers, and the sources are appended as a numbered list. With no topics on, the briefing says so and stays inside the data.
 
 ### Exploration agent
 
-The Explore tab is a conversation with the dataset. The model streams answers with a system prompt carrying the dataset summary, the top precomputed findings from the pattern engine and, for datasets of 400 events or fewer, every event as one compact line. It has four tools: `focusMap` runs in the browser and filters, highlights, flies and plays the map; `queryEvents`, `getEvent` and `getInsights` run on the server. The prompt tells it to show the answer on the map before describing it, to cite places, dates and counts, and to present cause and effect only as a hypothesis backed by timing and location. Up to six tool steps per answer.
+The Explore tab is a conversation with the dataset. The model streams answers with a system prompt carrying the dataset summary, the top precomputed findings, the statistics of the window the viewer has selected, and, for datasets of 400 events or fewer, every event as one compact line. It has five tools: `focusMap` runs in the browser and filters, highlights and flies the map; `queryEvents`, `getEvent`, `getInsights` and, when context topics are on, `research` run on the server. The prompt tells it to show the answer on the map before describing it, to cite places, dates and counts, to research only what the data cannot answer, and to present cause and effect only as a hypothesis backed by timing and location. Up to six tool steps per answer.
 
 ## Stack
 
@@ -84,8 +83,8 @@ Optional environment variables:
 | Variable | Purpose |
 | --- | --- |
 | `AI_GATEWAY_API_KEY` | Gateway auth outside Vercel (instead of OIDC) |
-| `AIGIS_EXTRACT_MODEL`, `AIGIS_CHAT_MODEL`, `AIGIS_IMAGE_MODEL` | Override model IDs |
-| `BLOB_READ_WRITE_TOKEN` or `BLOB_STORE_ID` | Store datasets, media and looks in Vercel Blob (classic token or OIDC store); omitted, `.data/` is used |
+| `AIGIS_EXTRACT_MODEL`, `AIGIS_CHAT_MODEL`, `AIGIS_RESEARCH_MODEL` | Override model IDs |
+| `BLOB_READ_WRITE_TOKEN` or `BLOB_STORE_ID` | Store datasets and media in Vercel Blob (classic token or OIDC store); omitted, `.data/` is used |
 
 `pnpm build` and `pnpm lint` run the production build and ESLint.
 
@@ -93,13 +92,13 @@ Optional environment variables:
 
 ```
 src/app            routes: landing, /studio, /studio/[id], /view/[id], /api/*
-src/components     Explorer, MapView, Timeline, ChatPanel, DesignPanel, SourcesPanel, HeroGlobe
+src/components     Explorer, MapView, Timeline, ChatPanel, Briefing, DesignPanel, SourcesPanel
 src/lib/ingest     parsing, chunking, extraction, photos, pipeline
-src/lib/ai         model IDs, shared tool schemas
-src/lib/analysis   pattern engine
-src/lib/map        style generator, look designer, texture painter
+src/lib/ai         model IDs, shared tool schemas, discovery pass, context proposals, web research
+src/lib/analysis   pattern engine, window statistics, discovery evidence
+src/lib/map        style generator
 src/lib/geo        geocoding
-public/samples     bundled demo datasets and media
+public/samples     the bundled demo: source documents and prebuilt dataset
 ```
 
 Map data © OpenStreetMap contributors, tiles by OpenFreeMap.

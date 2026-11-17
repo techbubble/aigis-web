@@ -16,7 +16,6 @@ export const FocusMapInput = z.object({
     .nullable()
     .optional()
     .describe("[minLng, minLat, maxLng, maxLat] to fly the camera to; omit to fit the visible events"),
-  play: z.boolean().nullable().optional().describe("True to start the time animation from the beginning of the range"),
   caption: z.string().nullable().optional().describe("One sentence shown on the map describing what the viewer is looking at"),
 });
 export type FocusMapInputT = z.infer<typeof FocusMapInput>;
